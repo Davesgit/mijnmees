@@ -13,7 +13,17 @@ export const oefenConfig = {
   correctOvergangMs: 900,
   /** Aantal andere vragen tussen een hulpvraag en de vervolgvraag (liefst). */
   vervolgAfstand: 3,
+  /** Gasten (zonder ouderaccount) mogen zoveel oefeningen afronden; hervatten blijft altijd mogelijk. */
+  maxGastAfgerond: 2,
 } as const;
+
+export function aantalAfgerond(data: OpslagData) {
+  return Object.values(data.sessies).filter((s) => s.status === "afgerond").length;
+}
+
+export function gastLimietBereikt(data: OpslagData) {
+  return aantalAfgerond(data) >= oefenConfig.maxGastAfgerond;
+}
 
 const nieuwId = () => crypto.randomUUID();
 

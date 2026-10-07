@@ -10,10 +10,12 @@ import { Mees } from "@/components/mees/Mees";
 import { vindOnderdeel } from "@/content/onderwerpen";
 import { vindWeetje } from "@/content/weetjes";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
+import { useProfiel } from "@/components/mees/Profiel";
 import { useOpslag } from "@/lib/opslag/lokaal";
 
 export function AfgerondScherm({ sessieId }: { sessieId: string }) {
   const opslag = useOpslag();
+  const { kind } = useProfiel();
   if (opslag === null) return <Laden />;
 
   const sessie = opslag.sessies[sessieId];
@@ -66,7 +68,7 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
           <BreukKaartjes links={[1, 2]} rechts={[3, 4]} klein />
         </div>
         <h1 id="afgerond-titel" className="mt-4 titel-held">
-          Goed geoefend!
+          {kind ? `Goed geoefend, ${kind.voornaam}!` : "Goed geoefend!"}
         </h1>
         <p className="mt-2 subtitel font-semibold text-[#5b6fae]">{samenvatting}</p>
       </section>
@@ -95,6 +97,22 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
         </Link>
       )}
 
+      {!kind && (
+        <Link
+          href="/voortgang-bewaren"
+          className="flex items-center gap-4 rounded-[16px] border-2 border-actie-blauw bg-wit p-4 hover:bg-blauw-zacht tablet:p-5"
+        >
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-blauw-zacht text-actie-blauw" aria-hidden>
+            <Icoon naam="slot" className="size-6" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-bold">Bewaar je voortgang</span>
+            <span className="block tekst-klein text-tekst-zacht">Met een gratis ouderaccount kun je later op elk apparaat verder.</span>
+          </span>
+          <Icoon naam="chevron-rechts" className="size-6 text-actie-blauw" />
+        </Link>
+      )}
+
       <nav aria-label="Wat wil je nu doen?" className="grid gap-3 tablet:grid-cols-3 tablet:gap-4">
         <KeuzeTegel
           href={`/kind/oefening/instellen?onderdeel=${sessie.onderdeelId}`}
@@ -103,7 +121,7 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
           beeld={<Breuk teller={1} noemer={2} className="text-xl font-extrabold" />}
         />
         <KeuzeTegel href="/kind/pauze" titel="Even bewegen" tekst="Sta op en loop een rondje." beeld={<Icoon naam="bewegen" className="size-8" />} />
-        <KeuzeTegel href="/kind/start" titel="Klaar voor nu" tekst="Je voortgang staat op dit apparaat." beeld={<Icoon naam="huis" className="size-8" />} />
+        <KeuzeTegel href="/kind/start" titel="Klaar voor nu" tekst={kind ? "Je voortgang is bewaard." : "Je voortgang staat op dit apparaat."} beeld={<Icoon naam="huis" className="size-8" />} />
       </nav>
     </div>
   );

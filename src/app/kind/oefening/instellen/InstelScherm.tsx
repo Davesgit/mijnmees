@@ -8,9 +8,10 @@ import { Icoon } from "@/components/mees/Icoon";
 import { KeuzeKaart, StapKop } from "@/components/mees/KeuzeKaart";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
 import { Mees } from "@/components/mees/Mees";
-import { maakSessie, oefenConfig } from "@/features/oefenen/sessie";
+import { gastLimietBereikt, maakSessie, oefenConfig } from "@/features/oefenen/sessie";
+import { useProfiel } from "@/components/mees/Profiel";
 import type { Niveau } from "@/features/oefenen/vragen";
-import { wijzigOpslag } from "@/lib/opslag/lokaal";
+import { haalOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 
 const niveaus: { waarde: Niveau; titel: string; omschrijving: string }[] = [
   { waarde: "makkelijk", titel: "Makkelijk", omschrijving: "Eerst de basis." },
@@ -51,6 +52,7 @@ export function InstelScherm(props: {
   leerdoelId: string;
 }) {
   const router = useRouter();
+  const { kind } = useProfiel();
   const sleutel = `mees:instelling:${props.onderdeelId}`;
   // Bij terug/vooruit blijft de laatste keuze staan (sessionStorage van dit tabblad).
   const bewaard = useSyncExternalStore(geenAbonnement, () => leesBewaard(sleutel), () => null);
@@ -68,6 +70,10 @@ export function InstelScherm(props: {
   }
 
   function start() {
+    if (!kind && gastLimietBereikt(haalOpslag())) {
+      router.push("/voortgang-bewaren");
+      return;
+    }
     setBezig(true);
     setFout(false);
     let sessieId = "";

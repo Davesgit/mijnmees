@@ -1,8 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 
 // Supabase-client voor gebruik op de server (server components, route handlers).
 export async function createClient() {
+  // Supabase leest de klok (sessie-verloop); alleen renderen tijdens een echt verzoek.
+  await connection();
   const cookieStore = await cookies();
 
   return createServerClient(

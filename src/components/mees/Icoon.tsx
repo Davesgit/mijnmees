@@ -14,6 +14,12 @@ const extra = {
   document: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
   pauze: '<path d="M9 5v14M15 5v14"/>',
   stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  slot: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  uitloggen: '<path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/>',
+  persoon: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  prullenbak: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
 } as const;
 
 export type AlleIcoonNamen = IcoonNaam | keyof typeof extra;

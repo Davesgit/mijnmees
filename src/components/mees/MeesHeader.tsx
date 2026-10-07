@@ -8,6 +8,8 @@ import { Icoon, type AlleIcoonNamen } from "./Icoon";
 import { Logo } from "./Mees";
 import { Dialoog } from "./Dialoog";
 import { PrimaireKnop, SecundaireKnop } from "./Knoppen";
+import { Avatar, useProfiel } from "./Profiel";
+import { useSyncStatus } from "@/lib/opslag/sync";
 
 type NavItem = { label: string; href: string; icoon: AlleIcoonNamen; actief: (pad: string) => boolean };
 
@@ -49,17 +51,25 @@ export function MeesHeader() {
 
         <div className="ml-auto flex items-center gap-3 desktop:gap-5">
           <span className="hidden h-8 w-px bg-rand-zacht desktop:block" aria-hidden />
-          <Link
-            href="/"
-            className="hidden min-h-12 items-center rounded-[12px] px-2 text-base font-semibold text-tekst-zacht hover:text-actie-blauw desktop:flex"
-          >
-            Voor ouders
-          </Link>
+          <VoorOudersLink />
           <span className="hidden h-8 w-px bg-rand-zacht desktop:block" aria-hidden />
           <ProfielMenu />
         </div>
       </div>
     </header>
+  );
+}
+
+function VoorOudersLink() {
+  const { ouderIngelogd } = useProfiel();
+  return (
+    <Link
+      href={ouderIngelogd ? "/ouder" : "/"}
+      className="hidden min-h-12 items-center gap-2 rounded-[12px] px-2 text-base font-semibold text-tekst-zacht hover:text-actie-blauw desktop:flex"
+    >
+      {ouderIngelogd && <Icoon naam="slot" className="size-5" />}
+      Voor ouders
+    </Link>
   );
 }
 
@@ -118,6 +128,15 @@ function ProfielMenu() {
     };
   }, [open]);
 
+  const { kind } = useProfiel();
+  const sync = useSyncStatus();
+  const syncTekst = {
+    bewaard: "Je voortgang is bewaard.",
+    bezig: "Bezig met bewaren…",
+    wacht: "Nog niet opgeslagen. We proberen het opnieuw zodra er verbinding is.",
+    mislukt: "Bewaren lukt nu niet. Vraag je ouder om opnieuw in te loggen.",
+  }[sync];
+
   return (
     <div ref={wrapper} className="relative">
       <button
@@ -128,11 +147,15 @@ function ProfielMenu() {
         onClick={() => setOpen((o) => !o)}
         className="flex min-h-12 items-center gap-2 rounded-full py-1 pl-1 pr-2 hover:bg-blauw-zacht"
       >
-        <span className="grid size-10 place-items-center rounded-full bg-blauw-zacht" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/merk/mees-vogel.svg" alt="" className="h-6 w-auto" />
-        </span>
-        <span className="font-bold">Gast</span>
+        {kind ? (
+          <Avatar id={kind.avatar} />
+        ) : (
+          <span className="grid size-10 place-items-center rounded-full bg-blauw-zacht" aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/merk/mees-vogel.svg" alt="" className="h-6 w-auto" />
+          </span>
+        )}
+        <span className="max-w-32 truncate font-bold">{kind?.voornaam ?? "Gast"}</span>
         <Icoon naam="chevron-omlaag" className={`size-5 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
@@ -141,19 +164,46 @@ function ProfielMenu() {
           id={menuId}
           className="mees-verschijn absolute right-0 top-full z-40 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-[20px] border border-rand-zacht bg-wit p-5 shadow-zwevend"
         >
-          <p className="font-bold">Je oefent als gast</p>
-          <p className="mt-1 tekst-klein text-tekst-zacht">
-            Je voortgang blijft alleen in deze browser op dit apparaat. Met een gratis ouderaccount kun je later op elk apparaat verder.
-          </p>
-          <SecundaireKnop
-            className="mt-4 w-full"
-            onClick={() => {
-              setOpen(false);
-              setWisVragen(true);
-            }}
-          >
-            Begin opnieuw
-          </SecundaireKnop>
+          {kind ? (
+            <>
+              <p className="font-bold">Hoi {kind.voornaam}!</p>
+              <p className={`mt-1 tekst-klein ${sync === "mislukt" ? "text-fout" : "text-tekst-zacht"}`} role="status">
+                {syncTekst}
+              </p>
+              <div className="mt-4 flex flex-col gap-2">
+                <SecundaireKnop href="/kind/profiel" onClick={() => setOpen(false)} className="w-full">
+                  Jouw profiel
+                </SecundaireKnop>
+                <SecundaireKnop href="/profielen" onClick={() => setOpen(false)} className="w-full">
+                  Wissel profiel
+                </SecundaireKnop>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="font-bold">Je oefent als gast</p>
+              <p className="mt-1 tekst-klein text-tekst-zacht">
+                Je voortgang blijft alleen in deze browser op dit apparaat. Met een gratis ouderaccount kun je op elk apparaat verder.
+              </p>
+              <div className="mt-4 flex flex-col gap-2">
+                <PrimaireKnop href="/voortgang-bewaren" onClick={() => setOpen(false)} className="w-full">
+                  Bewaar je voortgang
+                </PrimaireKnop>
+                <SecundaireKnop href="/ouder/inloggen" onClick={() => setOpen(false)} className="w-full">
+                  Inloggen als ouder
+                </SecundaireKnop>
+                <SecundaireKnop
+                  className="w-full"
+                  onClick={() => {
+                    setOpen(false);
+                    setWisVragen(true);
+                  }}
+                >
+                  Begin opnieuw
+                </SecundaireKnop>
+              </div>
+            </>
+          )}
         </div>
       )}
 

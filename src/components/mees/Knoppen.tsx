@@ -19,6 +19,8 @@ const stijlen = {
     "bg-actie-blauw text-wit px-6 py-3 [@media(hover:hover)]:hover:bg-actie-hover active:bg-actie-ingedrukt disabled:bg-uitgeschakeld-vlak disabled:text-uitgeschakeld-tekst",
   secundair:
     "bg-wit text-actie-blauw border border-rand-interactief px-5 py-3 [@media(hover:hover)]:hover:bg-blauw-zacht active:bg-blauw-zacht active:border-actie-blauw disabled:bg-uitgeschakeld-vlak disabled:text-uitgeschakeld-tekst disabled:border-transparent",
+  gevaar:
+    "bg-fout text-wit px-6 py-3 [@media(hover:hover)]:hover:bg-[#991b1b] active:bg-[#7f1d1d] disabled:bg-uitgeschakeld-vlak disabled:text-uitgeschakeld-tekst",
   zacht:
     "bg-blauw-zacht text-inkt px-5 py-2.5 [@media(hover:hover)]:hover:bg-[#d9ecfd] active:bg-[#cfe6fc]",
   tekst:
@@ -49,4 +51,5 @@ function maakKnop(stijl: keyof typeof stijlen) {
 export const PrimaireKnop = maakKnop("primair");
 export const SecundaireKnop = maakKnop("secundair");
 export const ZachteKnop = maakKnop("zacht");
+export const GevaarKnop = maakKnop("gevaar");
 export const TekstKnop = maakKnop("tekst");

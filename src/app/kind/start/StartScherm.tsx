@@ -9,7 +9,8 @@ import { Melding } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
 import { Mees } from "@/components/mees/Mees";
-import { maakSessie, oefenConfig, openSessie, rondOvergangAf } from "@/features/oefenen/sessie";
+import { gastLimietBereikt, maakSessie, oefenConfig, openSessie, rondOvergangAf } from "@/features/oefenen/sessie";
+import { useProfiel } from "@/components/mees/Profiel";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 
 const STANDAARD_DOEL = "breuken-vergelijken";
@@ -17,6 +18,7 @@ const STANDAARD_DOEL = "breuken-vergelijken";
 export function StartScherm() {
   const router = useRouter();
   const opslag = useOpslag();
+  const { kind } = useProfiel();
   const [fout, setFout] = useState(false);
   const [bezig, setBezig] = useState(false);
 
@@ -29,6 +31,10 @@ export function StartScherm() {
   const openOnderdeel = open ? vindOnderdeelBijLeerdoel(open.leerdoelId) : null;
 
   function startVoorstel() {
+    if (!kind && gastLimietBereikt(haalOpslag())) {
+      router.push("/voortgang-bewaren");
+      return;
+    }
     setBezig(true);
     let sessieId = "";
     const gelukt = wijzigOpslag((data) => {
@@ -63,7 +69,7 @@ export function StartScherm() {
     <div className="mees-content flex flex-col gap-6 py-6 tablet:gap-8 tablet:py-10 desktop:max-w-[1160px] desktop:py-12">
       <section className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="subtitel text-actie-blauw">Hoi!</p>
+          <p className="subtitel text-actie-blauw">{kind ? `Hoi ${kind.voornaam}` : "Hoi!"}</p>
           <h1 className="titel-held mt-1">Wat wil je oefenen?</h1>
           <p className="mt-2 tekst-intro text-tekst-zacht">Mees helpt je op weg.</p>
         </div>
