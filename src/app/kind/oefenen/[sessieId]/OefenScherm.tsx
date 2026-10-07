@@ -248,8 +248,8 @@ function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; sl
                 className="w-full border-actie-blauw px-3 tablet:w-auto desktop:min-w-56"
               >
                 <Icoon naam="hint" className="size-6" />
-                <span className="min-[400px]:hidden" aria-hidden>{hulpKort}</span>
-                <span className="max-[399px]:sr-only">{hulpLabel}</span>
+                <span className="min-[360px]:hidden" aria-hidden>{hulpKort}</span>
+                <span className="max-[359px]:sr-only">{hulpLabel}</span>
               </SecundaireKnop>
               <p className="hidden pl-2 tekst-klein text-tekst-zacht desktop:block">{hulpUitleg}</p>
             </div>

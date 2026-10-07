@@ -20,7 +20,8 @@ export function StartScherm() {
   const [fout, setFout] = useState(false);
   const [bezig, setBezig] = useState(false);
 
-  const open = opslag ? openSessie(opslag) : null;
+  // Tijdens het starten blijft het voorstel staan, ook al bestaat de nieuwe sessie al.
+  const open = opslag && !bezig ? openSessie(opslag) : null;
   // Voorstel: eerst een openstaande herhaling, anders het eerstvolgende beschikbare onderdeel.
   const voorstelDoel = opslag?.reviews[0]?.leerdoelId ?? STANDAARD_DOEL;
   const voorstel = vindOnderdeelBijLeerdoel(voorstelDoel) ?? vindOnderdeelBijLeerdoel(STANDAARD_DOEL)!;
