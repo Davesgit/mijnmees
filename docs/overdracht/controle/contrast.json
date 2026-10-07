@@ -1,0 +1,86 @@
+[
+  {
+    "foreground": "inkt",
+    "background": "wit",
+    "ratio": 15.781,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "tekst-zacht",
+    "background": "wit",
+    "ratio": 7.099,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "actie-blauw",
+    "background": "wit",
+    "ratio": 5.985,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "actie-hover",
+    "background": "wit",
+    "ratio": 7.154,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "actie-ingedrukt",
+    "background": "wit",
+    "ratio": 8.869,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "succes",
+    "background": "succes-zacht",
+    "ratio": 6.761,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "probeer-opnieuw",
+    "background": "probeer-opnieuw-zacht",
+    "ratio": 6.427,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "fout",
+    "background": "fout-zacht",
+    "ratio": 5.915,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "uitgeschakeld-tekst",
+    "background": "uitgeschakeld-vlak",
+    "ratio": 6.147,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "rand-interactief",
+    "background": "wit",
+    "ratio": 4.081,
+    "required": 3,
+    "pass": true
+  },
+  {
+    "foreground": "vak-aardrijkskunde",
+    "background": "wit",
+    "ratio": 5.473,
+    "required": 4.5,
+    "pass": true
+  },
+  {
+    "foreground": "vak-taal",
+    "background": "wit",
+    "ratio": 7.105,
+    "required": 4.5,
+    "pass": true
+  }
+]

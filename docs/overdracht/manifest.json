@@ -1,0 +1,985 @@
+[
+  {
+    "file": "assets/fotos/ouder-kind-leren.png",
+    "intrinsic": [
+      1536,
+      1024
+    ],
+    "recommendedMaxCssDisplay": [
+      768,
+      512
+    ],
+    "transparent": false,
+    "usage": "A00 / ouderlanding",
+    "source": "built-in imagegen; synthetische foto, geen echte kinderen",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/fotos/weetje-bergen.png",
+    "intrinsic": [
+      1536,
+      1024
+    ],
+    "recommendedMaxCssDisplay": [
+      768,
+      512
+    ],
+    "transparent": false,
+    "usage": "S09 / B01 weetjesboek",
+    "source": "built-in imagegen; synthetische foto, geen echte kinderen",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/fotos/weetje-octopus.png",
+    "intrinsic": [
+      1536,
+      1024
+    ],
+    "recommendedMaxCssDisplay": [
+      768,
+      512
+    ],
+    "transparent": false,
+    "usage": "S09 / B01 weetjesboek",
+    "source": "built-in imagegen; synthetische foto, geen echte kinderen",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/fotos/weetje-uil.png",
+    "intrinsic": [
+      1536,
+      1024
+    ],
+    "recommendedMaxCssDisplay": [
+      768,
+      512
+    ],
+    "transparent": false,
+    "usage": "S09 / B01 weetjesboek",
+    "source": "built-in imagegen; synthetische foto, geen echte kinderen",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/iconen/avatar-beer.svg",
+    "intrinsic": [
+      64.0,
+      64.0
+    ],
+    "recommendedMaxCssDisplay": [
+      64,
+      64
+    ],
+    "transparent": true,
+    "usage": "P03 / A05 avatar",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/avatar-kat.svg",
+    "intrinsic": [
+      64.0,
+      64.0
+    ],
+    "recommendedMaxCssDisplay": [
+      64,
+      64
+    ],
+    "transparent": true,
+    "usage": "P03 / A05 avatar",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/avatar-konijn.svg",
+    "intrinsic": [
+      64.0,
+      64.0
+    ],
+    "recommendedMaxCssDisplay": [
+      64,
+      64
+    ],
+    "transparent": true,
+    "usage": "P03 / A05 avatar",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/avatar-panda.svg",
+    "intrinsic": [
+      64.0,
+      64.0
+    ],
+    "recommendedMaxCssDisplay": [
+      64,
+      64
+    ],
+    "transparent": true,
+    "usage": "P03 / A05 avatar",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/avatar-uil.svg",
+    "intrinsic": [
+      64.0,
+      64.0
+    ],
+    "recommendedMaxCssDisplay": [
+      64,
+      64
+    ],
+    "transparent": true,
+    "usage": "P03 / A05 avatar",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/avatar-vos.svg",
+    "intrinsic": [
+      64.0,
+      64.0
+    ],
+    "recommendedMaxCssDisplay": [
+      64,
+      64
+    ],
+    "transparent": true,
+    "usage": "P03 / A05 avatar",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-aardrijkskunde.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-bewegen.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-breuken.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-check.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-fout.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-gebergten.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-geld.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-hint.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-hoofdsteden.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-kommagetallen.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-landen.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-leesopties.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-ligging.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-live.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-meten.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-procenten.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-puzzel.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-rekenen.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-slot.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-sluiten.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-start.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-taal.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-tafels.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-tekst.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-terug.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-tijd.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-tutor.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-voorlezen.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-voortgang.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-wateren.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-weetjesboek.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-werkblad.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-zoom-in.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/iconen/icoon-zoom-uit.svg",
+    "intrinsic": [
+      24.0,
+      24.0
+    ],
+    "recommendedMaxCssDisplay": [
+      24,
+      24
+    ],
+    "transparent": true,
+    "usage": "Bijbehorende herbruikbare component/vak/bediening",
+    "source": "project-native SVG; geen externe iconbibliotheek",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/kaarten/europe-base.svg",
+    "intrinsic": [
+      1100.0,
+      720.0
+    ],
+    "recommendedMaxCssDisplay": "vector, responsive",
+    "transparent": true,
+    "usage": "G02 / G03 / G04 / geo-werkblad",
+    "source": "Natural Earth v5.1.2; publiek domein; bronnen.json",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/kaarten/europe-mountains.svg",
+    "intrinsic": [
+      1100.0,
+      720.0
+    ],
+    "recommendedMaxCssDisplay": "vector, responsive",
+    "transparent": true,
+    "usage": "G02 / G03 / G04 / geo-werkblad",
+    "source": "Natural Earth v5.1.2; publiek domein; bronnen.json",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/kaarten/europe-rivers.svg",
+    "intrinsic": [
+      1100.0,
+      720.0
+    ],
+    "recommendedMaxCssDisplay": "vector, responsive",
+    "transparent": true,
+    "usage": "G02 / G03 / G04 / geo-werkblad",
+    "source": "Natural Earth v5.1.2; publiek domein; bronnen.json",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/kaarten/europe-waters.svg",
+    "intrinsic": [
+      1100.0,
+      720.0
+    ],
+    "recommendedMaxCssDisplay": "vector, responsive",
+    "transparent": true,
+    "usage": "G02 / G03 / G04 / geo-werkblad",
+    "source": "Natural Earth v5.1.2; publiek domein; bronnen.json",
+    "altGuidance": "Beschrijving van foto/kaart; icon met aparte controlnaam aria-hidden."
+  },
+  {
+    "file": "assets/mascotte/mees-blij.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      240
+    ],
+    "transparent": true,
+    "usage": "S07 / bevestiging",
+    "source": "built-in imagegen; referentie goedgekeurd merkblad",
+    "altGuidance": "Decoratief: lege alt als de kop dezelfde betekenis geeft.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/mascotte/mees-denkt-na.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      240
+    ],
+    "transparent": true,
+    "usage": "S06 / hintpaneel",
+    "source": "built-in imagegen; referentie goedgekeurd merkblad",
+    "altGuidance": "Decoratief: lege alt als de kop dezelfde betekenis geeft.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/mascotte/mees-helpt.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      240
+    ],
+    "transparent": true,
+    "usage": "O03 / uitleg-intro, uitsluitend decoratie",
+    "source": "built-in imagegen; referentie goedgekeurd merkblad",
+    "altGuidance": "Decoratief: lege alt als de kop dezelfde betekenis geeft.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/mascotte/mees-juicht.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      240
+    ],
+    "transparent": true,
+    "usage": "S07, optioneel in plaats van blij",
+    "source": "built-in imagegen; referentie goedgekeurd merkblad",
+    "altGuidance": "Decoratief: lege alt als de kop dezelfde betekenis geeft.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/mascotte/mees-op-boeken.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      240
+    ],
+    "transparent": true,
+    "usage": "S01 / rekenenintro",
+    "source": "built-in imagegen; referentie goedgekeurd merkblad",
+    "altGuidance": "Decoratief: lege alt als de kop dezelfde betekenis geeft.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/mascotte/mees-zwaait.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      240
+    ],
+    "transparent": true,
+    "usage": "S01 / gaststart",
+    "source": "built-in imagegen; referentie goedgekeurd merkblad",
+    "altGuidance": "Decoratief: lege alt als de kop dezelfde betekenis geeft.",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/merk/deelafbeelding.png",
+    "intrinsic": [
+      1200,
+      630
+    ],
+    "recommendedMaxCssDisplay": [
+      1200,
+      630
+    ],
+    "transparent": false,
+    "usage": "Sociale metadata",
+    "source": "Code-native compositie met primaire goedgekeurde PNG-logo; oorspronkelijke logo-afbeelding built-in imagegen",
+    "altGuidance": "Mees"
+  },
+  {
+    "file": "assets/merk/deelafbeelding.svg",
+    "intrinsic": [
+      1200.0,
+      630.0
+    ],
+    "recommendedMaxCssDisplay": [
+      1200,
+      630
+    ],
+    "transparent": true,
+    "usage": "Sociale metadata",
+    "source": "Code-native compositie met primaire goedgekeurde PNG-logo; oorspronkelijke logo-afbeelding built-in imagegen",
+    "altGuidance": "Mees"
+  },
+  {
+    "file": "assets/merk/favicon-180.png",
+    "intrinsic": [
+      180,
+      180
+    ],
+    "recommendedMaxCssDisplay": [
+      180,
+      180
+    ],
+    "transparent": true,
+    "usage": "Browserfavicon / Apple touch icon",
+    "source": "Formaat-export van logo-vierkant-goedgekeurd.png; oorspronkelijke afbeelding built-in imagegen",
+    "altGuidance": "Mees"
+  },
+  {
+    "file": "assets/merk/favicon-32.png",
+    "intrinsic": [
+      32,
+      32
+    ],
+    "recommendedMaxCssDisplay": [
+      32,
+      32
+    ],
+    "transparent": true,
+    "usage": "Browserfavicon / Apple touch icon",
+    "source": "Formaat-export van logo-vierkant-goedgekeurd.png; oorspronkelijke afbeelding built-in imagegen",
+    "altGuidance": "Mees"
+  },
+  {
+    "file": "assets/merk/logo-liggend-goedgekeurd.png",
+    "intrinsic": [
+      2172,
+      724
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      80
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "imagegen isolatie van merkblad",
+    "altGuidance": "Mees",
+    "status": "primary-raster-reference",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/merk/logo-liggend.png",
+    "intrinsic": [
+      1080,
+      288
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      80
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "code-native reconstructie, alternatieve merkvariant, geen exacte tracing",
+    "altGuidance": "Mees",
+    "status": "alternative-vector-needs-visual-review",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/merk/logo-liggend.svg",
+    "intrinsic": [
+      270.0,
+      72.0
+    ],
+    "recommendedMaxCssDisplay": [
+      240,
+      80
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "code-native reconstructie, alternatieve merkvariant, geen exacte tracing",
+    "altGuidance": "Mees",
+    "status": "alternative-vector-needs-visual-review"
+  },
+  {
+    "file": "assets/merk/logo-vierkant-goedgekeurd.png",
+    "intrinsic": [
+      1254,
+      1254
+    ],
+    "recommendedMaxCssDisplay": [
+      128,
+      128
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "imagegen isolatie van merkblad",
+    "altGuidance": "Mees",
+    "status": "primary-raster-reference",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/merk/logo-vierkant.png",
+    "intrinsic": [
+      512,
+      512
+    ],
+    "recommendedMaxCssDisplay": [
+      128,
+      128
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "code-native reconstructie, alternatieve merkvariant, geen exacte tracing",
+    "altGuidance": "Mees",
+    "status": "alternative-vector-needs-visual-review",
+    "atLeast2x": true
+  },
+  {
+    "file": "assets/merk/logo-vierkant.svg",
+    "intrinsic": [
+      80.0,
+      80.0
+    ],
+    "recommendedMaxCssDisplay": [
+      128,
+      128
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "code-native reconstructie, alternatieve merkvariant, geen exacte tracing",
+    "altGuidance": "Mees",
+    "status": "alternative-vector-needs-visual-review"
+  },
+  {
+    "file": "assets/merk/mees-vogel.svg",
+    "intrinsic": [
+      80.0,
+      72.0
+    ],
+    "recommendedMaxCssDisplay": [
+      128,
+      128
+    ],
+    "transparent": true,
+    "usage": "Alle headers / metadata",
+    "source": "code-native reconstructie, alternatieve merkvariant, geen exacte tracing",
+    "altGuidance": "Mees"
+  }
+]

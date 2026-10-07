@@ -1,0 +1,302 @@
+{
+  "subjects": [
+    {
+      "id": "rekenen",
+      "name": "Rekenen",
+      "topics": [
+        {
+          "id": "tafels",
+          "name": "Tafels"
+        },
+        {
+          "id": "breuken",
+          "name": "Breuken"
+        },
+        {
+          "id": "kommagetallen",
+          "name": "Kommagetallen"
+        },
+        {
+          "id": "procenten",
+          "name": "Procenten"
+        },
+        {
+          "id": "meten",
+          "name": "Meten"
+        },
+        {
+          "id": "tijd-en-geld",
+          "name": "Tijd en geld"
+        }
+      ]
+    },
+    {
+      "id": "aardrijkskunde",
+      "name": "Aardrijkskunde",
+      "topics": [
+        {
+          "id": "europa",
+          "name": "Europa"
+        }
+      ]
+    }
+  ],
+  "learningGoals": [
+    {
+      "id": "breuken-vergelijken",
+      "topicId": "breuken",
+      "subjectId": "rekenen",
+      "childLabel": "Breuken vergelijken",
+      "prerequisites": [
+        "breuken-model"
+      ],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "tafel-7",
+      "topicId": "tafels",
+      "subjectId": "rekenen",
+      "childLabel": "De tafel van 7",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "procent-kwart",
+      "topicId": "procenten",
+      "subjectId": "rekenen",
+      "childLabel": "Een kwart en procenten",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "breuken-gelijkwaardig",
+      "topicId": "breuken",
+      "subjectId": "rekenen",
+      "childLabel": "Dezelfde breuk, anders geschreven",
+      "prerequisites": [
+        "breuken-model"
+      ],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "veelvoud-6",
+      "topicId": "tafels",
+      "subjectId": "rekenen",
+      "childLabel": "De tafel van 6",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-buren-fr",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "komma-optellen",
+      "topicId": "kommagetallen",
+      "subjectId": "rekenen",
+      "childLabel": "Kommagetallen optellen",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "lengte-omrekenen",
+      "topicId": "meten",
+      "subjectId": "rekenen",
+      "childLabel": "Lengtematen omrekenen",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-hoofdstad-fr",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "tijd-minuten-uur",
+      "topicId": "tijd-en-geld",
+      "subjectId": "rekenen",
+      "childLabel": "Uren en minuten",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "breuken-decimaal",
+      "topicId": "breuken",
+      "subjectId": "rekenen",
+      "childLabel": "Breuken en kommagetallen",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-hoofdsteden",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "eenheden-lengte",
+      "topicId": "meten",
+      "subjectId": "rekenen",
+      "childLabel": "Lengtematen",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "komma-vergelijken",
+      "topicId": "kommagetallen",
+      "subjectId": "rekenen",
+      "childLabel": "Kommagetallen vergelijken",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "tijd-volgorde",
+      "topicId": "tijd-en-geld",
+      "subjectId": "rekenen",
+      "childLabel": "Tijden op volgorde",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "eenheden-kiezen",
+      "topicId": "meten",
+      "subjectId": "rekenen",
+      "childLabel": "Welke maat past?",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "procent-breuk",
+      "topicId": "procenten",
+      "subjectId": "rekenen",
+      "childLabel": "Procenten en breuken",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-land-fr",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-hoofdstad-de",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-water-middellandse",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-land-it",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "europa-land-lu",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Landen en plaatsen in Europa",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "liniaal-gebruiken",
+      "topicId": "meten",
+      "subjectId": "rekenen",
+      "childLabel": "Meten met een liniaal",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "gewicht-samenstellen",
+      "topicId": "meten",
+      "subjectId": "rekenen",
+      "childLabel": "Gewichten combineren",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "blok-aanzicht",
+      "topicId": "meten",
+      "subjectId": "rekenen",
+      "childLabel": "Bouwen met blokken",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "rooster-coordinaten",
+      "topicId": "europa",
+      "subjectId": "aardrijkskunde",
+      "childLabel": "Een plek op het rooster",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "breuken-model",
+      "topicId": "breuken",
+      "subjectId": "rekenen",
+      "childLabel": "Breuken herkennen",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    },
+    {
+      "id": "procent-model",
+      "topicId": "procenten",
+      "subjectId": "rekenen",
+      "childLabel": "Procenten inkleuren",
+      "prerequisites": [],
+      "curriculumReferences": [],
+      "reviewStatus": "review-required"
+    }
+  ]
+}

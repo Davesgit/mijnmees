@@ -1,0 +1,3598 @@
+[
+  {
+    "id": "S01",
+    "route": "/kind/start",
+    "role": "kind",
+    "mockups": [
+      "02-startscherm.png"
+    ],
+    "title": "Hoi {voornaam}",
+    "subtitle": "Wat wil je oefenen?",
+    "body": [
+      "Mees helpt je op weg.",
+      "Mees stelt voor",
+      "Breuken vergelijken",
+      "Oefen welke breuk groter is.",
+      "8 vragen",
+      "Een kort oefenmoment is ook waardevol."
+    ],
+    "actions": [
+      {
+        "label": "Start oefenen",
+        "to": "S05",
+        "effect": "Start gerichte sessie; Mees kiest inhoud."
+      },
+      {
+        "label": "Kies zelf",
+        "to": "S02",
+        "effect": "Kies een onderwerp."
+      },
+      {
+        "label": "Tafeltrainer",
+        "to": "T01",
+        "effect": "Open tafelinstellingen."
+      },
+      {
+        "label": "Verder oefenen",
+        "to": "S05",
+        "effect": "Hervat lopende sessie."
+      }
+    ],
+    "save": [
+      "actief profiel",
+      "open sessie",
+      "voorstel-id"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Kies een onderwerp om te beginnen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je voortgang is bijgewerkt.",
+      "afgerond": "Je voortgang is bijgewerkt.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S02",
+    "route": "/kind/rekenen",
+    "role": "kind",
+    "mockups": [
+      "03-rekenen-onderwerpen.png"
+    ],
+    "title": "Rekenen",
+    "subtitle": "Wat wil je oefenen?",
+    "body": [
+      "Kies een onderwerp.",
+      "Tafels",
+      "Breuken",
+      "Kommagetallen",
+      "Procenten",
+      "Meten",
+      "Tijd en geld",
+      "Je kunt ook aardrijkskunde oefenen."
+    ],
+    "actions": [
+      {
+        "label": "Breuken",
+        "to": "S03",
+        "effect": "Open breukonderdelen."
+      },
+      {
+        "label": "Tafels",
+        "to": "T01",
+        "effect": "Open tafeltrainer."
+      },
+      {
+        "label": "Start",
+        "to": "S01",
+        "effect": "Ga terug."
+      },
+      {
+        "label": "Aardrijkskunde",
+        "to": "G01",
+        "effect": "Vakschakelaar onder Kies zelf; open Europa. Geen lege taalmodule."
+      }
+    ],
+    "save": [
+      "vak",
+      "gekozen onderwerp"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er zijn nog geen onderwerpen beschikbaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Onderwerp gekozen.",
+      "afgerond": "Onderwerp gekozen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S03",
+    "route": "/kind/rekenen/[onderwerp]",
+    "role": "kind",
+    "mockups": [
+      "04-breuken-onderdelen.png"
+    ],
+    "title": "Breuken",
+    "subtitle": "Wat wil je oefenen?",
+    "body": [
+      "Breuken herkennen",
+      "Breuken vergelijken",
+      "Gelijkwaardige breuken",
+      "Rekenen met breuken"
+    ],
+    "actions": [
+      {
+        "label": "Breuken vergelijken",
+        "to": "S04",
+        "effect": "Vul onderdeel vooraf in."
+      },
+      {
+        "label": "Rekenen",
+        "to": "S02",
+        "effect": "Terug naar onderwerpen."
+      }
+    ],
+    "save": [
+      "onderdeel-id"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Dit onderdeel krijgt nog oefeningen. Kies een ander onderdeel.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Onderdeel gekozen.",
+      "afgerond": "Onderdeel gekozen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    },
+    "topicVariantNote": "Breuken is de afgebeelde variant; andere onderwerpen gebruiken dezelfde component met eigen beoordeelde onderdelen."
+  },
+  {
+    "id": "S04",
+    "route": "/kind/oefening/instellen",
+    "role": "kind",
+    "mockups": [
+      "05-oefening-instellen.png"
+    ],
+    "title": "Breuken vergelijken",
+    "subtitle": "Stel je oefening in.",
+    "body": [
+      "Hoe wil je oefenen?",
+      "Welk niveau?",
+      "Hoeveel vragen?",
+      "Je kunt altijd stoppen."
+    ],
+    "actions": [
+      {
+        "label": "Op het scherm",
+        "to": "S04",
+        "effect": "Selecteer digitale mode zonder scrollreset."
+      },
+      {
+        "label": "Op papier",
+        "to": "W01",
+        "effect": "Open werkblad met selectie."
+      },
+      {
+        "label": "Start oefenen",
+        "to": "S05",
+        "effect": "Valideer en maak sessie."
+      },
+      {
+        "label": "Breuken",
+        "to": "S03",
+        "effect": "Terug."
+      }
+    ],
+    "save": [
+      "onderdeel",
+      "aantal",
+      "niveau",
+      "vorm"
+    ],
+    "fields": [
+      {
+        "label": "Niveau",
+        "type": "radio",
+        "options": [
+          "Makkelijk",
+          "Past bij mij",
+          "Uitdagend"
+        ],
+        "default": "Past bij mij"
+      },
+      {
+        "label": "Aantal vragen",
+        "type": "stepper",
+        "default": 8,
+        "min": 4,
+        "max": 20
+      }
+    ],
+    "states": {
+      "leeg": "Kies eerst wat je wilt oefenen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je oefening staat klaar.",
+      "afgerond": "Je oefening staat klaar.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S05",
+    "route": "/kind/oefenen/[sessieId]",
+    "role": "kind",
+    "mockups": [
+      "06-oefenscherm.png"
+    ],
+    "title": "Welk teken hoort ertussen?",
+    "subtitle": "Kies het juiste teken.",
+    "body": [
+      "Vraag {nummer} van {aantal}",
+      "1/2",
+      "3/4",
+      "Je kunt twee hints bekijken."
+    ],
+    "actions": [
+      {
+        "label": "Controleer antwoord",
+        "to": "S05",
+        "effect": "Beoordeel poging; goed volgende slot, laatste naar S07."
+      },
+      {
+        "label": "Bekijk een hint",
+        "to": "S06",
+        "effect": "Open hulp in dezelfde route."
+      },
+      {
+        "label": "Voorlezen",
+        "to": "S05",
+        "effect": "Lees vraag na bewuste klik."
+      },
+      {
+        "label": "Leesopties",
+        "to": "S05",
+        "effect": "Open tekstinstellingen."
+      },
+      {
+        "label": "Stop voor nu",
+        "to": "S01",
+        "effect": "Bewaar sessie en ga terug."
+      }
+    ],
+    "save": [
+      "poging-id",
+      "vraagversie",
+      "antwoord",
+      "hulp",
+      "slot-index",
+      "outbox"
+    ],
+    "fields": [
+      {
+        "label": "Antwoord",
+        "type": "radio",
+        "options": [
+          "<",
+          "=",
+          ">"
+        ]
+      },
+      {
+        "label": "Grotere tekst",
+        "type": "toggle"
+      },
+      {
+        "label": "Rustige overgangen",
+        "type": "toggle"
+      },
+      {
+        "label": "Rustig verder",
+        "type": "toggle"
+      }
+    ],
+    "states": {
+      "leeg": "Er is geen oefening geopend. Kies eerst een onderwerp.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Goed gevonden!",
+      "afgerond": "Goed gevonden!",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S06",
+    "route": "/kind/oefenen/[sessieId]#hulp",
+    "role": "kind",
+    "mockups": [
+      "07-hint-1.png"
+    ],
+    "title": "Hint 1",
+    "subtitle": "Kijk naar gelijke delen.",
+    "body": [
+      "De helft kun je ook als twee kwarten schrijven.",
+      "Hint 2",
+      "Vergelijk 2/4 met 3/4. Bij gelijke noemers kijk je naar de teller.",
+      "Uitleg",
+      "1/2 is hetzelfde als 2/4. Twee kwarten is minder dan drie kwarten. Dus 1/2 < 3/4."
+    ],
+    "actions": [
+      {
+        "label": "Nog een hint",
+        "to": "S06",
+        "effect": "Hint 2 tonen."
+      },
+      {
+        "label": "Bekijk de uitleg",
+        "to": "S06",
+        "effect": "Uitleg met antwoord tonen, ondersteund registreren."
+      },
+      {
+        "label": "Verder",
+        "to": "S05",
+        "effect": "Volgende slot; vervolg plannen binnen resterende slots."
+      },
+      {
+        "label": "Voorlezen",
+        "to": "S06",
+        "effect": "Lees alleen zichtbare hulp."
+      }
+    ],
+    "save": [
+      "hintvolgorde",
+      "uitlegstatus",
+      "vervolgslot"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Kies Bekijk een hint als je een aanwijzing wilt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt het nog eens proberen.",
+      "afgerond": "Je kunt het nog eens proberen.",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S07",
+    "route": "/kind/oefening/[sessieId]/afgerond",
+    "role": "kind",
+    "mockups": [
+      "08-oefening-afgerond.png"
+    ],
+    "title": "Goed geoefend, {voornaam}!",
+    "subtitle": "{zelfstandig} van de {aantal} vragen zonder hulp.",
+    "body": [
+      "Wist je dat?",
+      "Een octopus heeft drie harten.",
+      "Bewaard in je weetjesboek.",
+      "Breuken: een tussenstap.",
+      "Loop even een rondje.",
+      "Je voortgang is bewaard."
+    ],
+    "actions": [
+      {
+        "label": "Verder oefenen",
+        "to": "S04",
+        "effect": "Open gericht voorstel, geen automatische start."
+      },
+      {
+        "label": "Even bewegen",
+        "to": "P01",
+        "effect": "Toon pauze zonder timerdruk."
+      },
+      {
+        "label": "Klaar voor nu",
+        "to": "S01",
+        "effect": "Ga naar start."
+      },
+      {
+        "label": "Bekijk het weetje",
+        "to": "B01",
+        "effect": "Open ontdekt weetje."
+      }
+    ],
+    "save": [
+      "afgerond-event-id",
+      "weetje-unlock-id",
+      "bewijsresultaten"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Nog niet afgerond. Je kunt verder waar je was.",
+      "laden": "Even wachten…",
+      "offline": "Je opdracht is afgerond op dit apparaat. Synchroniseren lukt zodra je weer verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je selectie is afgerond.",
+      "afgerond": "Je selectie is afgerond.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S08",
+    "route": "/kind/voortgang",
+    "role": "kind",
+    "mockups": [
+      "09-voortgang-kind.png"
+    ],
+    "title": "Jouw voortgang",
+    "subtitle": "Kijk wat je al hebt geoefend.",
+    "body": [
+      "Aan het oefenen",
+      "Gaat zelfstandig",
+      "Nog eens oefenen",
+      "Papierwerk staat apart."
+    ],
+    "actions": [
+      {
+        "label": "Oefen dit onderdeel",
+        "to": "S04",
+        "effect": "Open geselecteerd leerdoel."
+      },
+      {
+        "label": "Verder oefenen",
+        "to": "S05",
+        "effect": "Hervat open sessie."
+      },
+      {
+        "label": "Start",
+        "to": "S01",
+        "effect": "Terug."
+      }
+    ],
+    "save": [
+      "geen nieuwe bewijsdata door openen"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Hier komt je voortgang zodra je hebt geoefend.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je voortgang is bijgewerkt.",
+      "afgerond": "Je voortgang is bijgewerkt.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "S09",
+    "route": "/kind/weetjesboek",
+    "role": "kind",
+    "mockups": [
+      "10-weetjesboek.png"
+    ],
+    "title": "Je weetjesboek",
+    "subtitle": "Ontdek iets nieuws.",
+    "body": [
+      "Ontdekt",
+      "Nog te ontdekken",
+      "Dieren",
+      "Natuur",
+      "Wereld"
+    ],
+    "actions": [
+      {
+        "label": "Bekijk weetje",
+        "to": "B01",
+        "effect": "Open alleen ontgrendelde kaart."
+      },
+      {
+        "label": "Nog te ontdekken",
+        "to": "S09",
+        "effect": "Toon rustige uitleg zonder teller/deadline."
+      },
+      {
+        "label": "Start",
+        "to": "S01",
+        "effect": "Terug."
+      }
+    ],
+    "save": [
+      "unlock-id",
+      "filter optioneel"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Je eerste weetje verschijnt hier na het oefenen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je nieuwe weetje staat in het boek.",
+      "afgerond": "Je nieuwe weetje staat in het boek.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "B01",
+    "route": "/kind/weetjes/[weetjeId]",
+    "role": "kind",
+    "mockups": [
+      "11-weetje-detail.png"
+    ],
+    "title": "Een octopus heeft drie harten",
+    "subtitle": "Bijzonder, toch?",
+    "body": [
+      "Twee harten pompen bloed naar de kieuwen. Het derde pompt bloed naar de rest van het lichaam.",
+      "Leesbron wordt vóór publicatie gecontroleerd."
+    ],
+    "actions": [
+      {
+        "label": "Weetjesboek",
+        "to": "S09",
+        "effect": "Terug naar overzicht."
+      },
+      {
+        "label": "Voorlezen",
+        "to": "B01",
+        "effect": "Lees weetje."
+      }
+    ],
+    "save": [
+      "geen tracking nodig"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Dit weetje is nog niet ontdekt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Dit weetje is bewaard.",
+      "afgerond": "Dit weetje is bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "T01",
+    "route": "/kind/tafeltrainer",
+    "role": "kind",
+    "mockups": [
+      "12-tafeltrainer-instellen.png"
+    ],
+    "title": "Tafeltrainer",
+    "subtitle": "Welke tafels wil je oefenen?",
+    "body": [
+      "Kies één of meer tafels.",
+      "Met tijd oefenen is niet verplicht."
+    ],
+    "actions": [
+      {
+        "label": "Start oefenen",
+        "to": "T02",
+        "effect": "Maak tafelopdracht."
+      },
+      {
+        "label": "Op papier",
+        "to": "W01",
+        "effect": "Maak tafelwerkblad."
+      },
+      {
+        "label": "Start",
+        "to": "S01",
+        "effect": "Terug."
+      }
+    ],
+    "save": [
+      "tafels",
+      "delen/vermenigvuldigen",
+      "timerkeuze",
+      "aantal"
+    ],
+    "fields": [
+      {
+        "label": "Tafels",
+        "type": "multiselect",
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "label": "Oefenen op tijd",
+        "type": "toggle",
+        "default": false
+      },
+      {
+        "label": "Aantal vragen",
+        "type": "stepper",
+        "default": 8
+      }
+    ],
+    "states": {
+      "leeg": "Kies eerst een tafel.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je tafelopdracht staat klaar.",
+      "afgerond": "Je tafelopdracht staat klaar.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "T02",
+    "route": "/kind/tafeltrainer/[sessieId]",
+    "role": "kind",
+    "mockups": [
+      "13-tafeltrainer-oefenen.png"
+    ],
+    "title": "Wat is 7 × 8?",
+    "subtitle": "Vul het antwoord in.",
+    "body": [
+      "Vraag {nummer} van {aantal}",
+      "Tijd is alleen zichtbaar als je die zelf aanzette."
+    ],
+    "actions": [
+      {
+        "label": "Controleer antwoord",
+        "to": "T02",
+        "effect": "Beoordeel numeriek en volg hulpladder."
+      },
+      {
+        "label": "Bekijk een hint",
+        "to": "S06",
+        "effect": "Zelfde sessiepanel met tafelhint."
+      },
+      {
+        "label": "Stop voor nu",
+        "to": "S01",
+        "effect": "Pauzeer actieve antwoordtijd en bewaar."
+      }
+    ],
+    "save": [
+      "pogingen",
+      "actieve antwoordduur",
+      "nauwkeurigheid"
+    ],
+    "fields": [
+      {
+        "label": "Antwoord",
+        "type": "number",
+        "inputmode": "numeric"
+      }
+    ],
+    "states": {
+      "leeg": "Kies eerst je tafels.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Goed gevonden!",
+      "afgerond": "Goed gevonden!",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "N01",
+    "route": "/kind/niveaubepaling",
+    "role": "kind",
+    "mockups": [
+      "14-niveaubepaling-start.png"
+    ],
+    "title": "Wat past bij jou?",
+    "subtitle": "Mees kijkt waarmee je kunt beginnen.",
+    "body": [
+      "Je hoeft nog niet alles te kunnen.",
+      "Je kunt ook direct een onderwerp kiezen."
+    ],
+    "actions": [
+      {
+        "label": "Start niveaubepaling",
+        "to": "N02",
+        "effect": "Start korte diagnostische reeks."
+      },
+      {
+        "label": "Kies zelf",
+        "to": "S02",
+        "effect": "Sla bepaling over."
+      }
+    ],
+    "save": [
+      "diagnostische selectie",
+      "geen groeplabelwijziging"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Je kunt kiezen hoe je begint.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt beginnen.",
+      "afgerond": "Je kunt beginnen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "N02",
+    "route": "/kind/niveaubepaling/[sessieId]",
+    "role": "kind",
+    "mockups": [
+      "15-niveaubepaling-vraag.png"
+    ],
+    "title": "Vergelijk de breuken",
+    "subtitle": "Kies het juiste teken.",
+    "body": [
+      "Dit helpt Mees een passend begin te kiezen."
+    ],
+    "actions": [
+      {
+        "label": "Controleer antwoord",
+        "to": "N02",
+        "effect": "Diagnostisch bewijs; gebruik van hulp maakt antwoord ondersteund."
+      },
+      {
+        "label": "Bekijk een hint",
+        "to": "S06",
+        "effect": "Toon hulp; geen toetsstraf."
+      },
+      {
+        "label": "Stop voor nu",
+        "to": "S01",
+        "effect": "Bewaar diagnostiek."
+      }
+    ],
+    "save": [
+      "diagnostische pogingen",
+      "gebruikte hulp",
+      "onzekerheid"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er staat geen vraag klaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je hebt deze vraag geprobeerd.",
+      "afgerond": "Je hebt deze vraag geprobeerd.",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "N03",
+    "route": "/kind/niveaubepaling/advies",
+    "role": "kind",
+    "mockups": [
+      "16-niveaubepaling-advies.png"
+    ],
+    "title": "Een passend begin",
+    "subtitle": "Mees stelt voor: breuken herkennen.",
+    "body": [
+      "Je kunt dit proberen of zelf iets kiezen.",
+      "Dit is een beginadvies, geen toetscijfer."
+    ],
+    "actions": [
+      {
+        "label": "Probeer dit",
+        "to": "S04",
+        "effect": "Open aanbevolen onderdeel."
+      },
+      {
+        "label": "Kies zelf",
+        "to": "S02",
+        "effect": "Kind kiest zelf."
+      }
+    ],
+    "save": [
+      "advies met bewijs en onzekerheid"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is nog te weinig informatie voor een voorstel.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je beginadvies staat klaar.",
+      "afgerond": "Je beginadvies staat klaar.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "W01",
+    "route": "/werkbladen/samenstellen",
+    "role": "kind-of-ouder",
+    "mockups": [
+      "45-werkblad-samenstellen-v2.png"
+    ],
+    "title": "Maak een werkblad",
+    "subtitle": "Kies wat je op papier wilt oefenen.",
+    "body": [
+      "Kies eerst een vak.",
+      "Daarna kies je onderwerpen en onderdelen.",
+      "Bekijk voorbeeld"
+    ],
+    "actions": [
+      {
+        "label": "Bekijk voorbeeld",
+        "to": "W01",
+        "effect": "Klap preview onder instellingen open."
+      },
+      {
+        "label": "Maak werkblad",
+        "to": "W02",
+        "effect": "Genereer gekoppelde vraag- en antwoordset."
+      },
+      {
+        "label": "Terug",
+        "to": "S04",
+        "effect": "Terug naar digitale instellingen."
+      }
+    ],
+    "save": [
+      "worksheet-id",
+      "vraag-id+version",
+      "selectie",
+      "seed"
+    ],
+    "fields": [
+      {
+        "label": "Vak",
+        "type": "select",
+        "options": [
+          "Rekenen",
+          "Aardrijkskunde"
+        ]
+      },
+      {
+        "label": "Onderwerpen",
+        "type": "multiselect",
+        "optionsSource": "gekozen vak"
+      },
+      {
+        "label": "Onderdelen",
+        "type": "multiselect"
+      },
+      {
+        "label": "Niveau",
+        "type": "radio",
+        "options": [
+          "Makkelijk",
+          "Past bij mij",
+          "Uitdagend"
+        ]
+      },
+      {
+        "label": "Aantal vragen",
+        "type": "stepper",
+        "default": 8,
+        "min": 4,
+        "max": 20
+      }
+    ],
+    "states": {
+      "leeg": "Kies eerst een vak en onderwerp.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je werkblad staat klaar.",
+      "afgerond": "Je werkblad staat klaar.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "W02",
+    "route": "/werkbladen/[werkbladId]",
+    "role": "kind-of-ouder",
+    "mockups": [
+      "18-werkblad-preview.png"
+    ],
+    "title": "Je werkblad",
+    "subtitle": "Kijk even of alles past.",
+    "body": [
+      "Antwoorden staan op een apart blad."
+    ],
+    "actions": [
+      {
+        "label": "Print werkblad",
+        "to": "W03",
+        "effect": "Open printweergave."
+      },
+      {
+        "label": "Download PDF",
+        "to": "W02",
+        "effect": "Exporteer exact dezelfde set."
+      },
+      {
+        "label": "Antwoordblad",
+        "to": "W04",
+        "effect": "Ouder ziet antwoordset."
+      },
+      {
+        "label": "Pas aan",
+        "to": "W01",
+        "effect": "Behoud selectie; nieuw blad krijgt nieuwe id."
+      }
+    ],
+    "save": [
+      "print/pdf gebeurtenissen optioneel"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Je werkblad is nog niet gemaakt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Het werkblad is klaar om te printen.",
+      "afgerond": "Het werkblad is klaar om te printen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "W03",
+    "route": "/werkbladen/[werkbladId]/print",
+    "role": "kind-of-ouder",
+    "mockups": [
+      "19-werkblad-print.png"
+    ],
+    "title": "Rekenen · Breuken vergelijken",
+    "subtitle": "Werkblad",
+    "body": [
+      "Schrijf je antwoorden bij de vragen."
+    ],
+    "actions": [
+      {
+        "label": "Printen",
+        "to": "W03",
+        "effect": "Browserprint, @page A4 zonder appnav."
+      },
+      {
+        "label": "Resultaten invullen",
+        "to": "O04",
+        "effect": "Ouder registreert papierwerk."
+      }
+    ],
+    "save": [
+      "worksheet-id"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Dit werkblad is niet beschikbaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Geprint of gedownload bewijst nog geen oefening.",
+      "afgerond": "Geprint of gedownload bewijst nog geen oefening.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "W04",
+    "route": "/ouder/werkbladen/[werkbladId]/antwoorden",
+    "role": "ouder",
+    "mockups": [
+      "20-werkblad-antwoorden.png"
+    ],
+    "title": "Antwoordblad",
+    "subtitle": "Dit hoort bij hetzelfde werkblad.",
+    "body": [
+      "Controleer de antwoorden samen."
+    ],
+    "actions": [
+      {
+        "label": "Print antwoordblad",
+        "to": "W04",
+        "effect": "Print gekoppelde set."
+      },
+      {
+        "label": "Resultaten invullen",
+        "to": "O04",
+        "effect": "Handmatige registratie."
+      }
+    ],
+    "save": [
+      "geen automatische nakijkclaim"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Dit antwoordblad is niet beschikbaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt de resultaten registreren.",
+      "afgerond": "Je kunt de resultaten registreren.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "H01",
+    "route": "/kind/hulp/[doelId]",
+    "role": "kind",
+    "mockups": [
+      "21-tutorhulp-aanvragen.png"
+    ],
+    "title": "Extra uitleg kan helpen",
+    "subtitle": "Je ouder kan meekijken.",
+    "body": [
+      "Je hebt de aanwijzingen en een soortgelijke vraag geprobeerd.",
+      "Je ouder kan bekijken of tutorhulp passend is."
+    ],
+    "actions": [
+      {
+        "label": "Laat mijn ouder weten",
+        "to": "O03",
+        "effect": "Maak private oudermelding, nog geen tutorclaim."
+      },
+      {
+        "label": "Probeer een tussenstap",
+        "to": "S04",
+        "effect": "Open passend basisdoel."
+      }
+    ],
+    "save": [
+      "geschiktheidsbewijs",
+      "oudermelding-id"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Probeer eerst de uitleg en een tussenstap.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je ouder krijgt een melding.",
+      "afgerond": "Je ouder krijgt een melding.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "H02",
+    "route": "/kind/hulpvragen/[hulpvraagId]",
+    "role": "kind",
+    "mockups": [
+      "22-tutorhulp-status.png"
+    ],
+    "title": "Je hulpvraag",
+    "subtitle": "De tutor kijkt ernaar.",
+    "body": [
+      "Je kunt ondertussen iets anders oefenen."
+    ],
+    "actions": [
+      {
+        "label": "Kies iets anders",
+        "to": "S02",
+        "effect": "Verlaat aanvraag zonder annuleren."
+      },
+      {
+        "label": "Bekijk uitleg",
+        "to": "H03",
+        "effect": "Alleen wanneer uitleg beschikbaar is."
+      }
+    ],
+    "save": [
+      "status",
+      "geen harde antwoordtijdgarantie"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er staat nog geen hulpvraag open.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je uitleg staat klaar.",
+      "afgerond": "Je uitleg staat klaar.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "H03",
+    "route": "/kind/uitleg/[uitlegId]",
+    "role": "kind",
+    "mockups": [
+      "23-tutoruitleg-kind.png"
+    ],
+    "title": "Uitleg voor jou",
+    "subtitle": "Breuken vergelijken",
+    "body": [
+      "Stem en tekenbord",
+      "Een soortgelijke vraag."
+    ],
+    "actions": [
+      {
+        "label": "Afspelen",
+        "to": "H03",
+        "effect": "Start tutorstem+bord."
+      },
+      {
+        "label": "Pauze",
+        "to": "H03",
+        "effect": "Pauzeer beide gesynchroniseerd."
+      },
+      {
+        "label": "Volledig scherm",
+        "to": "H03",
+        "effect": "Vergroot bord."
+      },
+      {
+        "label": "Probeer het zelf",
+        "to": "S05",
+        "effect": "Start nieuwe gekoppelde controlevraag."
+      }
+    ],
+    "save": [
+      "bekeken zonder beheersingsclaim",
+      "controle-resultaat"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "De tutor werkt nog aan je uitleg.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt nu zelf een vraag proberen.",
+      "afgerond": "Je kunt nu zelf een vraag proberen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "P01",
+    "route": "/kind/pauze",
+    "role": "kind",
+    "mockups": [],
+    "title": "Even bewegen",
+    "subtitle": "Loop even een rondje.",
+    "body": [
+      "Je kunt straks weer verder."
+    ],
+    "actions": [
+      {
+        "label": "Verder oefenen",
+        "to": "S01",
+        "effect": "Ga terug zonder deadline."
+      },
+      {
+        "label": "Klaar voor nu",
+        "to": "S01",
+        "effect": "Bewaar open sessie."
+      }
+    ],
+    "save": [
+      "geen beweegtracking"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Even stoppen is ook goed.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt weer kiezen wat je wilt doen.",
+      "afgerond": "Je kunt weer kiezen wat je wilt doen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "P02",
+    "route": "/profielen",
+    "role": "ouder-of-gekoppeld-apparaat",
+    "mockups": [
+      "24-profielkiezer.png"
+    ],
+    "title": "Wie gaat oefenen?",
+    "subtitle": "Kies je profiel.",
+    "body": [
+      "Voor ouders"
+    ],
+    "actions": [
+      {
+        "label": "Open profiel",
+        "to": "S01",
+        "effect": "Server controleert device scope; zet actief kind."
+      },
+      {
+        "label": "Voor ouders",
+        "to": "O01",
+        "effect": "Recente ouderauth vereist."
+      },
+      {
+        "label": "Kind toevoegen",
+        "to": "A05",
+        "effect": "Alleen ouder."
+      },
+      {
+        "label": "Wat past bij jou?",
+        "to": "N01",
+        "effect": "Na eerste profielkeuze optionele niveaubepaling; direct starten blijft mogelijk."
+      }
+    ],
+    "save": [
+      "actief profiel"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Voeg eerst een kinderprofiel toe.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Profiel gekozen.",
+      "afgerond": "Profiel gekozen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "P03",
+    "route": "/kind/profiel",
+    "role": "kind",
+    "mockups": [
+      "25-kindprofiel.png"
+    ],
+    "title": "Jouw profiel",
+    "subtitle": "Kies een dier dat bij je past.",
+    "body": [
+      "Vos",
+      "Uil",
+      "Kat",
+      "Beer",
+      "Konijn",
+      "Panda"
+    ],
+    "actions": [
+      {
+        "label": "Bewaar avatar",
+        "to": "S01",
+        "effect": "Alleen avatar-id wijzigen; voornaam wijzigen via ouder."
+      },
+      {
+        "label": "Wissel profiel",
+        "to": "P02",
+        "effect": "Profielkiezer."
+      }
+    ],
+    "save": [
+      "avatar-id"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Kies een avatar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je avatar is bewaard.",
+      "afgerond": "Je avatar is bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "P04",
+    "route": "/proberen",
+    "role": "gast",
+    "mockups": [
+      "26-kennismaken-start.png"
+    ],
+    "title": "Probeer Mees",
+    "subtitle": "Je kunt meteen beginnen.",
+    "body": [
+      "Een gratis account helpt Mees je voortgang te bewaren."
+    ],
+    "actions": [
+      {
+        "label": "Direct oefenen",
+        "to": "S02",
+        "effect": "Maak lokale gastcontext."
+      },
+      {
+        "label": "Gratis account",
+        "to": "A01",
+        "effect": "Ouderaccount-route."
+      }
+    ],
+    "save": [
+      "lokale gast-id",
+      "geen email van kind"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Kies hoe je wilt beginnen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt beginnen met oefenen.",
+      "afgerond": "Je kunt beginnen met oefenen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "P05",
+    "route": "/voortgang-bewaren",
+    "role": "gast",
+    "mockups": [
+      "27-voortgang-bewaren.png"
+    ],
+    "title": "Bewaar je voortgang",
+    "subtitle": "Vraag je ouder om een gratis account.",
+    "body": [
+      "Mees kan je dan helpen op jouw niveau.",
+      "Zonder account blijft deze proefvoortgang alleen in deze browser."
+    ],
+    "actions": [
+      {
+        "label": "Vraag mijn ouder",
+        "to": "A01",
+        "effect": "Ouder neemt over, migratie bevestigen."
+      },
+      {
+        "label": "Nog even proberen",
+        "to": "S01",
+        "effect": "Alleen als gastlimiet niet bereikt; hervatten blijft mogelijk."
+      }
+    ],
+    "save": [
+      "gastgrens",
+      "migratieclaim"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Je hebt nog geen oefening gemaakt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je voortgang is aan je profiel gekoppeld.",
+      "afgerond": "Je voortgang is aan je profiel gekoppeld.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A00",
+    "route": "/",
+    "role": "publiek",
+    "mockups": [
+      "29-ouder-landingspagina.png"
+    ],
+    "title": "Leren op jouw niveau",
+    "subtitle": "Voor ieder kind. Voor altijd gratis.",
+    "body": [
+      "Mees helpt kinderen oefenen, met uitleg wanneer dat nodig is.",
+      "Gratis dankzij donaties.",
+      "Donateurs krijgen geen gegevens en geen invloed op de lesinhoud."
+    ],
+    "actions": [
+      {
+        "label": "Probeer Mees",
+        "to": "P04",
+        "effect": "Gaststart."
+      },
+      {
+        "label": "Gratis account",
+        "to": "A01",
+        "effect": "Ouder registreert."
+      },
+      {
+        "label": "Bekijk hoe Mees werkt",
+        "to": "A06",
+        "effect": "Rustige ouderuitleg."
+      },
+      {
+        "label": "Onze donateurs",
+        "to": "A07",
+        "effect": "Naam/logo overzicht."
+      }
+    ],
+    "save": [
+      "geen advertentietracking"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Mees maakt leren toegankelijk.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Welkom bij Mees.",
+      "afgerond": "Welkom bij Mees.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A06",
+    "route": "/hoe-mees-werkt",
+    "role": "publiek",
+    "mockups": [
+      "47-ouderpreview-v2.png",
+      "48-ouderpreview-mobiel-v2.png"
+    ],
+    "title": "Zo werkt Mees",
+    "subtitle": "Rustig oefenen. Hulp als dat nodig is.",
+    "body": [
+      "1. Kies wat je wilt oefenen.",
+      "2. Oefen met hints en uitleg.",
+      "3. Kijk wat zelfstandig lukt.",
+      "Ook op papier.",
+      "Gratis dankzij donaties."
+    ],
+    "actions": [
+      {
+        "label": "Probeer het voorbeeld",
+        "to": "A06",
+        "effect": "Lokale demonstratie van echte hulpladder, geen profiel nodig."
+      },
+      {
+        "label": "Maak een gratis account",
+        "to": "A01",
+        "effect": "Ouderregistratie."
+      },
+      {
+        "label": "Werkbladen",
+        "to": "W01",
+        "effect": "Open schermvrije route."
+      }
+    ],
+    "save": [
+      "geen demoantwoord naar productprofiel zonder migratie"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Bekijk een voorbeeld.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Het voorbeeld is afgerond.",
+      "afgerond": "Het voorbeeld is afgerond.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A07",
+    "route": "/donateurs",
+    "role": "publiek",
+    "mockups": [
+      "30-donateurs.png"
+    ],
+    "title": "Onze donateurs",
+    "subtitle": "Samen maken we leren toegankelijk.",
+    "body": [
+      "Mees is voor altijd gratis.",
+      "Deze organisaties helpen dat mogelijk te maken.",
+      "Donateurs krijgen geen gegevens en geen invloed op de lesinhoud."
+    ],
+    "actions": [
+      {
+        "label": "Terug",
+        "to": "A00",
+        "effect": "Terug naar ouderlanding."
+      }
+    ],
+    "save": [
+      "alleen beheerde donor naam+logo"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Hier komen de namen en logo’s van onze donateurs.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Dank aan iedereen die Mees mogelijk maakt.",
+      "afgerond": "Dank aan iedereen die Mees mogelijk maakt.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A01",
+    "route": "/ouder/account-aanmaken",
+    "role": "publiek",
+    "mockups": [
+      "31-ouderaccount-aanmaken.png"
+    ],
+    "title": "Maak een gratis ouderaccount",
+    "subtitle": "Bewaar de voortgang van je kind.",
+    "body": [
+      "Mees blijft voor altijd gratis.",
+      "Je kind heeft geen eigen e-mailadres nodig."
+    ],
+    "actions": [
+      {
+        "label": "Maak account",
+        "to": "A08",
+        "effect": "Authprovider valideert, mailverificatie."
+      },
+      {
+        "label": "Ik heb al een account",
+        "to": "A02",
+        "effect": "Login."
+      }
+    ],
+    "save": [
+      "ouderaccount",
+      "verificatie",
+      "versie ouderverklaring"
+    ],
+    "fields": [
+      {
+        "label": "E-mailadres",
+        "type": "email"
+      },
+      {
+        "label": "Wachtwoord",
+        "type": "password",
+        "autocomplete": "new-password"
+      },
+      {
+        "label": "Ik ben ouder of verzorger en heb de privacyinformatie gelezen.",
+        "type": "checkbox"
+      }
+    ],
+    "states": {
+      "leeg": "Vul je gegevens in.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Controleer je e-mail.",
+      "afgerond": "Controleer je e-mail.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A02",
+    "route": "/ouder/inloggen",
+    "role": "publiek",
+    "mockups": [
+      "32-ouder-inloggen.png"
+    ],
+    "title": "Welkom terug",
+    "subtitle": "Log in als ouder.",
+    "body": [
+      "Je kind kiest daarna het eigen profiel."
+    ],
+    "actions": [
+      {
+        "label": "Inloggen",
+        "to": "P02",
+        "effect": "Geverifieerde sessie + veilige redirect."
+      },
+      {
+        "label": "Wachtwoord vergeten",
+        "to": "A03",
+        "effect": "Herstelroute."
+      },
+      {
+        "label": "Maak account",
+        "to": "A01",
+        "effect": "Registratie."
+      }
+    ],
+    "save": [
+      "veilige sessiecookie"
+    ],
+    "fields": [
+      {
+        "label": "E-mailadres",
+        "type": "email"
+      },
+      {
+        "label": "Wachtwoord",
+        "type": "password",
+        "autocomplete": "current-password"
+      }
+    ],
+    "states": {
+      "leeg": "Vul je e-mailadres en wachtwoord in.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Inloggen lukt niet met deze gegevens. Controleer ze of herstel je wachtwoord.",
+      "succes": "Je bent ingelogd.",
+      "afgerond": "Je bent ingelogd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A03",
+    "route": "/ouder/wachtwoord-herstellen",
+    "role": "publiek",
+    "mockups": [
+      "33-wachtwoord-herstellen.png"
+    ],
+    "title": "Wachtwoord vergeten?",
+    "subtitle": "We helpen je weer inloggen.",
+    "body": [
+      "Als er een account bij dit adres hoort, krijg je een herstelmail."
+    ],
+    "actions": [
+      {
+        "label": "Stuur herstelmail",
+        "to": "A03",
+        "effect": "Generic bevestiging voorkomt accountenumeratie."
+      },
+      {
+        "label": "Terug naar inloggen",
+        "to": "A02",
+        "effect": "Terug."
+      }
+    ],
+    "save": [
+      "rate-limit poging",
+      "geen wachtwoordlog"
+    ],
+    "fields": [
+      {
+        "label": "E-mailadres",
+        "type": "email"
+      }
+    ],
+    "states": {
+      "leeg": "Vul je e-mailadres in.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Als er een account bij dit adres hoort, is een herstelmail verstuurd.",
+      "afgerond": "Als er een account bij dit adres hoort, is een herstelmail verstuurd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A04",
+    "route": "/ouder/nieuw-wachtwoord",
+    "role": "publiek",
+    "mockups": [],
+    "title": "Kies een nieuw wachtwoord",
+    "subtitle": "Gebruik de link uit je herstelmail.",
+    "body": [
+      "De link is tijdelijk geldig."
+    ],
+    "actions": [
+      {
+        "label": "Bewaar wachtwoord",
+        "to": "A02",
+        "effect": "Provider reset; herstel-token ongeldig maken."
+      }
+    ],
+    "save": [
+      "provider-reset"
+    ],
+    "fields": [
+      {
+        "label": "Nieuw wachtwoord",
+        "type": "password"
+      }
+    ],
+    "states": {
+      "leeg": "Open een geldige herstelmail.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je wachtwoord is gewijzigd.",
+      "afgerond": "Je wachtwoord is gewijzigd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A05",
+    "route": "/ouder/kind-toevoegen",
+    "role": "ouder",
+    "mockups": [
+      "34-kind-toevoegen.png"
+    ],
+    "title": "Voeg een kind toe",
+    "subtitle": "Alleen een voornaam en een avatar.",
+    "body": [
+      "Je kunt de groep later wijzigen.",
+      "Eerdere leerdoelen blijven beschikbaar."
+    ],
+    "actions": [
+      {
+        "label": "Bewaar profiel",
+        "to": "P02",
+        "effect": "Maak profiel gekoppeld aan ingelogde ouder."
+      },
+      {
+        "label": "Kies avatar",
+        "to": "A05",
+        "effect": "Open dierkeuze."
+      }
+    ],
+    "save": [
+      "voornaam",
+      "groep",
+      "avatar-id",
+      "toestemming"
+    ],
+    "fields": [
+      {
+        "label": "Voornaam",
+        "type": "text",
+        "maxLength": 30
+      },
+      {
+        "label": "Groep",
+        "type": "select",
+        "options": [
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "label": "Avatar",
+        "type": "radio",
+        "options": [
+          "Vos",
+          "Uil",
+          "Kat",
+          "Beer",
+          "Konijn",
+          "Panda"
+        ]
+      }
+    ],
+    "states": {
+      "leeg": "Voeg je eerste kinderprofiel toe.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Het profiel is bewaard.",
+      "afgerond": "Het profiel is bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "A08",
+    "route": "/ouder/verifieer-e-mail",
+    "role": "publiek",
+    "mockups": [],
+    "title": "Controleer je e-mail",
+    "subtitle": "Open de link om je account te bevestigen.",
+    "body": [
+      "Geen mail? Kijk ook bij ongewenste berichten."
+    ],
+    "actions": [
+      {
+        "label": "Stuur opnieuw",
+        "to": "A08",
+        "effect": "Rate-limit; alleen zelfde pendingaccount."
+      },
+      {
+        "label": "Account bevestigd",
+        "to": "A05",
+        "effect": "Token server controleren, niet clientclaim."
+      }
+    ],
+    "save": [
+      "verificatietoken provider"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "De link is niet geldig of is verlopen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je account is bevestigd.",
+      "afgerond": "Je account is bevestigd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "A09",
+    "route": "/ouder/apparaat-koppelen",
+    "role": "ouder",
+    "mockups": [],
+    "title": "Koppel dit apparaat",
+    "subtitle": "Daarna kan je kind een profiel kiezen.",
+    "body": [
+      "Op een gedeeld apparaat log je na het oefenen uit."
+    ],
+    "actions": [
+      {
+        "label": "Koppel apparaat",
+        "to": "P02",
+        "effect": "Maak beperkte device session."
+      },
+      {
+        "label": "Annuleren",
+        "to": "O01",
+        "effect": "Geen koppeling."
+      }
+    ],
+    "save": [
+      "device session",
+      "profielscope",
+      "revocation"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is nog geen apparaat gekoppeld.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Dit apparaat is gekoppeld.",
+      "afgerond": "Dit apparaat is gekoppeld.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "O01",
+    "route": "/ouder",
+    "role": "ouder",
+    "mockups": [
+      "35-ouderdashboard.png"
+    ],
+    "title": "Overzicht voor ouders",
+    "subtitle": "Kijk hoe het oefenen gaat.",
+    "body": [
+      "Oefeningen",
+      "Voortgang",
+      "Uitleg",
+      "Meldingen",
+      "Werkbladen"
+    ],
+    "actions": [
+      {
+        "label": "Bekijk voortgang",
+        "to": "O02",
+        "effect": "Selecteer eigen kind."
+      },
+      {
+        "label": "Bekijk hulpvraag",
+        "to": "O03",
+        "effect": "Open geschiktheid/aanvraag."
+      },
+      {
+        "label": "Werkbladen",
+        "to": "W01",
+        "effect": "Maak blad."
+      },
+      {
+        "label": "Instellingen",
+        "to": "O05",
+        "effect": "Beheer eigen gezin."
+      }
+    ],
+    "save": [
+      "geen nieuwe voortgang door bezoek"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Hier verschijnt het oefenen van je kind.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Het overzicht is bijgewerkt.",
+      "afgerond": "Het overzicht is bijgewerkt.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "O02",
+    "route": "/ouder/kind/[kindId]/voortgang",
+    "role": "ouder",
+    "mockups": [
+      "36-ouder-voortgang-detail.png"
+    ],
+    "title": "Voortgang van {voornaam}",
+    "subtitle": "Breuken vergelijken",
+    "body": [
+      "Zelfstandig",
+      "Met hulp",
+      "Nog eens oefenen",
+      "Papierwerk",
+      "Bekeken uitleg is geen bewijs van beheersing."
+    ],
+    "actions": [
+      {
+        "label": "Oefening bekijken",
+        "to": "O02",
+        "effect": "Toon immutable vraag/antwoord/hulp."
+      },
+      {
+        "label": "Bekijk tutoradvies",
+        "to": "O03",
+        "effect": "Alleen als criteria gehaald."
+      },
+      {
+        "label": "Terug",
+        "to": "O01",
+        "effect": "Overzicht."
+      }
+    ],
+    "save": [
+      "geen nieuwe beheersing"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er zijn nog geen resultaten voor dit onderdeel.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De resultaten zijn bijgewerkt.",
+      "afgerond": "De resultaten zijn bijgewerkt.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "O03",
+    "route": "/ouder/hulp/[doelId]",
+    "role": "ouder",
+    "mockups": [
+      "37-ouder-hulpvraag.png"
+    ],
+    "title": "Extra uitleg voor {voornaam}",
+    "subtitle": "Bekijk wat al is geprobeerd.",
+    "body": [
+      "Hint 1",
+      "Hint 2",
+      "Uitleg",
+      "Soortgelijke vraag",
+      "Een tutor ziet alleen de voornaam en de oefencontext."
+    ],
+    "actions": [
+      {
+        "label": "Stuur naar een tutor",
+        "to": "H02",
+        "effect": "Servercriteria/toestemming, dedupe open aanvraag."
+      },
+      {
+        "label": "Open bestaande hulpvraag",
+        "to": "H02",
+        "effect": "Geen tweede aanvraag."
+      },
+      {
+        "label": "Probeer eerst een tussenstap",
+        "to": "S04",
+        "effect": "Basisroute."
+      }
+    ],
+    "save": [
+      "consentversion",
+      "aanvraag-id",
+      "geschiktheidsbewijs"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is nog geen tutoradvies. Probeer eerst de passende oefenroute.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De hulpvraag is verstuurd.",
+      "afgerond": "De hulpvraag is verstuurd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "O04",
+    "route": "/ouder/werkbladen/[werkbladId]/resultaten",
+    "role": "ouder",
+    "mockups": [
+      "38-papier-resultaten.png"
+    ],
+    "title": "Papierwerk registreren",
+    "subtitle": "Kijk samen wat is gelukt.",
+    "body": [
+      "Papierwerk staat apart van digitale antwoorden.",
+      "We weten niet altijd hoeveel hulp nodig was."
+    ],
+    "actions": [
+      {
+        "label": "Bewaar resultaten",
+        "to": "O02",
+        "effect": "Idempotent papierrecord met bron en onzekerheid."
+      },
+      {
+        "label": "Pas een antwoord aan",
+        "to": "O04",
+        "effect": "Handmatige correctieversie."
+      },
+      {
+        "label": "Werkblad bekijken",
+        "to": "W02",
+        "effect": "Zelfde worksheet-id."
+      }
+    ],
+    "save": [
+      "gedaan",
+      "goed",
+      "onduidelijk",
+      "hulp ja/nee/onbekend",
+      "ouderbevestiging"
+    ],
+    "fields": [
+      {
+        "label": "Goed beantwoord",
+        "type": "number"
+      },
+      {
+        "label": "Onduidelijk",
+        "type": "number"
+      },
+      {
+        "label": "Hulp gebruikt",
+        "type": "radio",
+        "options": [
+          "Ja",
+          "Nee",
+          "Onbekend"
+        ]
+      }
+    ],
+    "states": {
+      "leeg": "Er zijn nog geen papierresultaten.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De papierresultaten zijn bewaard.",
+      "afgerond": "De papierresultaten zijn bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "O05",
+    "route": "/ouder/instellingen",
+    "role": "ouder",
+    "mockups": [
+      "39-ouder-instellingen.png"
+    ],
+    "title": "Instellingen",
+    "subtitle": "Jij regelt het gebruik van Mees.",
+    "body": [
+      "Tutorhulp",
+      "Meldingen in Mees",
+      "Korte e-mailmeldingen",
+      "Apparaten",
+      "Privacy"
+    ],
+    "actions": [
+      {
+        "label": "Bewaar instellingen",
+        "to": "O05",
+        "effect": "Server toetst ouder; consentversie vastleggen."
+      },
+      {
+        "label": "Beheer apparaten",
+        "to": "A09",
+        "effect": "Bekijken/revoken."
+      },
+      {
+        "label": "Privacy en gegevens",
+        "to": "O06",
+        "effect": "Export/verwijdering."
+      }
+    ],
+    "save": [
+      "tutortoestemming",
+      "meldingsvoorkeur",
+      "consent history"
+    ],
+    "fields": [
+      {
+        "label": "Tutorhulp toestaan",
+        "type": "toggle"
+      },
+      {
+        "label": "E-mail bij uitleg of lesuitnodiging",
+        "type": "toggle"
+      }
+    ],
+    "states": {
+      "leeg": "Stel je voorkeuren in.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je instellingen zijn bewaard.",
+      "afgerond": "Je instellingen zijn bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "O06",
+    "route": "/ouder/privacy",
+    "role": "ouder",
+    "mockups": [],
+    "title": "Privacy en gegevens",
+    "subtitle": "Beheer de gegevens van je gezin.",
+    "body": [
+      "Een tutor ziet geen contactgegevens.",
+      "Je kunt een overzicht aanvragen of een profiel verwijderen."
+    ],
+    "actions": [
+      {
+        "label": "Download gegevens",
+        "to": "O06",
+        "effect": "Recente ouderauth; private export van eigen gezin."
+      },
+      {
+        "label": "Verwijder profiel",
+        "to": "O06",
+        "effect": "Heldere bevestiging en verwijderprocedure."
+      },
+      {
+        "label": "Uitloggen",
+        "to": "A02",
+        "effect": "Intrek sessie, let op pending outbox."
+      }
+    ],
+    "save": [
+      "export job",
+      "deletion request",
+      "audit minimal"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er staat geen verzoek open.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je verzoek is ontvangen.",
+      "afgerond": "Je verzoek is ontvangen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "M01",
+    "route": "/meldingen",
+    "role": "kind-of-ouder",
+    "mockups": [],
+    "title": "Meldingen",
+    "subtitle": "Hier vind je nieuwe uitleg en lessen.",
+    "body": [
+      "Nog ongelezen",
+      "Eerder bekeken"
+    ],
+    "actions": [
+      {
+        "label": "Open uitleg",
+        "to": "H03",
+        "effect": "Controleer eigenaarschap."
+      },
+      {
+        "label": "Open les",
+        "to": "L02",
+        "effect": "Kinduitnodiging, ouder naar L03."
+      },
+      {
+        "label": "Markeer gelezen",
+        "to": "M01",
+        "effect": "Wijzig readAt zonder leerbewijs."
+      }
+    ],
+    "save": [
+      "readAt"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Je hebt geen nieuwe meldingen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Melding gelezen.",
+      "afgerond": "Melding gelezen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "U01",
+    "route": "/tutor",
+    "role": "tutor",
+    "mockups": [
+      "49-tutor-dashboard.png"
+    ],
+    "title": "Tutordashboard",
+    "subtitle": "Hulpvragen, lessen en uitleg.",
+    "body": [
+      "Nieuwe hulpvragen",
+      "Lesvoorstellen",
+      "Mijn lessen",
+      "Uitleg controleren"
+    ],
+    "actions": [
+      {
+        "label": "Open werkvoorraad",
+        "to": "U02",
+        "effect": "Filter aanvragen."
+      },
+      {
+        "label": "Bekijk lesvoorstel",
+        "to": "U09",
+        "effect": "Feitelijke doelaggregatie."
+      },
+      {
+        "label": "Les inplannen",
+        "to": "L01",
+        "effect": "Planner."
+      },
+      {
+        "label": "Uitlegbibliotheek",
+        "to": "U10",
+        "effect": "Beoordeelde eigen/content items."
+      }
+    ],
+    "save": [
+      "filter",
+      "claimstatus"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er zijn nu geen nieuwe hulpvragen of lesvoorstellen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Het overzicht is bijgewerkt.",
+      "afgerond": "Het overzicht is bijgewerkt.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U02",
+    "route": "/tutor/hulpvragen",
+    "role": "tutor",
+    "mockups": [
+      "40-tutor-werkvoorraad.png"
+    ],
+    "title": "Hulpvragen",
+    "subtitle": "Pak een vraag op waar je bij kunt helpen.",
+    "body": [
+      "Nieuw",
+      "In behandeling",
+      "Wacht op controlevraag",
+      "Afgerond"
+    ],
+    "actions": [
+      {
+        "label": "Oppakken",
+        "to": "U03",
+        "effect": "Atomaire claim, conflict geeft bestaande status."
+      },
+      {
+        "label": "Open",
+        "to": "U03",
+        "effect": "Eigen/authorized bestaande claim."
+      },
+      {
+        "label": "Filter",
+        "to": "U02",
+        "effect": "Leerdoel en status."
+      }
+    ],
+    "save": [
+      "claim owner",
+      "claimedAt",
+      "lease"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er staan geen passende hulpvragen open.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De hulpvraag is aan jou toegewezen.",
+      "afgerond": "De hulpvraag is aan jou toegewezen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "claim_conflict": "Deze hulpvraag is net door een andere tutor opgepakt."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U03",
+    "route": "/tutor/hulpvragen/[hulpvraagId]",
+    "role": "tutor",
+    "mockups": [
+      "41-tutor-hulpvraag-detail.png"
+    ],
+    "title": "Hulpvraag van {voornaam}",
+    "subtitle": "Breuken vergelijken",
+    "body": [
+      "Wat is gedaan",
+      "Welke hulp is gebruikt",
+      "Nieuwe controlevraag",
+      "Voorstel voor uitleg",
+      "Conclusies zijn gebaseerd op antwoorden, niet op veronderstelde denkfouten."
+    ],
+    "actions": [
+      {
+        "label": "Maak uitleg",
+        "to": "U04",
+        "effect": "Open bord met inhoudelijk doel."
+      },
+      {
+        "label": "Gebruik bestaande uitleg",
+        "to": "U10",
+        "effect": "Alleen beoordeelde passende inhoud."
+      },
+      {
+        "label": "Plan een les",
+        "to": "L01",
+        "effect": "Vanuit doel, niet openbaar kindnaam."
+      }
+    ],
+    "save": [
+      "feitelijk advies",
+      "annotatie met auteur"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "De hulpvraag is niet beschikbaar of al opgepakt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt uitleg voorbereiden.",
+      "afgerond": "Je kunt uitleg voorbereiden.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U04",
+    "route": "/tutor/uitleg/[uitlegId]/bewerken",
+    "role": "tutor",
+    "mockups": [
+      "46-tutor-opnemen-v2.png"
+    ],
+    "title": "Maak uitleg",
+    "subtitle": "Stem en tekenbord",
+    "body": [
+      "Tekst toevoegen",
+      "Breuk",
+      "Vorm",
+      "Pijl",
+      "Tekenen",
+      "Ongedaan maken"
+    ],
+    "actions": [
+      {
+        "label": "Tekst toevoegen",
+        "to": "U04",
+        "effect": "Type en plaats tekstvak; toetsenbord vereist, muistekenen niet."
+      },
+      {
+        "label": "Start opname",
+        "to": "U04",
+        "effect": "Microfooncheck; neem stem en bord-events op."
+      },
+      {
+        "label": "Stop opname",
+        "to": "U05",
+        "effect": "Bewaar private draft."
+      },
+      {
+        "label": "Bewaar concept",
+        "to": "U04",
+        "effect": "Geen versturing."
+      }
+    ],
+    "save": [
+      "bordmodel",
+      "eventtimeline",
+      "audio draft",
+      "transcript draft"
+    ],
+    "fields": [
+      {
+        "label": "Tekst op het bord",
+        "type": "textarea"
+      },
+      {
+        "label": "Titel",
+        "type": "text"
+      }
+    ],
+    "states": {
+      "leeg": "Begin met een tekstvak of een model.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je concept is bewaard.",
+      "afgerond": "Je concept is bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U05",
+    "route": "/tutor/uitleg/[uitlegId]/controle",
+    "role": "tutor",
+    "mockups": [
+      "43-tutor-preview.png"
+    ],
+    "title": "Controleer de uitleg",
+    "subtitle": "Bekijk en luister vóór je verstuurt.",
+    "body": [
+      "Controleer de som, de uitleg en het transcript.",
+      "De uitleg bevat geen kindnamen of privévragen."
+    ],
+    "actions": [
+      {
+        "label": "Pas aan",
+        "to": "U04",
+        "effect": "Bewerk draft."
+      },
+      {
+        "label": "Stuur uitleg",
+        "to": "H02",
+        "effect": "Publiceer authorized persoonlijke uitleg en oudermelding."
+      },
+      {
+        "label": "Bewaar concept",
+        "to": "U05",
+        "effect": "Nog niet publiceren."
+      }
+    ],
+    "save": [
+      "reviewstatus",
+      "publishedversion",
+      "notification idempotency"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er staat nog geen opname klaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De uitleg is verstuurd.",
+      "afgerond": "De uitleg is verstuurd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U06",
+    "route": "/tutor/hulpvragen/[hulpvraagId]/resultaat",
+    "role": "tutor",
+    "mockups": [
+      "44-tutor-resultaat.png"
+    ],
+    "title": "Na de uitleg",
+    "subtitle": "Kijk wat zelfstandig lukt.",
+    "body": [
+      "Controlevraag",
+      "Zelfstandig gelukt",
+      "Nog niet gecontroleerd",
+      "Nog hulp nodig"
+    ],
+    "actions": [
+      {
+        "label": "Rond hulpvraag af",
+        "to": "U02",
+        "effect": "Alleen onderbouwd resultaat; reden bewaren."
+      },
+      {
+        "label": "Vervolg hulpvraag",
+        "to": "U03",
+        "effect": "Zelfde dossier, geen dubbelaanvraag."
+      }
+    ],
+    "save": [
+      "reviewantwoord",
+      "afsluitreden"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Het kind heeft de controlevraag nog niet gemaakt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De hulpvraag is afgerond.",
+      "afgerond": "De hulpvraag is afgerond.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U09",
+    "route": "/tutor/lesvoorstellen/[doelId]",
+    "role": "tutor",
+    "mockups": [],
+    "title": "Samen uitleg kan helpen",
+    "subtitle": "Meerdere kinderen oefenen hetzelfde onderdeel.",
+    "body": [
+      "{aantal} verschillende kinderen",
+      "Periode: {periode}",
+      "Doorlopen hulp",
+      "Eerdere leerdoelen"
+    ],
+    "actions": [
+      {
+        "label": "Plan live les",
+        "to": "L01",
+        "effect": "Tutor beslist, geen automatische les."
+      },
+      {
+        "label": "Gebruik bestaande uitleg",
+        "to": "U10",
+        "effect": "Passende doelinhoud."
+      },
+      {
+        "label": "Nog geen les nodig",
+        "to": "U01",
+        "effect": "Snooze met feitelijke reden."
+      }
+    ],
+    "save": [
+      "signal window",
+      "unique child count",
+      "beslissing"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er zijn nog niet genoeg passende signalen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je keuze is bewaard.",
+      "afgerond": "Je keuze is bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "U10",
+    "route": "/tutor/uitlegbibliotheek",
+    "role": "tutor",
+    "mockups": [],
+    "title": "Uitlegbibliotheek",
+    "subtitle": "Uitleg per leerdoel",
+    "body": [
+      "Goedgekeurd",
+      "Concept",
+      "Nog controleren"
+    ],
+    "actions": [
+      {
+        "label": "Open uitleg",
+        "to": "U05",
+        "effect": "Review/open versie."
+      },
+      {
+        "label": "Koppel aan hulpvraag",
+        "to": "U03",
+        "effect": "Controleer doel en passende context."
+      }
+    ],
+    "save": [
+      "goal linkage",
+      "reviewversion"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is nog geen beoordeelde uitleg voor dit doel.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Uitleg gekoppeld.",
+      "afgerond": "Uitleg gekoppeld.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "L01",
+    "route": "/tutor/lessen/inplannen",
+    "role": "tutor",
+    "mockups": [
+      "50-live-les-inplannen.png"
+    ],
+    "title": "Plan een live les",
+    "subtitle": "Geef samen uitleg over één onderdeel.",
+    "body": [
+      "Uitnodiging bekijken",
+      "Alleen passende kinderen en hun ouders krijgen een uitnodiging."
+    ],
+    "actions": [
+      {
+        "label": "Bekijk uitnodiging",
+        "to": "L01",
+        "effect": "Preview, nog geen verzending."
+      },
+      {
+        "label": "Plan en verstuur",
+        "to": "L02",
+        "effect": "Persist lesson+outbox notifications; atomic capacity and consentchecks."
+      },
+      {
+        "label": "Annuleren",
+        "to": "U01",
+        "effect": "Geen les publiceren."
+      }
+    ],
+    "save": [
+      "doel",
+      "startUTC",
+      "tijdzone",
+      "duur",
+      "capaciteit",
+      "opnamekeuze",
+      "invitations"
+    ],
+    "fields": [
+      {
+        "label": "Leerdoel",
+        "type": "select"
+      },
+      {
+        "label": "Titel",
+        "type": "text"
+      },
+      {
+        "label": "Datum",
+        "type": "date"
+      },
+      {
+        "label": "Tijd",
+        "type": "time"
+      },
+      {
+        "label": "Duur in minuten",
+        "type": "number"
+      },
+      {
+        "label": "Aantal plekken",
+        "type": "number"
+      },
+      {
+        "label": "Opname maken",
+        "type": "toggle"
+      }
+    ],
+    "states": {
+      "leeg": "Kies eerst een leerdoel.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De les is gepland.",
+      "afgerond": "De les is gepland.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "L02",
+    "route": "/kind/lessen/[lesId]",
+    "role": "kind",
+    "mockups": [
+      "51-live-les-uitnodiging-kind.png"
+    ],
+    "title": "Een les over breuken",
+    "subtitle": "Je kunt meedoen of later terugkijken.",
+    "body": [
+      "{datum} om {tijd}",
+      "Je ziet en hoort de tutor. Je vragen gaan alleen naar de tutor."
+    ],
+    "actions": [
+      {
+        "label": "Ik wil meedoen",
+        "to": "L04",
+        "effect": "Check oudertoestemming/capaciteit; reserveer plek."
+      },
+      {
+        "label": "Later terugkijken",
+        "to": "L06",
+        "effect": "Alleen wanneer opname gepubliceerd; anders belangstelling zonder belofte."
+      },
+      {
+        "label": "Niet nu",
+        "to": "S01",
+        "effect": "Geen nadelige gevolgen."
+      }
+    ],
+    "save": [
+      "RSVP",
+      "parentconsent snapshot"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is geen passende uitnodiging.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je plek is gereserveerd.",
+      "afgerond": "Je plek is gereserveerd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "vol": "Deze les zit vol. Je kunt op de wachtlijst of later terugkijken als er een opname komt.",
+      "geannuleerd": "Deze les gaat niet door. Je ouder heeft ook een melding gekregen.",
+      "gewijzigd": "De les begint nu op {datum} om {tijd}.",
+      "wachtlijst": "Je staat op de wachtlijst. Je krijgt bericht als er plek is."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "L03",
+    "route": "/ouder/lessen/[lesId]",
+    "role": "ouder",
+    "mockups": [
+      "52-live-les-uitnodiging-ouder.png"
+    ],
+    "title": "Een les voor {voornaam}",
+    "subtitle": "Breuken vergelijken",
+    "body": [
+      "Kinderen zien elkaar niet.",
+      "Vragen gaan privé naar de tutor.",
+      "De opname bevat alleen tutorstem en bord."
+    ],
+    "actions": [
+      {
+        "label": "Deelname toestaan",
+        "to": "L03",
+        "effect": "Sla optionele specifieke consent op; respecteer gezinsinstelling."
+      },
+      {
+        "label": "Bekijk les",
+        "to": "L02",
+        "effect": "Geef kindroute alleen binnen scope."
+      },
+      {
+        "label": "Niet deelnemen",
+        "to": "O01",
+        "effect": "Weiger deelname zonder leerstraf."
+      }
+    ],
+    "save": [
+      "ouderconsent",
+      "invitatie gelezen"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is geen uitnodiging voor je kind.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De keuze is bewaard.",
+      "afgerond": "De keuze is bewaard.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Overzicht": "O01",
+      "Instellingen": "O05"
+    }
+  },
+  {
+    "id": "L04",
+    "route": "/kind/lessen/[lesId]/live",
+    "role": "kind",
+    "mockups": [
+      "54-live-les-kind.png"
+    ],
+    "title": "Live uitleg",
+    "subtitle": "Breuken vergelijken",
+    "body": [
+      "Stem en tekenbord",
+      "Stel je vraag aan de tutor.",
+      "Je vraag is alleen zichtbaar voor de tutor."
+    ],
+    "actions": [
+      {
+        "label": "Start geluid",
+        "to": "L04",
+        "effect": "Expliciete audioplay, geen kindmicrofoon."
+      },
+      {
+        "label": "Stuur vraag",
+        "to": "L04",
+        "effect": "Private queue + moderationstatus."
+      },
+      {
+        "label": "Verlaat les",
+        "to": "S01",
+        "effect": "Geen leerstraf; reconnect mogelijk."
+      },
+      {
+        "label": "Probeer het zelf",
+        "to": "S05",
+        "effect": "Na les optionele doelvraag."
+      }
+    ],
+    "save": [
+      "attendance zonder beheersing",
+      "private questions",
+      "moderation states"
+    ],
+    "fields": [
+      {
+        "label": "Jouw vraag",
+        "type": "textarea",
+        "maxLength": 300
+      }
+    ],
+    "states": {
+      "leeg": "De les begint om {tijd}.",
+      "laden": "Even wachten…",
+      "offline": "De verbinding is weg. We proberen opnieuw te verbinden. Je kunt nog niet live luisteren of nieuwe vragen sturen.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De les is afgelopen.",
+      "afgerond": "De les is afgelopen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "wachtkamer": "De tutor begint zo.",
+      "audio_geblokkeerd": "Tik op Start geluid om te luisteren.",
+      "moderatie": "Je vraag wordt bekeken.",
+      "vraag_aanpassen": "Pas je vraag even aan. Gebruik geen contactgegevens.",
+      "doorgestuurd": "Je vraag is naar de tutor gestuurd.",
+      "geen_opname": "Er is geen opname van deze les."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "L05",
+    "route": "/tutor/lessen/[lesId]/live",
+    "role": "tutor",
+    "mockups": [
+      "53-live-les-tutor.png"
+    ],
+    "title": "Live les geven",
+    "subtitle": "Breuken vergelijken",
+    "body": [
+      "Tekst toevoegen",
+      "Vragen",
+      "Nog beoordelen",
+      "Beantwoord"
+    ],
+    "actions": [
+      {
+        "label": "Start les",
+        "to": "L05",
+        "effect": "Providerstate + media/boardcheck, expliciet."
+      },
+      {
+        "label": "Beantwoord vraag",
+        "to": "L05",
+        "effect": "Anonieme uitleg; status bijwerken."
+      },
+      {
+        "label": "Zet apart",
+        "to": "L05",
+        "effect": "Review, geen publieke doorgifte."
+      },
+      {
+        "label": "Pauzeer vragen",
+        "to": "L05",
+        "effect": "Tijdelijk met reden, kijktoegang blijft."
+      },
+      {
+        "label": "Beëindig les",
+        "to": "L07",
+        "effect": "Recording draft naar review."
+      }
+    ],
+    "save": [
+      "board sequence",
+      "audio timestamps",
+      "private queue statuses"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er zijn nog geen vragen.",
+      "laden": "Even wachten…",
+      "offline": "De verbinding is weg. We proberen opnieuw te verbinden. Je kunt nog niet live luisteren of nieuwe vragen sturen.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De les is beëindigd.",
+      "afgerond": "De les is beëindigd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "L06",
+    "route": "/kind/lessen/[lesId]/terugkijken",
+    "role": "kind",
+    "mockups": [],
+    "title": "Kijk de uitleg terug",
+    "subtitle": "Stem en tekenbord",
+    "body": [
+      "Deze uitleg hoort bij het onderdeel dat je oefent."
+    ],
+    "actions": [
+      {
+        "label": "Afspelen",
+        "to": "L06",
+        "effect": "Gepubliceerde geanonimiseerde opname."
+      },
+      {
+        "label": "Probeer het zelf",
+        "to": "S05",
+        "effect": "Nieuwe gekoppelde vraag."
+      }
+    ],
+    "save": [
+      "bekeken, geen beheersing"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "De opname is nog niet beschikbaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt nu zelf oefenen.",
+      "afgerond": "Je kunt nu zelf oefenen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "L07",
+    "route": "/tutor/lessen/[lesId]/opname",
+    "role": "tutor",
+    "mockups": [],
+    "title": "Controleer de lesopname",
+    "subtitle": "Klaar om later te gebruiken?",
+    "body": [
+      "Geen kindnamen, privévragen of contactgegevens in de opname.",
+      "Controleer ook het transcript."
+    ],
+    "actions": [
+      {
+        "label": "Publiceer opname",
+        "to": "U10",
+        "effect": "Review verplicht; koppel leerdoel."
+      },
+      {
+        "label": "Bewerk opname",
+        "to": "L07",
+        "effect": "Trim/anonimiseren, nieuwe versie."
+      },
+      {
+        "label": "Niet publiceren",
+        "to": "U01",
+        "effect": "Private draft behouden/verwijderprocedure."
+      }
+    ],
+    "save": [
+      "review",
+      "doelen",
+      "transcript",
+      "privacycheck"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is geen opname gemaakt.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De opname is gepubliceerd.",
+      "afgerond": "De opname is gepubliceerd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Dashboard": "U01",
+      "Hulpvragen": "U02",
+      "Lessen": "L01",
+      "Uitleg": "U10"
+    }
+  },
+  {
+    "id": "G01",
+    "route": "/kind/aardrijkskunde/europa",
+    "role": "kind",
+    "mockups": [
+      "55-europa-instellen.png"
+    ],
+    "title": "Europa",
+    "subtitle": "Stel je oefening samen.",
+    "body": [
+      "Welk gebied wil je oefenen?",
+      "Wat wil je oefenen?",
+      "Hoe wil je oefenen?",
+      "Je oefent tot alles uit je selectie aan bod is geweest."
+    ],
+    "actions": [
+      {
+        "label": "Kies zelf landen",
+        "to": "G01",
+        "effect": "Open multi-selectdialog, bewaar scroll/focus."
+      },
+      {
+        "label": "Start oefenen",
+        "to": "G02",
+        "effect": "Maak volledige selectiequeue; choice→G03, puzzle→G04."
+      },
+      {
+        "label": "Op papier",
+        "to": "W01",
+        "effect": "Maak kaartwerkblad alleen met echte printSVG."
+      }
+    ],
+    "save": [
+      "regions",
+      "objecttypes",
+      "ids",
+      "mode"
+    ],
+    "fields": [
+      {
+        "label": "Gebied",
+        "type": "multiselect",
+        "options": [
+          "Heel Europa",
+          "Noord-Europa",
+          "West-Europa",
+          "Zuid-Europa",
+          "Oost-Europa",
+          "Midden-Europa",
+          "Zuidoost-Europa"
+        ]
+      },
+      {
+        "label": "Onderwerpen",
+        "type": "multiselect",
+        "options": [
+          "Landen",
+          "Hoofdsteden",
+          "Wateren",
+          "Gebergten",
+          "Ligging"
+        ],
+        "default": [
+          "Landen"
+        ]
+      },
+      {
+        "label": "Oefenvorm",
+        "type": "radio",
+        "options": [
+          "Afwisselend oefenen",
+          "Landenpuzzel"
+        ]
+      }
+    ],
+    "states": {
+      "leeg": "Kies een gebied en een onderwerp.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je selectie staat klaar.",
+      "afgerond": "Je selectie staat klaar.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "G02",
+    "route": "/kind/aardrijkskunde/europa/[sessieId]",
+    "role": "kind",
+    "mockups": [
+      "56-europa-oefenscherm.png"
+    ],
+    "title": "Waar ligt {land}?",
+    "subtitle": "Tik een plek aan en controleer je antwoord.",
+    "body": [
+      "{behandeld} van {aantal} onderdelen behandeld"
+    ],
+    "actions": [
+      {
+        "label": "Controleer antwoord",
+        "to": "G02",
+        "effect": "Beoordeel object-id, juiste → volgende G02/G03 of S07."
+      },
+      {
+        "label": "Inzoomen",
+        "to": "G02",
+        "effect": "Handmatig, geen answerfocus."
+      },
+      {
+        "label": "Heel gebied",
+        "to": "G02",
+        "effect": "Herstel selectie-extent."
+      },
+      {
+        "label": "Bekijk een hint",
+        "to": "S06",
+        "effect": "Geo-hints binnen zelfde sessie."
+      },
+      {
+        "label": "Stop voor nu",
+        "to": "S01",
+        "effect": "Bewaar gehele selectie."
+      }
+    ],
+    "save": [
+      "geo-object-key",
+      "selectiequeue",
+      "pogingen",
+      "hulp"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is geen kaartselectie.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Goed gevonden!",
+      "afgerond": "Goed gevonden!",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "G03",
+    "route": "/kind/aardrijkskunde/europa/[sessieId]#meerkeuze",
+    "role": "kind",
+    "mockups": [
+      "57-europa-meerkeuze.png"
+    ],
+    "title": "Welk land is gekleurd?",
+    "subtitle": "Kies de juiste naam.",
+    "body": [
+      "België",
+      "Frankrijk",
+      "Duitsland",
+      "Spanje"
+    ],
+    "actions": [
+      {
+        "label": "Controleer antwoord",
+        "to": "G02",
+        "effect": "Zelfde queue, volgende mode."
+      },
+      {
+        "label": "Bekijk een hint",
+        "to": "S06",
+        "effect": "Geen antwoord vooraf verklappen."
+      },
+      {
+        "label": "Stop voor nu",
+        "to": "S01",
+        "effect": "Bewaar."
+      }
+    ],
+    "save": [
+      "object-id",
+      "antwoord-id",
+      "hulp"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er staat geen kaartvraag klaar.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Goed gevonden!",
+      "afgerond": "Goed gevonden!",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "G04",
+    "route": "/kind/aardrijkskunde/europa/[sessieId]#puzzel",
+    "role": "kind",
+    "mockups": [
+      "58-europa-landenpuzzel.png"
+    ],
+    "title": "Leg de landen op hun plek",
+    "subtitle": "Tik een land aan en tik daarna op de kaart.",
+    "body": [
+      "{geplaatst} van {aantal} landen geplaatst",
+      "Kies een land",
+      "Na het plaatsen verschijnt een nieuw stukje."
+    ],
+    "actions": [
+      {
+        "label": "Kies landstuk",
+        "to": "G04",
+        "effect": "Selecteer; label naast stuk."
+      },
+      {
+        "label": "Kies plek",
+        "to": "G04",
+        "effect": "Plaats direct, correct blijft, fout keert terug; hover neutraal."
+      },
+      {
+        "label": "Bekijk een hint",
+        "to": "G04",
+        "effect": "Hulp voor geselecteerd land."
+      },
+      {
+        "label": "Stop voor nu",
+        "to": "S01",
+        "effect": "Bewaar geplaatst en attempts."
+      }
+    ],
+    "save": [
+      "placed ids",
+      "piece order",
+      "puzzle attempts/help"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Kies eerst landen om te puzzelen.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Je antwoord blijft op dit apparaat bewaard.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Alle landen uit je selectie zijn geplaatst.",
+      "afgerond": "Alle landen uit je selectie zijn geplaatst.",
+      "goed-antwoord": "Goed gevonden!",
+      "fout-antwoord": "Dit is nog niet goed. Kijk nog eens naar de vraag."
+    },
+    "navigation": {
+      "Start": "S01",
+      "Voortgang": "S08",
+      "Weetjesboek": "S09",
+      "Profiel": "P02"
+    }
+  },
+  {
+    "id": "I01",
+    "route": "/privacy",
+    "role": "publiek",
+    "mockups": [],
+    "title": "Privacy bij Mees",
+    "subtitle": "We gebruiken alleen gegevens die nodig zijn.",
+    "body": [
+      "Je kind gebruikt een voornaam en een gekozen avatar.",
+      "Tutorhulp blijft binnen Mees.",
+      "Donateurs krijgen geen gegevens.",
+      "De definitieve privacyverklaring wordt vóór publicatie vastgesteld."
+    ],
+    "actions": [
+      {
+        "label": "Voor ouders",
+        "to": "A00",
+        "effect": "Terug."
+      }
+    ],
+    "save": [
+      "geen tracking"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "De definitieve verklaring volgt vóór publicatie.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "Je kunt de uitleg rustig nalezen.",
+      "afgerond": "Je kunt de uitleg rustig nalezen.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  },
+  {
+    "id": "C01",
+    "route": "/beheer/inhoud",
+    "role": "beheerder",
+    "mockups": [],
+    "title": "Inhoud beoordelen",
+    "subtitle": "Vraag, hints en uitleg horen bij elkaar.",
+    "body": [
+      "Concept",
+      "Nog beoordelen",
+      "Goedgekeurd",
+      "Gearchiveerd"
+    ],
+    "actions": [
+      {
+        "label": "Publiceer versie",
+        "to": "C01",
+        "effect": "Alleen approved, vastleggen reviewer en bron."
+      },
+      {
+        "label": "Archiveer versie",
+        "to": "C01",
+        "effect": "Nieuwe sessies gebruiken niet meer; bestaande bewijzen immutable."
+      }
+    ],
+    "save": [
+      "contentversion",
+      "reviewer",
+      "curriculum mapping"
+    ],
+    "fields": [],
+    "states": {
+      "leeg": "Er is nog geen beoordeelde inhoud.",
+      "laden": "Even wachten…",
+      "offline": "Je bent even niet verbonden. Probeer het opnieuw zodra je verbinding hebt.",
+      "fout": "Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.",
+      "succes": "De inhoudsversie is gepubliceerd.",
+      "afgerond": "De inhoudsversie is gepubliceerd.",
+      "goed-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord.",
+      "fout-antwoord": "Niet van toepassing: dit scherm beoordeelt geen antwoord."
+    },
+    "navigation": {}
+  }
+]

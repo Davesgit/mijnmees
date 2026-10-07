@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mees
 
-## Getting Started
+Gratis leren en oefenen voor kinderen van groep 5 tot en met 8 — [mijnmees.nl](https://mijnmees.nl).
 
-First, run the development server:
+Next.js (App Router) · TypeScript · Tailwind CSS v4 · Supabase · Vercel.
+
+## Starten
 
 ```bash
+npm install
+cp .env.example .env.local   # vul de Supabase-sleutels in
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000/kind/start.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stand van zaken
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Fase 1 — kindroute als gast (klaar)**
 
-## Learn More
+| Scherm | Route |
+|---|---|
+| S01 Start | `/kind/start` |
+| S02 Rekenen | `/kind/rekenen` |
+| S03 Onderdelen | `/kind/rekenen/[onderwerp]` |
+| S04 Instellen | `/kind/oefening/instellen?onderdeel=…` |
+| S05/S06 Oefenen + hulp | `/kind/oefenen/[sessieId]` |
+| S07 Afgerond | `/kind/oefening/[sessieId]/afgerond` |
+| S08 Voortgang | `/kind/voortgang` |
+| S09 Weetjesboek | `/kind/weetjesboek` |
+| B01 Weetje | `/kind/weetjes/[weetjeId]` |
+| P01 Pauze | `/kind/pauze` |
 
-To learn more about Next.js, take a look at the following resources:
+Voortgang van gasten staat in `localStorage` (`src/lib/opslag/lokaal.ts`). De oefenlogica
+(`src/features/oefenen/sessie.ts`) werkt op pure data, zodat fase 3 dezelfde functies server-side kan gebruiken.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Volgende fasen: 3 ouderaccounts + Supabase, 2 Europa/tafeltrainer/niveaubepaling, 4 werkbladen, 5 tutorhulp en live-lessen.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Inhoud
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Vragen: `src/content/vragen/breuken-vergelijken.json`, gemaakt met `node scripts/maak-breuken-vergelijken.mjs`.
+  Status `demo-only`: een leerkracht moet vragen, hints en uitleg nog beoordelen.
+- Weetjes: `src/content/weetjes.ts` (bronnen nog te controleren).
+- Ontwerp- en productspecificatie: `docs/overdracht/` (mockups staan buiten de repo).

@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tokens uit mees-overdracht/implementatie/tokens.css (ontwerpregels §2–4). */
+@theme {
+  --color-merk-blauw: #0789f8;
+  --color-actie-blauw: #005fcc;
+  --color-actie-hover: #0054b5;
+  --color-actie-ingedrukt: #00479a;
+  --color-inkt: #111d55;
+  --color-tekst-zacht: #4a5878;
+  --color-wit: #ffffff;
+  --color-achtergrond-zacht: #f6f9fd;
+  --color-blauw-zacht: #eaf5ff;
+  --color-rand-zacht: #c8ddf0;
+  --color-rand-interactief: #66809e;
+  --color-focus: #111d55;
+  --color-geel: #ffbf24;
+  --color-succes: #166534;
+  --color-succes-zacht: #ecfdf3;
+  --color-probeer-opnieuw: #854d0e;
+  --color-probeer-opnieuw-zacht: #fff7e6;
+  --color-fout: #b91c1c;
+  --color-fout-zacht: #fef2f2;
+  --color-uitgeschakeld-vlak: #e2e8f0;
+  --color-uitgeschakeld-tekst: #475569;
+  --color-vak-rekenen: #005fcc;
+  --color-vak-aardrijkskunde: #0f766e;
+  --color-vak-taal: #6d28d9;
+
+  --font-mees: var(--font-mees-sans), system-ui, sans-serif;
+
+  --radius-invoer: 12px;
+  --radius-kaart: 16px;
+  --radius-dialoog: 20px;
+
+  --shadow-zwevend: 0 8px 24px rgba(17, 29, 85, 0.1);
+
+  --breakpoint-tablet: 48rem; /* 768px */
+  --breakpoint-desktop: 64rem; /* 1024px */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  html[data-grote-tekst="true"] {
+    font-size: 112.5%;
+  }
+  body {
+    margin: 0;
+    color: var(--color-inkt);
+    background: var(--color-wit);
+    font-family: var(--font-mees);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  :where(button, input, select, textarea) {
+    font: inherit;
+  }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 2px var(--color-wit);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Typografietokens (ontwerpregels §3): telefoon / tablet / desktop. */
+@utility titel-pagina {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  @media (min-width: 48rem) {
+    font-size: 2rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 2.25rem;
+  }
+}
+@utility titel-held {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  @media (min-width: 48rem) {
+    font-size: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 3rem;
+  }
+}
+@utility titel-oefening {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  @media (min-width: 48rem) {
+    font-size: 1.75rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 1.875rem;
+  }
+}
+@utility subtitel {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  @media (min-width: 48rem) {
+    font-size: 1.375rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 1.5rem;
+  }
+}
+@utility tekst-intro {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  @media (min-width: 48rem) {
+    font-size: 1.25rem;
+  }
+}
+@utility knoptekst {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+@utility tekst-klein {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+@utility som {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  @media (min-width: 48rem) {
+    font-size: 3rem;
+  }
+  @media (min-width: 64rem) {
+    font-size: 3.5rem;
+  }
+}
+
+/* Paginamarges: 16 / 24 / 32px, max 1200px. */
+@utility mees-content {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 48rem) {
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-rustige-overgangen="true"] *,
+[data-rustige-overgangen="true"] *::before,
+[data-rustige-overgangen="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@keyframes mees-verschijn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mees-verschijn {
+  animation: mees-verschijn 160ms ease-out;
 }

@@ -1,0 +1,1982 @@
+[
+  {
+    "id": "demo-meerkeuze-1",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort tussen 1/2 en 3/4?",
+    "answer": "<",
+    "hints": [
+      "Maak de delen even groot.",
+      "1/2 kun je schrijven als 2/4."
+    ],
+    "explanation": "2/4 is minder dan 3/4. Dus 1/2 < 3/4.",
+    "visual": {},
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-ordenen-1",
+      "demo-plaatsen-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-meerkeuze-2",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "tafels",
+    "learningGoalId": "tafel-7",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Wat is 7 × 8?",
+    "answer": 56,
+    "hints": [
+      "Gebruik een tafel die je al kent.",
+      "5 × 8 is 40 en 2 × 8 is 16."
+    ],
+    "explanation": "40 + 16 = 56. Dus 7 × 8 = 56.",
+    "visual": {},
+    "options": [
+      48,
+      54,
+      56,
+      64
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-meerkeuze-3",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "procenten",
+    "learningGoalId": "procent-kwart",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Wat is 25% van 80?",
+    "answer": 20,
+    "hints": [
+      "25% is een kwart.",
+      "Verdeel 80 in vier gelijke delen."
+    ],
+    "explanation": "80 ÷ 4 = 20. Dus 25% van 80 is 20.",
+    "visual": {},
+    "options": [
+      10,
+      20,
+      25,
+      40
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-meerdere-antwoorden-1",
+    "version": 1,
+    "type": "meerdere-antwoorden",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-gelijkwaardig",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Kies alle breuken die gelijk zijn aan 1/2.",
+    "answer": [
+      "2/4",
+      "3/6"
+    ],
+    "hints": [
+      "Vermenigvuldig teller en noemer met hetzelfde getal.",
+      "2/4 en 3/6 kun je vereenvoudigen."
+    ],
+    "explanation": "2/4 = 1/2 en 3/6 = 1/2. 2/3 is groter dan 1/2.",
+    "visual": {},
+    "options": [
+      "2/4",
+      "3/6",
+      "2/3"
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-waar-onwaar-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-meerdere-antwoorden-2",
+    "version": 1,
+    "type": "meerdere-antwoorden",
+    "subjectId": "rekenen",
+    "topicId": "tafels",
+    "learningGoalId": "veelvoud-6",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welke getallen horen bij de tafel van 6?",
+    "answer": [
+      18,
+      24
+    ],
+    "hints": [
+      "Tel steeds zes erbij.",
+      "De tafel begint met 6, 12, 18, 24."
+    ],
+    "explanation": "18 = 3 × 6 en 24 = 4 × 6. 20 is geen veelvoud van 6.",
+    "visual": {},
+    "options": [
+      18,
+      20,
+      24
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-meerdere-antwoorden-3",
+    "version": 1,
+    "type": "meerdere-antwoorden",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-buren-fr",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welke van deze landen grenzen aan Frankrijk?",
+    "answer": [
+      "BE",
+      "DE",
+      "ES"
+    ],
+    "hints": [
+      "Kijk naar de landgrenzen.",
+      "Kijk boven, rechts en onder Frankrijk."
+    ],
+    "explanation": "België, Duitsland en Spanje grenzen aan Frankrijk. Portugal niet. Dit zijn alleen de getoonde opties.",
+    "visual": {},
+    "options": [
+      {
+        "id": "BE",
+        "label": "België"
+      },
+      {
+        "id": "DE",
+        "label": "Duitsland"
+      },
+      {
+        "id": "ES",
+        "label": "Spanje"
+      },
+      {
+        "id": "PT",
+        "label": "Portugal"
+      }
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-invullen-1",
+    "version": 1,
+    "type": "invullen",
+    "subjectId": "rekenen",
+    "topicId": "tafels",
+    "learningGoalId": "tafel-7",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Wat is 7 × 8?",
+    "answer": 56,
+    "hints": [
+      "Splits zeven groepen in vijf en twee groepen.",
+      "40 + 16 is het antwoord."
+    ],
+    "explanation": "7 × 8 = 56.",
+    "visual": {
+      "input": "integer"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-invullen-2",
+    "version": 1,
+    "type": "invullen",
+    "subjectId": "rekenen",
+    "topicId": "kommagetallen",
+    "learningGoalId": "komma-optellen",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Wat is 0,5 + 0,25?",
+    "answer": 0.75,
+    "hints": [
+      "Schrijf 0,5 als 0,50.",
+      "Tel 50 honderdsten en 25 honderdsten op."
+    ],
+    "explanation": "50 + 25 = 75 honderdsten, dus 0,75.",
+    "visual": {
+      "input": "decimal",
+      "acceptedDecimalSeparators": [
+        ",",
+        "."
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-invullen-3",
+    "version": 1,
+    "type": "invullen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "lengte-omrekenen",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Hoeveel meter is 3 km?",
+    "answer": 3000,
+    "hints": [
+      "Eén kilometer is duizend meter.",
+      "Neem drie keer duizend."
+    ],
+    "explanation": "3 × 1000 = 3000 meter.",
+    "visual": {
+      "input": "integer",
+      "unit": "m"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-waar-onwaar-1",
+    "version": 1,
+    "type": "waar-onwaar",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-gelijkwaardig",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "1/2 is gelijk aan 2/4.",
+    "answer": true,
+    "hints": [
+      "Maak een strook in twee en in vier gelijke delen.",
+      "De helft vult twee van de vier delen."
+    ],
+    "explanation": "Waar: 1/2 = 2/4.",
+    "visual": {},
+    "options": [
+      "Waar",
+      "Niet waar"
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-meerdere-antwoorden-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-waar-onwaar-2",
+    "version": 1,
+    "type": "waar-onwaar",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-hoofdstad-fr",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Parijs is de hoofdstad van Frankrijk.",
+    "answer": true,
+    "hints": [
+      "Denk aan de hoofdstad, niet aan een buurland.",
+      "Parijs ligt in Frankrijk."
+    ],
+    "explanation": "Waar: Parijs is de hoofdstad van Frankrijk.",
+    "visual": {},
+    "options": [
+      "Waar",
+      "Niet waar"
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-waar-onwaar-3",
+    "version": 1,
+    "type": "waar-onwaar",
+    "subjectId": "rekenen",
+    "topicId": "tijd-en-geld",
+    "learningGoalId": "tijd-minuten-uur",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Een uur heeft 100 minuten.",
+    "answer": false,
+    "hints": [
+      "Denk aan de minuten op een klok.",
+      "Een halfuur duurt 30 minuten."
+    ],
+    "explanation": "Niet waar: een uur duurt 60 minuten.",
+    "visual": {},
+    "options": [
+      "Waar",
+      "Niet waar"
+    ],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-koppelen-1",
+    "version": 1,
+    "type": "koppelen",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-decimaal",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Koppel iedere breuk aan het kommagetal.",
+    "answer": {
+      "1/2": "0,5",
+      "1/4": "0,25",
+      "3/4": "0,75"
+    },
+    "hints": [
+      "Begin met de helft.",
+      "Een kwart is 0,25."
+    ],
+    "explanation": "1/2 = 0,5; 1/4 = 0,25; 3/4 = 0,75.",
+    "visual": {
+      "left": [
+        "1/2",
+        "1/4",
+        "3/4"
+      ],
+      "right": [
+        "0,75",
+        "0,5",
+        "0,25"
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-koppelen-2",
+    "version": 1,
+    "type": "koppelen",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-hoofdsteden",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Koppel het land aan de hoofdstad.",
+    "answer": {
+      "FR": "Parijs",
+      "DE": "Berlijn",
+      "ES": "Madrid"
+    },
+    "hints": [
+      "Begin met een hoofdstad die je kent.",
+      "Berlijn hoort bij Duitsland."
+    ],
+    "explanation": "Frankrijk–Parijs, Duitsland–Berlijn en Spanje–Madrid.",
+    "visual": {
+      "left": [
+        {
+          "id": "FR",
+          "label": "Frankrijk"
+        },
+        {
+          "id": "DE",
+          "label": "Duitsland"
+        },
+        {
+          "id": "ES",
+          "label": "Spanje"
+        }
+      ],
+      "right": [
+        "Madrid",
+        "Parijs",
+        "Berlijn"
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-koppelen-3",
+    "version": 1,
+    "type": "koppelen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "eenheden-lengte",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Koppel aan dezelfde lengte.",
+    "answer": {
+      "1 m": "100 cm",
+      "1 km": "1000 m",
+      "10 mm": "1 cm"
+    },
+    "hints": [
+      "Denk aan de stappen tussen eenheden.",
+      "10 millimeter is 1 centimeter."
+    ],
+    "explanation": "1 m = 100 cm; 1 km = 1000 m; 10 mm = 1 cm.",
+    "visual": {
+      "left": [
+        "1 m",
+        "1 km",
+        "10 mm"
+      ],
+      "right": [
+        "1 cm",
+        "100 cm",
+        "1000 m"
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-ordenen-1",
+    "version": 1,
+    "type": "ordenen",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Zet van klein naar groot.",
+    "answer": [
+      "1/4",
+      "1/2",
+      "3/4"
+    ],
+    "hints": [
+      "Maak alle breuken kwarten.",
+      "1/2 = 2/4."
+    ],
+    "explanation": "1/4 < 2/4 < 3/4.",
+    "visual": {
+      "items": [
+        "3/4",
+        "1/4",
+        "1/2"
+      ],
+      "direction": "ascending"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-meerkeuze-1",
+      "demo-plaatsen-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-ordenen-2",
+    "version": 1,
+    "type": "ordenen",
+    "subjectId": "rekenen",
+    "topicId": "kommagetallen",
+    "learningGoalId": "komma-vergelijken",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Zet van klein naar groot.",
+    "answer": [
+      0.35,
+      0.5,
+      0.8
+    ],
+    "hints": [
+      "Vergelijk honderdsten.",
+      "0,5 is 0,50 en 0,8 is 0,80."
+    ],
+    "explanation": "35 < 50 < 80 honderdsten.",
+    "visual": {
+      "items": [
+        0.8,
+        0.35,
+        0.5
+      ],
+      "direction": "ascending"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-ordenen-3",
+    "version": 1,
+    "type": "ordenen",
+    "subjectId": "rekenen",
+    "topicId": "tijd-en-geld",
+    "learningGoalId": "tijd-volgorde",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Zet de tijden van vroeg naar laat.",
+    "answer": [
+      "08:15",
+      "09:00",
+      "10:30"
+    ],
+    "hints": [
+      "Vergelijk eerst de uren.",
+      "8 uur komt voor 9 uur."
+    ],
+    "explanation": "08:15 komt vóór 09:00 en daarna 10:30.",
+    "visual": {
+      "items": [
+        "10:30",
+        "08:15",
+        "09:00"
+      ],
+      "direction": "chronological"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-plaatsen-1",
+    "version": 1,
+    "type": "plaatsen",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Plaats iedere breuk in het juiste vak.",
+    "answer": {
+      "1/4": "kleiner",
+      "1/2": "gelijk",
+      "3/4": "groter"
+    },
+    "hints": [
+      "Vergelijk met een halve strook.",
+      "Een kwart is minder dan de helft."
+    ],
+    "explanation": "1/4 is kleiner dan 1/2; 1/2 is gelijk; 3/4 is groter.",
+    "visual": {
+      "items": [
+        "1/4",
+        "3/4",
+        "1/2"
+      ],
+      "targets": [
+        {
+          "id": "kleiner",
+          "label": "Kleiner dan 1/2"
+        },
+        {
+          "id": "gelijk",
+          "label": "Gelijk aan 1/2"
+        },
+        {
+          "id": "groter",
+          "label": "Groter dan 1/2"
+        }
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-meerkeuze-1",
+      "demo-ordenen-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-plaatsen-2",
+    "version": 1,
+    "type": "plaatsen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "eenheden-kiezen",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Plaats iedere eenheid bij de passende meting.",
+    "answer": {
+      "cm": "potlood",
+      "km": "route",
+      "g": "appel"
+    },
+    "hints": [
+      "Kijk of je lengte, afstand of gewicht meet.",
+      "Een lange route meet je in kilometers."
+    ],
+    "explanation": "Een potlood meet je in cm, een route in km en een appel weeg je in g.",
+    "visual": {
+      "items": [
+        "cm",
+        "km",
+        "g"
+      ],
+      "targets": [
+        "potlood",
+        "route",
+        "appel"
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-plaatsen-3",
+    "version": 1,
+    "type": "plaatsen",
+    "subjectId": "rekenen",
+    "topicId": "procenten",
+    "learningGoalId": "procent-breuk",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Plaats het percentage bij de breuk.",
+    "answer": {
+      "25%": "1/4",
+      "50%": "1/2",
+      "75%": "3/4"
+    },
+    "hints": [
+      "100% is het geheel.",
+      "50% is de helft."
+    ],
+    "explanation": "25%=1/4, 50%=1/2 en 75%=3/4.",
+    "visual": {
+      "items": [
+        "25%",
+        "75%",
+        "50%"
+      ],
+      "targets": [
+        "1/4",
+        "1/2",
+        "3/4"
+      ]
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-kaart-aanwijzen-1",
+    "version": 1,
+    "type": "kaart-aanwijzen",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-land-fr",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Waar ligt Frankrijk?",
+    "answer": "FR",
+    "hints": [
+      "Kijk in het westen van Europa.",
+      "Het ligt ten noorden van Spanje."
+    ],
+    "explanation": "Frankrijk ligt tussen onder meer Spanje, België en Duitsland.",
+    "visual": {
+      "map": "europe-base",
+      "selection": [
+        "FR",
+        "BE",
+        "DE",
+        "ES"
+      ],
+      "targetLayer": "countries"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-landenpuzzel-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-kaart-aanwijzen-2",
+    "version": 1,
+    "type": "kaart-aanwijzen",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-hoofdstad-de",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Waar ligt Berlijn?",
+    "answer": "DE-capital",
+    "hints": [
+      "Zoek Duitsland en kijk binnen het land.",
+      "Berlijn ligt in het noordoosten van Duitsland."
+    ],
+    "explanation": "Berlijn is de hoofdstad van Duitsland.",
+    "visual": {
+      "map": "europe-base",
+      "selection": [
+        "DE",
+        "FR",
+        "NL"
+      ],
+      "targetLayer": "capitals"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-kaart-aanwijzen-3",
+    "version": 1,
+    "type": "kaart-aanwijzen",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-water-middellandse",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Waar ligt de Middellandse Zee?",
+    "answer": "mediterranean",
+    "hints": [
+      "Kijk aan de zuidkant van Europa.",
+      "Het water ligt onder Spanje, Frankrijk, Italië en Griekenland."
+    ],
+    "explanation": "De Middellandse Zee ligt tussen Zuid-Europa en Noord-Afrika.",
+    "visual": {
+      "map": "europe-base",
+      "selection": [
+        "ES",
+        "FR",
+        "IT",
+        "GR"
+      ],
+      "targetLayer": "waters"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-landenpuzzel-1",
+    "version": 1,
+    "type": "landenpuzzel",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-land-fr",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Leg Frankrijk op de juiste plek.",
+    "answer": "FR",
+    "hints": [
+      "Vergelijk de vorm met de lege landsgrenzen.",
+      "Zoek ten noorden van Spanje."
+    ],
+    "explanation": "Dit gebied is Frankrijk.",
+    "visual": {
+      "map": "europe-base",
+      "pieces": [
+        "FR",
+        "DE",
+        "ES"
+      ],
+      "target": "FR"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-kaart-aanwijzen-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-landenpuzzel-2",
+    "version": 1,
+    "type": "landenpuzzel",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-land-it",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Leg Italië op de juiste plek.",
+    "answer": "IT",
+    "hints": [
+      "Kijk naar de lange vorm met een uitstulping onderaan.",
+      "Italië ligt ten zuiden van de Alpen."
+    ],
+    "explanation": "Italië steekt als een laars uit in de Middellandse Zee.",
+    "visual": {
+      "map": "europe-base",
+      "pieces": [
+        "IT",
+        "AT",
+        "CH"
+      ],
+      "target": "IT"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-landenpuzzel-3",
+    "version": 1,
+    "type": "landenpuzzel",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "europa-land-lu",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Leg Luxemburg op de juiste plek.",
+    "answer": "LU",
+    "hints": [
+      "Gebruik handmatige zoom om kleine grenzen te zien.",
+      "Het kleine land ligt tussen België, Duitsland en Frankrijk."
+    ],
+    "explanation": "Luxemburg is het kleine gebied tussen deze drie landen.",
+    "visual": {
+      "map": "europe-base",
+      "pieces": [
+        "LU",
+        "BE",
+        "NL"
+      ],
+      "target": "LU",
+      "microMarker": true
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  },
+  {
+    "id": "demo-meten-1",
+    "version": 1,
+    "type": "meten",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "liniaal-gebruiken",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Meet de lijn met de liniaal.",
+    "answer": 6,
+    "hints": [
+      "Zet de nul precies bij het begin.",
+      "Lees de eindwaarde, niet het aantal streepjes."
+    ],
+    "explanation": "De lijn begint bij 0 en eindigt bij 6 cm.",
+    "visual": {
+      "unit": "cm",
+      "lineStart": 2,
+      "lineEnd": 8,
+      "rulerTickUnit": 1,
+      "needsAlignment": true
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-meten-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-meten-2",
+    "version": 1,
+    "type": "meten",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "liniaal-gebruiken",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Meet de lijn met de liniaal.",
+    "answer": 4.5,
+    "hints": [
+      "Plaats de nul bij het begin van de lijn.",
+      "Het eind ligt halverwege 4 en 5 cm."
+    ],
+    "explanation": "De lengte is 4,5 cm.",
+    "visual": {
+      "unit": "cm",
+      "lineStart": 1,
+      "lineEnd": 5.5,
+      "rulerTickUnit": 0.5,
+      "needsAlignment": true
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-meten-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-meten-3",
+    "version": 1,
+    "type": "meten",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "liniaal-gebruiken",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Meet de lijn in millimeters.",
+    "answer": 35,
+    "hints": [
+      "Begin bij nul en lees millimeters.",
+      "Elke centimeter bevat tien millimeter."
+    ],
+    "explanation": "3,5 cm is 35 mm.",
+    "visual": {
+      "unit": "mm",
+      "lineStart": 10,
+      "lineEnd": 45,
+      "rulerTickUnit": 1,
+      "needsAlignment": true
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-meten-1",
+      "demo-meten-2"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-wegen-1",
+    "version": 1,
+    "type": "wegen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "gewicht-samenstellen",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Maak 750 gram op de balans.",
+    "answer": {
+      "grams": 750
+    },
+    "hints": [
+      "Kies eerst een groot gewicht.",
+      "500 gram en 250 gram samen kunnen helpen."
+    ],
+    "explanation": "500 + 250 = 750 gram.",
+    "visual": {
+      "targetGrams": 750,
+      "availableWeights": [
+        500,
+        250,
+        100,
+        50
+      ],
+      "allowRepeated": false
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-wegen-2",
+      "demo-wegen-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-wegen-2",
+    "version": 1,
+    "type": "wegen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "gewicht-samenstellen",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Maak 1 kilogram op de balans.",
+    "answer": {
+      "grams": 1000
+    },
+    "hints": [
+      "Een kilogram is duizend gram.",
+      "Twee gewichten van 500 gram zijn genoeg."
+    ],
+    "explanation": "500 + 500 = 1000 gram = 1 kilogram.",
+    "visual": {
+      "targetGrams": 1000,
+      "availableWeights": [
+        500,
+        250,
+        100
+      ],
+      "allowRepeated": true
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-wegen-1",
+      "demo-wegen-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-wegen-3",
+    "version": 1,
+    "type": "wegen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "gewicht-samenstellen",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Maak 1250 gram op de balans.",
+    "answer": {
+      "grams": 1250
+    },
+    "hints": [
+      "Splits in duizend gram en de rest.",
+      "Neem 1000 gram en 250 gram."
+    ],
+    "explanation": "1000 + 250 = 1250 gram.",
+    "visual": {
+      "targetGrams": 1250,
+      "availableWeights": [
+        1000,
+        500,
+        250
+      ],
+      "allowRepeated": false
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-wegen-1",
+      "demo-wegen-2"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-bouwen-1",
+    "version": 1,
+    "type": "bouwen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "blok-aanzicht",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Bouw een toren van 3 blokken.",
+    "answer": {
+      "heightGrid": [
+        [
+          3
+        ]
+      ]
+    },
+    "hints": [
+      "Zet de blokken recht boven elkaar.",
+      "Elke klik voegt één blok toe."
+    ],
+    "explanation": "Drie blokken boven elkaar maken een toren van hoogte 3.",
+    "visual": {
+      "grid": [
+        1,
+        1
+      ],
+      "maxHeight": 5,
+      "targetViews": {
+        "front": [
+          3
+        ],
+        "side": [
+          3
+        ]
+      }
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-bouwen-2",
+      "demo-bouwen-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-bouwen-2",
+    "version": 1,
+    "type": "bouwen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "blok-aanzicht",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Bouw twee kolommen: links 2 hoog, rechts 1 hoog.",
+    "answer": {
+      "heightGrid": [
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    "hints": [
+      "Kijk naar beide kolommen afzonderlijk.",
+      "Voeg links twee blokken toe en rechts één."
+    ],
+    "explanation": "De hoogte van links is 2, van rechts 1.",
+    "visual": {
+      "grid": [
+        1,
+        2
+      ],
+      "maxHeight": 4,
+      "targetViews": {
+        "front": [
+          2,
+          1
+        ],
+        "top": [
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-bouwen-1",
+      "demo-bouwen-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-bouwen-3",
+    "version": 1,
+    "type": "bouwen",
+    "subjectId": "rekenen",
+    "topicId": "meten",
+    "learningGoalId": "blok-aanzicht",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Bouw een vierkant vlak van 4 blokken.",
+    "answer": {
+      "heightGrid": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    "hints": [
+      "Gebruik twee rijen en twee kolommen.",
+      "Elke cel krijgt één blok."
+    ],
+    "explanation": "Een laag van 2 × 2 bevat vier blokken.",
+    "visual": {
+      "grid": [
+        2,
+        2
+      ],
+      "maxHeight": 3,
+      "targetViews": {
+        "top": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "front": [
+          1,
+          1
+        ],
+        "side": [
+          1,
+          1
+        ]
+      }
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-bouwen-1",
+      "demo-bouwen-2"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-coordinaten-1",
+    "version": 1,
+    "type": "coordinaten",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "rooster-coordinaten",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Plaats het punt op (3, 2).",
+    "answer": [
+      3,
+      2
+    ],
+    "hints": [
+      "Lees eerst de horizontale as.",
+      "Ga 3 naar rechts en daarna 2 omhoog."
+    ],
+    "explanation": "Het punt ligt bij x=3, y=2.",
+    "visual": {
+      "grid": [
+        0,
+        5,
+        0,
+        5
+      ],
+      "axisDirection": "y-up"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-coordinaten-2",
+      "demo-coordinaten-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-coordinaten-2",
+    "version": 1,
+    "type": "coordinaten",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "rooster-coordinaten",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Plaats het punt op (1, 4).",
+    "answer": [
+      1,
+      4
+    ],
+    "hints": [
+      "Het eerste getal is x.",
+      "Ga 1 naar rechts en 4 omhoog."
+    ],
+    "explanation": "Het punt ligt bij x=1, y=4.",
+    "visual": {
+      "grid": [
+        0,
+        5,
+        0,
+        5
+      ],
+      "axisDirection": "y-up"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-coordinaten-1",
+      "demo-coordinaten-3"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-coordinaten-3",
+    "version": 1,
+    "type": "coordinaten",
+    "subjectId": "aardrijkskunde",
+    "topicId": "europa",
+    "learningGoalId": "rooster-coordinaten",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Plaats het punt op (5, 1).",
+    "answer": [
+      5,
+      1
+    ],
+    "hints": [
+      "Zoek eerst vijf op de horizontale as.",
+      "Vanaf daar ga je één omhoog."
+    ],
+    "explanation": "Het punt ligt bij x=5, y=1.",
+    "visual": {
+      "grid": [
+        0,
+        6,
+        0,
+        5
+      ],
+      "axisDirection": "y-up"
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-coordinaten-1",
+      "demo-coordinaten-2"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-model-vullen-1",
+    "version": 1,
+    "type": "model-vullen",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-model",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Kleur 3/4 van de strook.",
+    "answer": {
+      "selectedCount": 3,
+      "totalEqualParts": 4
+    },
+    "hints": [
+      "De noemer zegt hoeveel gelijke delen er zijn.",
+      "Kleur drie van de vier gelijke vakken."
+    ],
+    "explanation": "3/4 betekent drie van vier gelijke delen.",
+    "visual": {
+      "shape": "bar",
+      "parts": 4
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-model-vullen-2"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-model-vullen-2",
+    "version": 1,
+    "type": "model-vullen",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-model",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Kleur 1/2 van de strook met 8 vakken.",
+    "answer": {
+      "selectedCount": 4,
+      "totalEqualParts": 8
+    },
+    "hints": [
+      "Je kleurt de helft van de vakken.",
+      "8 ÷ 2 = 4."
+    ],
+    "explanation": "Vier van acht vakken is de helft: 4/8 = 1/2.",
+    "visual": {
+      "shape": "bar",
+      "parts": 8
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [
+      "demo-model-vullen-1"
+    ],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "available"
+    }
+  },
+  {
+    "id": "demo-model-vullen-3",
+    "version": 1,
+    "type": "model-vullen",
+    "subjectId": "rekenen",
+    "topicId": "procenten",
+    "learningGoalId": "procent-model",
+    "prerequisites": [],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Kleur 25% van het rooster.",
+    "answer": {
+      "selectedCount": 1,
+      "totalEqualParts": 4
+    },
+    "hints": [
+      "25% is een kwart.",
+      "Het rooster heeft vier gelijke vakken."
+    ],
+    "explanation": "Eén van vier gelijke vakken is 25%.",
+    "visual": {
+      "shape": "grid",
+      "columns": 2,
+      "rows": 2,
+      "parts": 4
+    },
+    "options": [],
+    "bareEquivalent": null,
+    "followUpPool": [],
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-07",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null,
+      "followUpCoverage": "needs-authored-alternative"
+    }
+  }
+]

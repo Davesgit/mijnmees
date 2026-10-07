@@ -1,0 +1,148 @@
+{
+  "regions": [
+    {
+      "id": "west",
+      "name": "West-Europa",
+      "basic": [
+        "FR",
+        "NL",
+        "BE",
+        "DE",
+        "LU",
+        "GB",
+        "IE"
+      ],
+      "extra": []
+    },
+    {
+      "id": "north",
+      "name": "Noord-Europa",
+      "basic": [
+        "NO",
+        "SE",
+        "FI",
+        "DK",
+        "IS"
+      ],
+      "extra": []
+    },
+    {
+      "id": "south",
+      "name": "Zuid-Europa",
+      "basic": [
+        "ES",
+        "PT",
+        "IT",
+        "GR",
+        "MT",
+        "CY"
+      ],
+      "extra": [
+        "AD",
+        "MC",
+        "SM",
+        "VA"
+      ]
+    },
+    {
+      "id": "central",
+      "name": "Midden-Europa",
+      "basic": [
+        "CH",
+        "AT",
+        "PL",
+        "CZ",
+        "SK",
+        "HU"
+      ],
+      "extra": [
+        "LI"
+      ]
+    },
+    {
+      "id": "east",
+      "name": "Oost-Europa",
+      "basic": [
+        "EE",
+        "LV",
+        "LT",
+        "UA",
+        "RU"
+      ],
+      "extra": [
+        "BY",
+        "MD"
+      ]
+    },
+    {
+      "id": "southeast",
+      "name": "Zuidoost-Europa",
+      "basic": [
+        "SI",
+        "HR",
+        "BA",
+        "RS",
+        "AL",
+        "RO",
+        "BG"
+      ],
+      "extra": [
+        "ME",
+        "MK",
+        "XK",
+        "TR"
+      ]
+    }
+  ],
+  "defaultRegion": "west",
+  "defaultTier": "basic",
+  "note": "Aanpasbare lesindeling, geen officiële regionale classificatie of voorgeschreven schoolvolgorde. Basislanden ontleend aan de SLO basislijst; microstaten en aanvullende landen in Uitbreiding.",
+  "reference": "https://www.slo.nl/publish/pages/16845/topografie_basisonderwijs.pdf",
+  "physicalRegions": {
+    "atlantic": [
+      "west",
+      "north",
+      "south"
+    ],
+    "north-sea": [
+      "west",
+      "north"
+    ],
+    "baltic": [
+      "north",
+      "east"
+    ],
+    "mediterranean": [
+      "south",
+      "southeast"
+    ],
+    "black-sea": [
+      "east",
+      "southeast"
+    ],
+    "rhine": [
+      "west",
+      "central"
+    ],
+    "danube": [
+      "central",
+      "southeast",
+      "east"
+    ],
+    "volga": [
+      "east"
+    ],
+    "alps": [
+      "central"
+    ],
+    "pyrenees": [
+      "west",
+      "south"
+    ],
+    "carpathians": [
+      "central",
+      "east",
+      "southeast"
+    ]
+  }
+}

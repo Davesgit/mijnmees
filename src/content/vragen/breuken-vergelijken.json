@@ -1,0 +1,1802 @@
+[
+  {
+    "id": "bv-makkelijk-01",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        5
+      ],
+      "rechts": [
+        4,
+        5
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Kijk naar de noemers. Wat valt je op?",
+      "De noemers zijn gelijk. Dan vergelijk je de tellers: 2 en 4."
+    ],
+    "explanation": "De noemers zijn gelijk, dus de stukjes zijn even groot. 2 stukjes is minder dan 4 stukjes. Dus 2/5 < 4/5.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-02",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        5,
+        8
+      ],
+      "rechts": [
+        3,
+        8
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Kijk naar de noemers. Wat valt je op?",
+      "De noemers zijn gelijk. Dan vergelijk je de tellers: 5 en 3."
+    ],
+    "explanation": "De noemers zijn gelijk, dus de stukjes zijn even groot. 5 stukjes is meer dan 3 stukjes. Dus 5/8 > 3/8.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-03",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        6
+      ],
+      "rechts": [
+        5,
+        6
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Kijk naar de noemers. Wat valt je op?",
+      "De noemers zijn gelijk. Dan vergelijk je de tellers: 3 en 5."
+    ],
+    "explanation": "De noemers zijn gelijk, dus de stukjes zijn even groot. 3 stukjes is minder dan 5 stukjes. Dus 3/6 < 5/6.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-04",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        7,
+        10
+      ],
+      "rechts": [
+        4,
+        10
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Kijk naar de noemers. Wat valt je op?",
+      "De noemers zijn gelijk. Dan vergelijk je de tellers: 7 en 4."
+    ],
+    "explanation": "De noemers zijn gelijk, dus de stukjes zijn even groot. 7 stukjes is meer dan 4 stukjes. Dus 7/10 > 4/10.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-05",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        7
+      ],
+      "rechts": [
+        5,
+        7
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Kijk naar de noemers. Wat valt je op?",
+      "De noemers zijn gelijk. Dan vergelijk je de tellers: 3 en 5."
+    ],
+    "explanation": "De noemers zijn gelijk, dus de stukjes zijn even groot. 3 stukjes is minder dan 5 stukjes. Dus 3/7 < 5/7.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-06",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        3
+      ],
+      "rechts": [
+        1,
+        5
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Kijk naar de tellers. Wat valt je op?",
+      "De tellers zijn gelijk. Hoe groter de noemer, hoe kleiner elk stukje. Vergelijk 3 en 5."
+    ],
+    "explanation": "Bij 1/3 verdeel je het geheel in 3 stukjes, bij 1/5 in 5 stukjes. Meer stukjes betekent kleinere stukjes. Dus 1/3 > 1/5.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-07",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        2
+      ],
+      "rechts": [
+        1,
+        4
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Kijk naar de tellers. Wat valt je op?",
+      "De tellers zijn gelijk. Hoe groter de noemer, hoe kleiner elk stukje. Vergelijk 2 en 4."
+    ],
+    "explanation": "Bij 1/2 verdeel je het geheel in 2 stukjes, bij 1/4 in 4 stukjes. Meer stukjes betekent kleinere stukjes. Dus 1/2 > 1/4.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-08",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        9
+      ],
+      "rechts": [
+        2,
+        5
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Kijk naar de tellers. Wat valt je op?",
+      "De tellers zijn gelijk. Hoe groter de noemer, hoe kleiner elk stukje. Vergelijk 9 en 5."
+    ],
+    "explanation": "Bij 2/9 verdeel je het geheel in 9 stukjes, bij 2/5 in 5 stukjes. Meer stukjes betekent kleinere stukjes. Dus 2/9 < 2/5.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-09",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        4
+      ],
+      "rechts": [
+        3,
+        8
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Kijk naar de tellers. Wat valt je op?",
+      "De tellers zijn gelijk. Hoe groter de noemer, hoe kleiner elk stukje. Vergelijk 4 en 8."
+    ],
+    "explanation": "Bij 3/4 verdeel je het geheel in 4 stukjes, bij 3/8 in 8 stukjes. Meer stukjes betekent kleinere stukjes. Dus 3/4 > 3/8.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-10",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        3
+      ],
+      "rechts": [
+        1,
+        6
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Kijk naar de tellers. Wat valt je op?",
+      "De tellers zijn gelijk. Hoe groter de noemer, hoe kleiner elk stukje. Vergelijk 3 en 6."
+    ],
+    "explanation": "Bij 1/3 verdeel je het geheel in 3 stukjes, bij 1/6 in 6 stukjes. Meer stukjes betekent kleinere stukjes. Dus 1/3 > 1/6.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-11",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        4,
+        9
+      ],
+      "rechts": [
+        7,
+        9
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Kijk naar de noemers. Wat valt je op?",
+      "De noemers zijn gelijk. Dan vergelijk je de tellers: 4 en 7."
+    ],
+    "explanation": "De noemers zijn gelijk, dus de stukjes zijn even groot. 4 stukjes is minder dan 7 stukjes. Dus 4/9 < 7/9.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-makkelijk-12",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "makkelijk",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        10
+      ],
+      "rechts": [
+        3,
+        4
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Kijk naar de tellers. Wat valt je op?",
+      "De tellers zijn gelijk. Hoe groter de noemer, hoe kleiner elk stukje. Vergelijk 10 en 4."
+    ],
+    "explanation": "Bij 3/10 verdeel je het geheel in 10 stukjes, bij 3/4 in 4 stukjes. Meer stukjes betekent kleinere stukjes. Dus 3/10 < 3/4.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-01",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        2
+      ],
+      "rechts": [
+        3,
+        4
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 4: 1/2 = 2/4."
+    ],
+    "explanation": "1/2 = 2/4. 2/4 is minder dan 3/4. Dus 1/2 < 3/4.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-02",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        3
+      ],
+      "rechts": [
+        5,
+        6
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 6: 2/3 = 4/6."
+    ],
+    "explanation": "2/3 = 4/6. 4/6 is minder dan 5/6. Dus 2/3 < 5/6.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-03",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        4
+      ],
+      "rechts": [
+        5,
+        8
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 8: 3/4 = 6/8."
+    ],
+    "explanation": "3/4 = 6/8. 6/8 is meer dan 5/8. Dus 3/4 > 5/8.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-04",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        2
+      ],
+      "rechts": [
+        2,
+        4
+      ]
+    },
+    "answer": "=",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 4: 1/2 = 2/4."
+    ],
+    "explanation": "1/2 = 2/4. Ze zijn dus even groot. Dus 1/2 = 2/4.",
+    "antwoordInWoorden": "gelijk aan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-05",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        5
+      ],
+      "rechts": [
+        7,
+        10
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 10: 3/5 = 6/10."
+    ],
+    "explanation": "3/5 = 6/10. 6/10 is minder dan 7/10. Dus 3/5 < 7/10.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-06",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        3
+      ],
+      "rechts": [
+        2,
+        6
+      ]
+    },
+    "answer": "=",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 6: 1/3 = 2/6."
+    ],
+    "explanation": "1/3 = 2/6. Ze zijn dus even groot. Dus 1/3 = 2/6.",
+    "antwoordInWoorden": "gelijk aan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-07",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        5,
+        6
+      ],
+      "rechts": [
+        2,
+        3
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 6: 2/3 = 4/6."
+    ],
+    "explanation": "2/3 = 4/6. 5/6 is meer dan 4/6. Dus 5/6 > 2/3.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-08",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        8
+      ],
+      "rechts": [
+        1,
+        4
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 8: 1/4 = 2/8."
+    ],
+    "explanation": "1/4 = 2/8. 3/8 is meer dan 2/8. Dus 3/8 > 1/4.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-09",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        2
+      ],
+      "rechts": [
+        3,
+        8
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 8: 1/2 = 4/8."
+    ],
+    "explanation": "1/2 = 4/8. 4/8 is meer dan 3/8. Dus 1/2 > 3/8.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-10",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        4,
+        5
+      ],
+      "rechts": [
+        9,
+        10
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 10: 4/5 = 8/10."
+    ],
+    "explanation": "4/5 = 8/10. 8/10 is minder dan 9/10. Dus 4/5 < 9/10.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-11",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        4
+      ],
+      "rechts": [
+        3,
+        6
+      ]
+    },
+    "answer": "=",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 12: 2/4 = 6/12 en 3/6 = 6/12."
+    ],
+    "explanation": "2/4 = 6/12 en 3/6 = 6/12. Ze zijn dus even groot. Dus 2/4 = 3/6.",
+    "antwoordInWoorden": "gelijk aan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-past-bij-mij-12",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "past-bij-mij",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        7,
+        12
+      ],
+      "rechts": [
+        2,
+        3
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 12: 2/3 = 8/12."
+    ],
+    "explanation": "2/3 = 8/12. 7/12 is minder dan 8/12. Dus 7/12 < 2/3.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-01",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        3
+      ],
+      "rechts": [
+        3,
+        5
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 15: 2/3 = 10/15 en 3/5 = 9/15."
+    ],
+    "explanation": "2/3 = 10/15 en 3/5 = 9/15. 10/15 is meer dan 9/15. Dus 2/3 > 3/5.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-02",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        4
+      ],
+      "rechts": [
+        4,
+        5
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 20: 3/4 = 15/20 en 4/5 = 16/20."
+    ],
+    "explanation": "3/4 = 15/20 en 4/5 = 16/20. 15/20 is minder dan 16/20. Dus 3/4 < 4/5.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-03",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        1,
+        3
+      ],
+      "rechts": [
+        2,
+        5
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 15: 1/3 = 5/15 en 2/5 = 6/15."
+    ],
+    "explanation": "1/3 = 5/15 en 2/5 = 6/15. 5/15 is minder dan 6/15. Dus 1/3 < 2/5.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-04",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        5,
+        6
+      ],
+      "rechts": [
+        7,
+        9
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 18: 5/6 = 15/18 en 7/9 = 14/18."
+    ],
+    "explanation": "5/6 = 15/18 en 7/9 = 14/18. 15/18 is meer dan 14/18. Dus 5/6 > 7/9.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-05",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        7
+      ],
+      "rechts": [
+        1,
+        2
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 14: 3/7 = 6/14 en 1/2 = 7/14."
+    ],
+    "explanation": "3/7 = 6/14 en 1/2 = 7/14. 6/14 is minder dan 7/14. Dus 3/7 < 1/2.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-06",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        5
+      ],
+      "rechts": [
+        3,
+        8
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 40: 2/5 = 16/40 en 3/8 = 15/40."
+    ],
+    "explanation": "2/5 = 16/40 en 3/8 = 15/40. 16/40 is meer dan 15/40. Dus 2/5 > 3/8.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-07",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        4,
+        6
+      ],
+      "rechts": [
+        6,
+        9
+      ]
+    },
+    "answer": "=",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 18: 4/6 = 12/18 en 6/9 = 12/18."
+    ],
+    "explanation": "4/6 = 12/18 en 6/9 = 12/18. Ze zijn dus even groot. Dus 4/6 = 6/9.",
+    "antwoordInWoorden": "gelijk aan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-08",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        5,
+        8
+      ],
+      "rechts": [
+        2,
+        3
+      ]
+    },
+    "answer": "<",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 24: 5/8 = 15/24 en 2/3 = 16/24."
+    ],
+    "explanation": "5/8 = 15/24 en 2/3 = 16/24. 15/24 is minder dan 16/24. Dus 5/8 < 2/3.",
+    "antwoordInWoorden": "kleiner dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-09",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        3,
+        10
+      ],
+      "rechts": [
+        1,
+        4
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 20: 3/10 = 6/20 en 1/4 = 5/20."
+    ],
+    "explanation": "3/10 = 6/20 en 1/4 = 5/20. 6/20 is meer dan 5/20. Dus 3/10 > 1/4.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-10",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        7,
+        8
+      ],
+      "rechts": [
+        5,
+        6
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 24: 7/8 = 21/24 en 5/6 = 20/24."
+    ],
+    "explanation": "7/8 = 21/24 en 5/6 = 20/24. 21/24 is meer dan 20/24. Dus 7/8 > 5/6.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-11",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        2,
+        9
+      ],
+      "rechts": [
+        1,
+        6
+      ]
+    },
+    "answer": ">",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 18: 2/9 = 4/18 en 1/6 = 3/18."
+    ],
+    "explanation": "2/9 = 4/18 en 1/6 = 3/18. 4/18 is meer dan 3/18. Dus 2/9 > 1/6.",
+    "antwoordInWoorden": "groter dan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  },
+  {
+    "id": "bv-uitdagend-12",
+    "version": 1,
+    "type": "meerkeuze",
+    "subjectId": "rekenen",
+    "topicId": "breuken",
+    "learningGoalId": "breuken-vergelijken",
+    "prerequisites": [
+      "breuken-model"
+    ],
+    "groupRange": [
+      5,
+      8
+    ],
+    "difficulty": "uitdagend",
+    "prompt": "Welk teken hoort ertussen?",
+    "instructie": "Kies het juiste teken.",
+    "options": [
+      "<",
+      "=",
+      ">"
+    ],
+    "visual": {
+      "soort": "breuk-vergelijking",
+      "links": [
+        4,
+        10
+      ],
+      "rechts": [
+        2,
+        5
+      ]
+    },
+    "answer": "=",
+    "hints": [
+      "Maak de noemers gelijk. Dan zijn de stukjes even groot.",
+      "Schrijf beide breuken met noemer 10: 2/5 = 4/10."
+    ],
+    "explanation": "2/5 = 4/10. Ze zijn dus even groot. Dus 4/10 = 2/5.",
+    "antwoordInWoorden": "gelijk aan",
+    "curriculum": {
+      "source": "Mees demonstratie",
+      "version": "2026-10-08",
+      "status": "review-required"
+    },
+    "review": {
+      "status": "demo-only",
+      "reviewerId": null
+    }
+  }
+]

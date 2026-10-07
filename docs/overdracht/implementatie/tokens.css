@@ -1,0 +1,72 @@
+/* Tailwind v4: import after @import "tailwindcss". For v3 map the same tokens in config. */
+@theme {
+  --color-merk-blauw: #0789F8;
+  --color-actie-blauw: #005FCC;
+  --color-actie-hover: #0054B5;
+  --color-actie-ingedrukt: #00479A;
+  --color-inkt: #111D55;
+  --color-tekst-zacht: #4A5878;
+  --color-wit: #FFFFFF;
+  --color-achtergrond-zacht: #F6F9FD;
+  --color-blauw-zacht: #EAF5FF;
+  --color-rand-zacht: #C8DDF0;
+  --color-rand-interactief: #66809E;
+  --color-focus: #111D55;
+  --color-geel: #FFBF24;
+  --color-succes: #166534;
+  --color-succes-zacht: #ECFDF3;
+  --color-probeer-opnieuw: #854D0E;
+  --color-probeer-opnieuw-zacht: #FFF7E6;
+  --color-fout: #B91C1C;
+  --color-fout-zacht: #FEF2F2;
+  --color-uitgeschakeld-vlak: #E2E8F0;
+  --color-uitgeschakeld-tekst: #475569;
+  --color-vak-rekenen: #005FCC;
+  --color-vak-aardrijkskunde: #0F766E;
+  --color-vak-taal: #6D28D9;
+  --font-mees: "Nunito Sans", system-ui, sans-serif;
+  --radius-invoer: 12px;
+  --radius-kaart: 16px;
+  --radius-dialoog: 20px;
+}
+:root {
+  --merk-blauw: #0789F8;
+  --actie-blauw: #005FCC;
+  --actie-hover: #0054B5;
+  --actie-ingedrukt: #00479A;
+  --inkt: #111D55;
+  --tekst-zacht: #4A5878;
+  --wit: #FFFFFF;
+  --achtergrond-zacht: #F6F9FD;
+  --blauw-zacht: #EAF5FF;
+  --rand-zacht: #C8DDF0;
+  --rand-interactief: #66809E;
+  --focus: #111D55;
+  --geel: #FFBF24;
+  --succes: #166534;
+  --succes-zacht: #ECFDF3;
+  --probeer-opnieuw: #854D0E;
+  --probeer-opnieuw-zacht: #FFF7E6;
+  --fout: #B91C1C;
+  --fout-zacht: #FEF2F2;
+  --uitgeschakeld-vlak: #E2E8F0;
+  --uitgeschakeld-tekst: #475569;
+  --vak-rekenen: #005FCC;
+  --vak-aardrijkskunde: #0F766E;
+  --vak-taal: #6D28D9;
+}
+html { font-size:16px; } body { margin:0; color:var(--inkt); background:var(--wit); font-family:"Nunito Sans",system-ui,sans-serif; font-size:18px; line-height:1.6; }
+*,*::before,*::after { box-sizing:border-box; }
+button,input,select,textarea { font:inherit; }
+button,[role="button"] { min-height:48px; }
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible { outline:3px solid var(--focus); outline-offset:3px; box-shadow:0 0 0 2px var(--wit); }
+.PrimaireKnop { min-height:48px; padding:12px 24px; border:0; border-radius:999px; background:var(--actie-blauw); color:var(--wit); font-size:16px; font-weight:700; }
+@media(hover:hover) { .PrimaireKnop:not(:disabled):hover { background:var(--actie-hover); } }
+.PrimaireKnop:not(:disabled):active { background:var(--actie-ingedrukt); }
+.PrimaireKnop:disabled { background:var(--uitgeschakeld-vlak); color:var(--uitgeschakeld-tekst); cursor:default; }
+.MeesContent { max-width:1200px; margin-inline:auto; padding:24px 16px; }
+.OefenBediening { background:var(--wit); padding-bottom:max(16px,env(safe-area-inset-bottom)); }
+@media(min-width:768px) { .MeesContent { padding:32px 24px; } }
+@media(min-width:1024px) { .MeesContent { padding:48px 32px; } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+[data-rustige-overgangen="true"] *,[data-rustige-overgangen="true"] *::before,[data-rustige-overgangen="true"] *::after { animation:none!important; transition:none!important; }
