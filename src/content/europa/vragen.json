@@ -1,0 +1,2894 @@
+[
+ {
+  "id": "country-FR",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Frankrijk?",
+  "doel": "FR",
+  "hint": "Frankrijk ligt ten zuiden van België en grenst aan de Atlantische Oceaan."
+ },
+ {
+  "id": "identify-FR",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "FR",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "FR"
+ },
+ {
+  "id": "country-AL",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Albanië?",
+  "doel": "AL",
+  "hint": "Zoek in de buurt van Tirana. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-AL",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "AL",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "AL"
+ },
+ {
+  "id": "country-AD",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Andorra?",
+  "doel": "AD",
+  "hint": "Zoek in de buurt van Andorra la Vella. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-AD",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "AD",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "AD"
+ },
+ {
+  "id": "country-BY",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Belarus?",
+  "doel": "BY",
+  "hint": "Zoek in de buurt van Minsk. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-BY",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "BY",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "BY"
+ },
+ {
+  "id": "country-BE",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt België?",
+  "doel": "BE",
+  "hint": "Zoek in de buurt van Brussel. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-BE",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "BE",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "BE"
+ },
+ {
+  "id": "country-BA",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Bosnië en Herzegovina?",
+  "doel": "BA",
+  "hint": "Zoek in de buurt van Sarajevo. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-BA",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "BA",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "BA"
+ },
+ {
+  "id": "country-BG",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Bulgarije?",
+  "doel": "BG",
+  "hint": "Zoek in de buurt van Sofia. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-BG",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "BG",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "BG"
+ },
+ {
+  "id": "country-CY",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Cyprus?",
+  "doel": "CY",
+  "hint": "Zoek in de buurt van Nicosia. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-CY",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "CY",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "CY"
+ },
+ {
+  "id": "country-DK",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Denemarken?",
+  "doel": "DK",
+  "hint": "Zoek in de buurt van København. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-DK",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "DK",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "DK"
+ },
+ {
+  "id": "country-DE",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Duitsland?",
+  "doel": "DE",
+  "hint": "Zoek in de buurt van Berlijn. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-DE",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "DE",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "DE"
+ },
+ {
+  "id": "country-EE",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Estland?",
+  "doel": "EE",
+  "hint": "Zoek in de buurt van Tallinn. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-EE",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "EE",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "EE"
+ },
+ {
+  "id": "country-FI",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Finland?",
+  "doel": "FI",
+  "hint": "Zoek in de buurt van Helsinki. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-FI",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "FI",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "FI"
+ },
+ {
+  "id": "country-GR",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Griekenland?",
+  "doel": "GR",
+  "hint": "Zoek in de buurt van Athene. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-GR",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "GR",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "GR"
+ },
+ {
+  "id": "country-HU",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Hongarije?",
+  "doel": "HU",
+  "hint": "Zoek in de buurt van Boedapest. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-HU",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "HU",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "HU"
+ },
+ {
+  "id": "country-IS",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt IJsland?",
+  "doel": "IS",
+  "hint": "Zoek in de buurt van Reykjavík. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-IS",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "IS",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "IS"
+ },
+ {
+  "id": "country-IE",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Ierland?",
+  "doel": "IE",
+  "hint": "Zoek in de buurt van Dublin. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-IE",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "IE",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "IE"
+ },
+ {
+  "id": "country-IT",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Italië?",
+  "doel": "IT",
+  "hint": "Zoek in de buurt van Rome. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-IT",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "IT",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "IT"
+ },
+ {
+  "id": "country-XK",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Kosovo?",
+  "doel": "XK",
+  "hint": "Zoek in de buurt van Pristina. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-XK",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "XK",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "XK"
+ },
+ {
+  "id": "country-HR",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Kroatië?",
+  "doel": "HR",
+  "hint": "Zoek in de buurt van Zagreb. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-HR",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "HR",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "HR"
+ },
+ {
+  "id": "country-LV",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Letland?",
+  "doel": "LV",
+  "hint": "Zoek in de buurt van Riga. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-LV",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "LV",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "LV"
+ },
+ {
+  "id": "country-LI",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Liechtenstein?",
+  "doel": "LI",
+  "hint": "Zoek in de buurt van Vaduz. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-LI",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "LI",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "LI"
+ },
+ {
+  "id": "country-LT",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Litouwen?",
+  "doel": "LT",
+  "hint": "Zoek in de buurt van Vilnius. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-LT",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "LT",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "LT"
+ },
+ {
+  "id": "country-LU",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Luxemburg?",
+  "doel": "LU",
+  "hint": "Zoek in de buurt van Luxemburg. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-LU",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "LU",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "LU"
+ },
+ {
+  "id": "country-MT",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Malta?",
+  "doel": "MT",
+  "hint": "Zoek in de buurt van Valletta. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-MT",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "MT",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "MT"
+ },
+ {
+  "id": "country-MD",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Moldavië?",
+  "doel": "MD",
+  "hint": "Zoek in de buurt van Chișinău. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-MD",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "MD",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "MD"
+ },
+ {
+  "id": "country-MC",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Monaco?",
+  "doel": "MC",
+  "hint": "Zoek in de buurt van Monaco. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-MC",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "MC",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "MC"
+ },
+ {
+  "id": "country-ME",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Montenegro?",
+  "doel": "ME",
+  "hint": "Zoek in de buurt van Podgorica. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-ME",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "ME",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "ME"
+ },
+ {
+  "id": "country-NL",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Nederland?",
+  "doel": "NL",
+  "hint": "Zoek in de buurt van Amsterdam. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-NL",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "NL",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "NL"
+ },
+ {
+  "id": "country-MK",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Noord-Macedonië?",
+  "doel": "MK",
+  "hint": "Zoek in de buurt van Skopje. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-MK",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "MK",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "MK"
+ },
+ {
+  "id": "country-NO",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Noorwegen?",
+  "doel": "NO",
+  "hint": "Zoek in de buurt van Oslo. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-NO",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "NO",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "NO"
+ },
+ {
+  "id": "country-UA",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Oekraïne?",
+  "doel": "UA",
+  "hint": "Zoek in de buurt van Kyiv. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-UA",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "UA",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "UA"
+ },
+ {
+  "id": "country-AT",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Oostenrijk?",
+  "doel": "AT",
+  "hint": "Zoek in de buurt van Wenen. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-AT",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "AT",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "AT"
+ },
+ {
+  "id": "country-PL",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Polen?",
+  "doel": "PL",
+  "hint": "Zoek in de buurt van Warschau. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-PL",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "PL",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "PL"
+ },
+ {
+  "id": "country-PT",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Portugal?",
+  "doel": "PT",
+  "hint": "Zoek in de buurt van Lissabon. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-PT",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "PT",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "PT"
+ },
+ {
+  "id": "country-RO",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Roemenië?",
+  "doel": "RO",
+  "hint": "Zoek in de buurt van Boekarest. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-RO",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "RO",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "RO"
+ },
+ {
+  "id": "country-RU",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Rusland?",
+  "doel": "RU",
+  "hint": "Zoek in de buurt van Moskou. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-RU",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "RU",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "RU"
+ },
+ {
+  "id": "country-SM",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt San Marino?",
+  "doel": "SM",
+  "hint": "Zoek in de buurt van San Marino. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-SM",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "SM",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "SM"
+ },
+ {
+  "id": "country-RS",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Servië?",
+  "doel": "RS",
+  "hint": "Zoek in de buurt van Belgrado. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-RS",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "RS",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "RS"
+ },
+ {
+  "id": "country-SI",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Slovenië?",
+  "doel": "SI",
+  "hint": "Zoek in de buurt van Ljubljana. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-SI",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "SI",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "SI"
+ },
+ {
+  "id": "country-SK",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Slowakije?",
+  "doel": "SK",
+  "hint": "Zoek in de buurt van Bratislava. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-SK",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "SK",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "SK"
+ },
+ {
+  "id": "country-ES",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Spanje?",
+  "doel": "ES",
+  "hint": "Zoek in de buurt van Madrid. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-ES",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "ES",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "ES"
+ },
+ {
+  "id": "country-CZ",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Tsjechië?",
+  "doel": "CZ",
+  "hint": "Zoek in de buurt van Praag. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-CZ",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "CZ",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "CZ"
+ },
+ {
+  "id": "country-TR",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Turkije?",
+  "doel": "TR",
+  "hint": "Zoek in de buurt van Ankara. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-TR",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "TR",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "TR"
+ },
+ {
+  "id": "country-VA",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Vaticaanstad?",
+  "doel": "VA",
+  "hint": "Zoek in de buurt van Vaticaanstad. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-VA",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "VA",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "VA"
+ },
+ {
+  "id": "country-GB",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Verenigd Koninkrijk?",
+  "doel": "GB",
+  "hint": "Zoek in de buurt van Londen. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-GB",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "GB",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "GB"
+ },
+ {
+  "id": "country-SE",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Zweden?",
+  "doel": "SE",
+  "hint": "Zoek in de buurt van Stockholm. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-SE",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "SE",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "SE"
+ },
+ {
+  "id": "country-CH",
+  "module": "countries",
+  "vaardigheid": "country-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Zwitserland?",
+  "doel": "CH",
+  "hint": "Zoek in de buurt van Bern. Gebruik de vorm en ligging van het land."
+ },
+ {
+  "id": "identify-CH",
+  "module": "countries",
+  "vaardigheid": "country-recognition",
+  "type": "choice",
+  "vraag": "Welk land is dit?",
+  "doel": "CH",
+  "hint": "Kijk naar de kust en de landen eromheen.",
+  "markering": "CH"
+ },
+ {
+  "id": "capital-map-CY",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Nicosia?",
+  "doel": "CY-capital",
+  "hint": "Nicosia is de hoofdstad van Cyprus."
+ },
+ {
+  "id": "capital-choice-CY",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Cyprus?",
+  "doel": "CY-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-CY",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Nicosia?",
+  "doel": "CY",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-FR",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Parijs?",
+  "doel": "FR-capital",
+  "hint": "Parijs is de hoofdstad van Frankrijk."
+ },
+ {
+  "id": "capital-choice-FR",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Frankrijk?",
+  "doel": "FR-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-FR",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Parijs?",
+  "doel": "FR",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-UA",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Kyiv?",
+  "doel": "UA-capital",
+  "hint": "Kyiv is de hoofdstad van Oekraïne."
+ },
+ {
+  "id": "capital-choice-UA",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Oekraïne?",
+  "doel": "UA-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-UA",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Kyiv?",
+  "doel": "UA",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-BY",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Minsk?",
+  "doel": "BY-capital",
+  "hint": "Minsk is de hoofdstad van Belarus."
+ },
+ {
+  "id": "capital-choice-BY",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Belarus?",
+  "doel": "BY-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-BY",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Minsk?",
+  "doel": "BY",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-LT",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Vilnius?",
+  "doel": "LT-capital",
+  "hint": "Vilnius is de hoofdstad van Litouwen."
+ },
+ {
+  "id": "capital-choice-LT",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Litouwen?",
+  "doel": "LT-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-LT",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Vilnius?",
+  "doel": "LT",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-RU",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Moskou?",
+  "doel": "RU-capital",
+  "hint": "Moskou is de hoofdstad van Rusland."
+ },
+ {
+  "id": "capital-choice-RU",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Rusland?",
+  "doel": "RU-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-RU",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Moskou?",
+  "doel": "RU",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-CZ",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Praag?",
+  "doel": "CZ-capital",
+  "hint": "Praag is de hoofdstad van Tsjechië."
+ },
+ {
+  "id": "capital-choice-CZ",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Tsjechië?",
+  "doel": "CZ-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-CZ",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Praag?",
+  "doel": "CZ",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-DE",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Berlijn?",
+  "doel": "DE-capital",
+  "hint": "Berlijn is de hoofdstad van Duitsland."
+ },
+ {
+  "id": "capital-choice-DE",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Duitsland?",
+  "doel": "DE-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-DE",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Berlijn?",
+  "doel": "DE",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-EE",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Tallinn?",
+  "doel": "EE-capital",
+  "hint": "Tallinn is de hoofdstad van Estland."
+ },
+ {
+  "id": "capital-choice-EE",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Estland?",
+  "doel": "EE-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-EE",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Tallinn?",
+  "doel": "EE",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-LV",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Riga?",
+  "doel": "LV-capital",
+  "hint": "Riga is de hoofdstad van Letland."
+ },
+ {
+  "id": "capital-choice-LV",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Letland?",
+  "doel": "LV-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-LV",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Riga?",
+  "doel": "LV",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-NO",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Oslo?",
+  "doel": "NO-capital",
+  "hint": "Oslo is de hoofdstad van Noorwegen."
+ },
+ {
+  "id": "capital-choice-NO",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Noorwegen?",
+  "doel": "NO-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-NO",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Oslo?",
+  "doel": "NO",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-SE",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Stockholm?",
+  "doel": "SE-capital",
+  "hint": "Stockholm is de hoofdstad van Zweden."
+ },
+ {
+  "id": "capital-choice-SE",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Zweden?",
+  "doel": "SE-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-SE",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Stockholm?",
+  "doel": "SE",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-FI",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Helsinki?",
+  "doel": "FI-capital",
+  "hint": "Helsinki is de hoofdstad van Finland."
+ },
+ {
+  "id": "capital-choice-FI",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Finland?",
+  "doel": "FI-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-FI",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Helsinki?",
+  "doel": "FI",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-LU",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Luxemburg?",
+  "doel": "LU-capital",
+  "hint": "Luxemburg is de hoofdstad van Luxemburg."
+ },
+ {
+  "id": "capital-choice-LU",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Luxemburg?",
+  "doel": "LU-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-LU",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Luxemburg?",
+  "doel": "LU",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-BE",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Brussel?",
+  "doel": "BE-capital",
+  "hint": "Brussel is de hoofdstad van België."
+ },
+ {
+  "id": "capital-choice-BE",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van België?",
+  "doel": "BE-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-BE",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Brussel?",
+  "doel": "BE",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-MK",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Skopje?",
+  "doel": "MK-capital",
+  "hint": "Skopje is de hoofdstad van Noord-Macedonië."
+ },
+ {
+  "id": "capital-choice-MK",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Noord-Macedonië?",
+  "doel": "MK-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-MK",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Skopje?",
+  "doel": "MK",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-AL",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Tirana?",
+  "doel": "AL-capital",
+  "hint": "Tirana is de hoofdstad van Albanië."
+ },
+ {
+  "id": "capital-choice-AL",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Albanië?",
+  "doel": "AL-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-AL",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Tirana?",
+  "doel": "AL",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-XK",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Pristina?",
+  "doel": "XK-capital",
+  "hint": "Pristina is de hoofdstad van Kosovo."
+ },
+ {
+  "id": "capital-choice-XK",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Kosovo?",
+  "doel": "XK-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-XK",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Pristina?",
+  "doel": "XK",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-TR",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Ankara?",
+  "doel": "TR-capital",
+  "hint": "Ankara is de hoofdstad van Turkije."
+ },
+ {
+  "id": "capital-choice-TR",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Turkije?",
+  "doel": "TR-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-TR",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Ankara?",
+  "doel": "TR",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-ES",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Madrid?",
+  "doel": "ES-capital",
+  "hint": "Madrid is de hoofdstad van Spanje."
+ },
+ {
+  "id": "capital-choice-ES",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Spanje?",
+  "doel": "ES-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-ES",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Madrid?",
+  "doel": "ES",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-DK",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt København?",
+  "doel": "DK-capital",
+  "hint": "København is de hoofdstad van Denemarken."
+ },
+ {
+  "id": "capital-choice-DK",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Denemarken?",
+  "doel": "DK-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-DK",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort København?",
+  "doel": "DK",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-RO",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Boekarest?",
+  "doel": "RO-capital",
+  "hint": "Boekarest is de hoofdstad van Roemenië."
+ },
+ {
+  "id": "capital-choice-RO",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Roemenië?",
+  "doel": "RO-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-RO",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Boekarest?",
+  "doel": "RO",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-HU",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Boedapest?",
+  "doel": "HU-capital",
+  "hint": "Boedapest is de hoofdstad van Hongarije."
+ },
+ {
+  "id": "capital-choice-HU",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Hongarije?",
+  "doel": "HU-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-HU",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Boedapest?",
+  "doel": "HU",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-SK",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Bratislava?",
+  "doel": "SK-capital",
+  "hint": "Bratislava is de hoofdstad van Slowakije."
+ },
+ {
+  "id": "capital-choice-SK",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Slowakije?",
+  "doel": "SK-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-SK",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Bratislava?",
+  "doel": "SK",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-PL",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Warschau?",
+  "doel": "PL-capital",
+  "hint": "Warschau is de hoofdstad van Polen."
+ },
+ {
+  "id": "capital-choice-PL",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Polen?",
+  "doel": "PL-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-PL",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Warschau?",
+  "doel": "PL",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-IE",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Dublin?",
+  "doel": "IE-capital",
+  "hint": "Dublin is de hoofdstad van Ierland."
+ },
+ {
+  "id": "capital-choice-IE",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Ierland?",
+  "doel": "IE-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-IE",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Dublin?",
+  "doel": "IE",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-GB",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Londen?",
+  "doel": "GB-capital",
+  "hint": "Londen is de hoofdstad van Verenigd Koninkrijk."
+ },
+ {
+  "id": "capital-choice-GB",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Verenigd Koninkrijk?",
+  "doel": "GB-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-GB",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Londen?",
+  "doel": "GB",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-GR",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Athene?",
+  "doel": "GR-capital",
+  "hint": "Athene is de hoofdstad van Griekenland."
+ },
+ {
+  "id": "capital-choice-GR",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Griekenland?",
+  "doel": "GR-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-GR",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Athene?",
+  "doel": "GR",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-AT",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Wenen?",
+  "doel": "AT-capital",
+  "hint": "Wenen is de hoofdstad van Oostenrijk."
+ },
+ {
+  "id": "capital-choice-AT",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Oostenrijk?",
+  "doel": "AT-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-AT",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Wenen?",
+  "doel": "AT",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-IT",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Rome?",
+  "doel": "IT-capital",
+  "hint": "Rome is de hoofdstad van Italië."
+ },
+ {
+  "id": "capital-choice-IT",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Italië?",
+  "doel": "IT-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-IT",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Rome?",
+  "doel": "IT",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-CH",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Bern?",
+  "doel": "CH-capital",
+  "hint": "Bern is de hoofdstad van Zwitserland."
+ },
+ {
+  "id": "capital-choice-CH",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Zwitserland?",
+  "doel": "CH-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-CH",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Bern?",
+  "doel": "CH",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-NL",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Amsterdam?",
+  "doel": "NL-capital",
+  "hint": "Amsterdam is de hoofdstad van Nederland."
+ },
+ {
+  "id": "capital-choice-NL",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Nederland?",
+  "doel": "NL-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-NL",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Amsterdam?",
+  "doel": "NL",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-LI",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Vaduz?",
+  "doel": "LI-capital",
+  "hint": "Vaduz is de hoofdstad van Liechtenstein."
+ },
+ {
+  "id": "capital-choice-LI",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Liechtenstein?",
+  "doel": "LI-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-LI",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Vaduz?",
+  "doel": "LI",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-RS",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Belgrado?",
+  "doel": "RS-capital",
+  "hint": "Belgrado is de hoofdstad van Servië."
+ },
+ {
+  "id": "capital-choice-RS",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Servië?",
+  "doel": "RS-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-RS",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Belgrado?",
+  "doel": "RS",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-HR",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Zagreb?",
+  "doel": "HR-capital",
+  "hint": "Zagreb is de hoofdstad van Kroatië."
+ },
+ {
+  "id": "capital-choice-HR",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Kroatië?",
+  "doel": "HR-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-HR",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Zagreb?",
+  "doel": "HR",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-SI",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Ljubljana?",
+  "doel": "SI-capital",
+  "hint": "Ljubljana is de hoofdstad van Slovenië."
+ },
+ {
+  "id": "capital-choice-SI",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Slovenië?",
+  "doel": "SI-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-SI",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Ljubljana?",
+  "doel": "SI",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-BG",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Sofia?",
+  "doel": "BG-capital",
+  "hint": "Sofia is de hoofdstad van Bulgarije."
+ },
+ {
+  "id": "capital-choice-BG",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Bulgarije?",
+  "doel": "BG-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-BG",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Sofia?",
+  "doel": "BG",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-SM",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt San Marino?",
+  "doel": "SM-capital",
+  "hint": "San Marino is de hoofdstad van San Marino."
+ },
+ {
+  "id": "capital-choice-SM",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van San Marino?",
+  "doel": "SM-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-SM",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort San Marino?",
+  "doel": "SM",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-MC",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Monaco?",
+  "doel": "MC-capital",
+  "hint": "Monaco is de hoofdstad van Monaco."
+ },
+ {
+  "id": "capital-choice-MC",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Monaco?",
+  "doel": "MC-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-MC",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Monaco?",
+  "doel": "MC",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-AD",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Andorra la Vella?",
+  "doel": "AD-capital",
+  "hint": "Andorra la Vella is de hoofdstad van Andorra."
+ },
+ {
+  "id": "capital-choice-AD",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Andorra?",
+  "doel": "AD-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-AD",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Andorra la Vella?",
+  "doel": "AD",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-ME",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Podgorica?",
+  "doel": "ME-capital",
+  "hint": "Podgorica is de hoofdstad van Montenegro."
+ },
+ {
+  "id": "capital-choice-ME",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Montenegro?",
+  "doel": "ME-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-ME",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Podgorica?",
+  "doel": "ME",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-BA",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Sarajevo?",
+  "doel": "BA-capital",
+  "hint": "Sarajevo is de hoofdstad van Bosnië en Herzegovina."
+ },
+ {
+  "id": "capital-choice-BA",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Bosnië en Herzegovina?",
+  "doel": "BA-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-BA",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Sarajevo?",
+  "doel": "BA",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-PT",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Lissabon?",
+  "doel": "PT-capital",
+  "hint": "Lissabon is de hoofdstad van Portugal."
+ },
+ {
+  "id": "capital-choice-PT",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Portugal?",
+  "doel": "PT-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-PT",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Lissabon?",
+  "doel": "PT",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-MD",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Chișinău?",
+  "doel": "MD-capital",
+  "hint": "Chișinău is de hoofdstad van Moldavië."
+ },
+ {
+  "id": "capital-choice-MD",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Moldavië?",
+  "doel": "MD-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-MD",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Chișinău?",
+  "doel": "MD",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-VA",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Vaticaanstad?",
+  "doel": "VA-capital",
+  "hint": "Vaticaanstad is de hoofdstad van Vaticaanstad."
+ },
+ {
+  "id": "capital-choice-VA",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Vaticaanstad?",
+  "doel": "VA-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-VA",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Vaticaanstad?",
+  "doel": "VA",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-IS",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Reykjavík?",
+  "doel": "IS-capital",
+  "hint": "Reykjavík is de hoofdstad van IJsland."
+ },
+ {
+  "id": "capital-choice-IS",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van IJsland?",
+  "doel": "IS-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-IS",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Reykjavík?",
+  "doel": "IS",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "capital-map-MT",
+  "module": "capitals",
+  "vaardigheid": "capital-location",
+  "type": "map-click",
+  "vraag": "Waar ligt Valletta?",
+  "doel": "MT-capital",
+  "hint": "Valletta is de hoofdstad van Malta."
+ },
+ {
+  "id": "capital-choice-MT",
+  "module": "capitals",
+  "vaardigheid": "capital-name",
+  "type": "choice",
+  "vraag": "Wat is de hoofdstad van Malta?",
+  "doel": "MT-capital",
+  "hint": "Denk aan de hoofdstad die je bij dit land hebt geleerd."
+ },
+ {
+  "id": "capital-country-MT",
+  "module": "capitals",
+  "vaardigheid": "capital-country",
+  "type": "choice",
+  "vraag": "Bij welk land hoort Valletta?",
+  "doel": "MT",
+  "hint": "Zoek het land waarin deze hoofdstad ligt."
+ },
+ {
+  "id": "south-fr",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land ligt ten zuiden van Frankrijk?",
+  "doel": "ES",
+  "hint": "Zuid is naar beneden op deze kaart.",
+  "opties": [
+   {
+    "id": "ES",
+    "label": "Spanje"
+   },
+   {
+    "id": "BE",
+    "label": "België"
+   },
+   {
+    "id": "DE",
+    "label": "Duitsland"
+   },
+   {
+    "id": "NL",
+    "label": "Nederland"
+   }
+  ],
+  "vereist": [
+   "FR",
+   "ES"
+  ],
+  "referentie": "FR",
+  "focus": "ES"
+ },
+ {
+  "id": "east-de",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land ligt ten oosten van Duitsland?",
+  "doel": "PL",
+  "hint": "Oost is naar rechts op deze kaart.",
+  "opties": [
+   {
+    "id": "PL",
+    "label": "Polen"
+   },
+   {
+    "id": "FR",
+    "label": "Frankrijk"
+   },
+   {
+    "id": "BE",
+    "label": "België"
+   },
+   {
+    "id": "NL",
+    "label": "Nederland"
+   }
+  ],
+  "vereist": [
+   "DE",
+   "PL"
+  ],
+  "referentie": "DE",
+  "focus": "PL"
+ },
+ {
+  "id": "neighbor-nl",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land grenst aan Nederland?",
+  "doel": "BE",
+  "hint": "Zoek een land met een gedeelde grens.",
+  "opties": [
+   {
+    "id": "BE",
+    "label": "België"
+   },
+   {
+    "id": "ES",
+    "label": "Spanje"
+   },
+   {
+    "id": "IT",
+    "label": "Italië"
+   },
+   {
+    "id": "AT",
+    "label": "Oostenrijk"
+   }
+  ],
+  "vereist": [
+   "NL",
+   "BE"
+  ],
+  "referentie": "NL",
+  "focus": "BE"
+ },
+ {
+  "id": "travel",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Je reist vanuit Nederland naar Spanje. Welke richting ga je op?",
+  "doel": "SW",
+  "hint": "Spanje ligt lager en meer naar links dan Nederland.",
+  "opties": [
+   {
+    "id": "SW",
+    "label": "Zuidwest"
+   },
+   {
+    "id": "NE",
+    "label": "Noordoost"
+   },
+   {
+    "id": "NW",
+    "label": "Noordwest"
+   },
+   {
+    "id": "SE",
+    "label": "Zuidoost"
+   }
+  ],
+  "vereist": [
+   "NL",
+   "ES"
+  ],
+  "referentie": "NL",
+  "focus": "ES"
+ },
+ {
+  "id": "waters-atlantic",
+  "module": "waters",
+  "vaardigheid": "waters-location",
+  "type": "map-click",
+  "vraag": "Waar ligt de Atlantische Oceaan?",
+  "doel": "atlantic",
+  "hint": "Zoek ten westen van Frankrijk en Spanje."
+ },
+ {
+  "id": "waters-north-sea",
+  "module": "waters",
+  "vaardigheid": "waters-location",
+  "type": "map-click",
+  "vraag": "Waar ligt de Noordzee?",
+  "doel": "north-sea",
+  "hint": "Dit water ligt tussen het Verenigd Koninkrijk en Nederland."
+ },
+ {
+  "id": "waters-baltic",
+  "module": "waters",
+  "vaardigheid": "waters-location",
+  "type": "map-click",
+  "vraag": "Waar ligt de Oostzee?",
+  "doel": "baltic",
+  "hint": "Zoek tussen Zweden en de Baltische landen."
+ },
+ {
+  "id": "waters-mediterranean",
+  "module": "waters",
+  "vaardigheid": "waters-location",
+  "type": "map-click",
+  "vraag": "Waar ligt de Middellandse Zee?",
+  "doel": "mediterranean",
+  "hint": "Zoek ten zuiden van Europa."
+ },
+ {
+  "id": "waters-black-sea",
+  "module": "waters",
+  "vaardigheid": "waters-location",
+  "type": "map-click",
+  "vraag": "Waar ligt de Zwarte Zee?",
+  "doel": "black-sea",
+  "hint": "Zoek tussen Oekraïne en Turkije."
+ },
+ {
+  "id": "rivers-rhine",
+  "module": "rivers",
+  "vaardigheid": "rivers-location",
+  "type": "map-click",
+  "vraag": "Klik de Rijn aan.",
+  "doel": "rhine",
+  "hint": "Deze rivier stroomt via Duitsland naar Nederland."
+ },
+ {
+  "id": "rivers-identify-rhine",
+  "module": "rivers",
+  "vaardigheid": "rivers-recognition",
+  "type": "choice",
+  "vraag": "Welke rivier is gemarkeerd?",
+  "doel": "rhine",
+  "hint": "Kijk naar de ligging op de kaart.",
+  "markering": "rhine"
+ },
+ {
+  "id": "rivers-danube",
+  "module": "rivers",
+  "vaardigheid": "rivers-location",
+  "type": "map-click",
+  "vraag": "Klik de Donau aan.",
+  "doel": "danube",
+  "hint": "Deze rivier stroomt vanuit Duitsland naar de Zwarte Zee."
+ },
+ {
+  "id": "rivers-identify-danube",
+  "module": "rivers",
+  "vaardigheid": "rivers-recognition",
+  "type": "choice",
+  "vraag": "Welke rivier is gemarkeerd?",
+  "doel": "danube",
+  "hint": "Kijk naar de ligging op de kaart.",
+  "markering": "danube"
+ },
+ {
+  "id": "rivers-volga",
+  "module": "rivers",
+  "vaardigheid": "rivers-location",
+  "type": "map-click",
+  "vraag": "Klik de Wolga aan.",
+  "doel": "volga",
+  "hint": "Zoek in het westelijke deel van Rusland."
+ },
+ {
+  "id": "rivers-identify-volga",
+  "module": "rivers",
+  "vaardigheid": "rivers-recognition",
+  "type": "choice",
+  "vraag": "Welke rivier is gemarkeerd?",
+  "doel": "volga",
+  "hint": "Kijk naar de ligging op de kaart.",
+  "markering": "volga"
+ },
+ {
+  "id": "mountains-alps",
+  "module": "mountains",
+  "vaardigheid": "mountains-location",
+  "type": "map-click",
+  "vraag": "Waar liggen de Alpen?",
+  "doel": "alps",
+  "hint": "Zoek in de buurt van Zwitserland en Oostenrijk."
+ },
+ {
+  "id": "mountains-identify-alps",
+  "module": "mountains",
+  "vaardigheid": "mountains-recognition",
+  "type": "choice",
+  "vraag": "Welk gebergte is gekleurd?",
+  "doel": "alps",
+  "hint": "Kijk naar de ligging op de kaart.",
+  "markering": "alps"
+ },
+ {
+  "id": "mountains-pyrenees",
+  "module": "mountains",
+  "vaardigheid": "mountains-location",
+  "type": "map-click",
+  "vraag": "Waar liggen de Pyreneeën?",
+  "doel": "pyrenees",
+  "hint": "Zoek op de grens van Frankrijk en Spanje."
+ },
+ {
+  "id": "mountains-identify-pyrenees",
+  "module": "mountains",
+  "vaardigheid": "mountains-recognition",
+  "type": "choice",
+  "vraag": "Welk gebergte is gekleurd?",
+  "doel": "pyrenees",
+  "hint": "Kijk naar de ligging op de kaart.",
+  "markering": "pyrenees"
+ },
+ {
+  "id": "mountains-carpathians",
+  "module": "mountains",
+  "vaardigheid": "mountains-location",
+  "type": "map-click",
+  "vraag": "Waar liggen de Karpaten?",
+  "doel": "carpathians",
+  "hint": "Zoek de boog van Slowakije naar Roemenië."
+ },
+ {
+  "id": "mountains-identify-carpathians",
+  "module": "mountains",
+  "vaardigheid": "mountains-recognition",
+  "type": "choice",
+  "vraag": "Welk gebergte is gekleurd?",
+  "doel": "carpathians",
+  "hint": "Kijk naar de ligging op de kaart.",
+  "markering": "carpathians"
+ },
+ {
+  "id": "danube-countries",
+  "module": "rivers",
+  "vaardigheid": "river-countries",
+  "type": "choice",
+  "vraag": "Door welke landen loopt de gemarkeerde rivier?",
+  "doel": "danube-route",
+  "hint": "Deze rivier stroomt door Midden- en Zuidoost-Europa.",
+  "markering": "danube"
+ },
+ {
+  "id": "north-relative",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land ligt ten oosten van Zweden?",
+  "doel": "FI",
+  "hint": "Oost is naar rechts op deze kaart.",
+  "opties": [
+   {
+    "id": "FI",
+    "label": "Finland"
+   },
+   {
+    "id": "NO",
+    "label": "Noorwegen"
+   },
+   {
+    "id": "DK",
+    "label": "Denemarken"
+   },
+   {
+    "id": "IS",
+    "label": "IJsland"
+   }
+  ],
+  "vereist": [
+   "SE",
+   "FI"
+  ],
+  "referentie": "SE",
+  "focus": "FI"
+ },
+ {
+  "id": "south-relative",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land grenst ten westen aan Spanje?",
+  "doel": "PT",
+  "hint": "Kijk naar de westelijke grens van Spanje.",
+  "opties": [
+   {
+    "id": "PT",
+    "label": "Portugal"
+   },
+   {
+    "id": "IT",
+    "label": "Italië"
+   },
+   {
+    "id": "GR",
+    "label": "Griekenland"
+   },
+   {
+    "id": "MT",
+    "label": "Malta"
+   }
+  ],
+  "vereist": [
+   "ES",
+   "PT"
+  ],
+  "referentie": "ES",
+  "focus": "PT"
+ },
+ {
+  "id": "central-relative",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land ligt direct ten zuiden van Polen?",
+  "doel": "CZ",
+  "hint": "Zoek een land aan de zuidgrens van Polen.",
+  "opties": [
+   {
+    "id": "CZ",
+    "label": "Tsjechië"
+   },
+   {
+    "id": "CH",
+    "label": "Zwitserland"
+   },
+   {
+    "id": "AT",
+    "label": "Oostenrijk"
+   },
+   {
+    "id": "HU",
+    "label": "Hongarije"
+   }
+  ],
+  "vereist": [
+   "PL",
+   "CZ"
+  ],
+  "referentie": "PL",
+  "focus": "CZ"
+ },
+ {
+  "id": "east-relative",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land ligt direct ten noorden van Litouwen?",
+  "doel": "LV",
+  "hint": "Zoek het buurland aan de noordgrens van Litouwen.",
+  "opties": [
+   {
+    "id": "LV",
+    "label": "Letland"
+   },
+   {
+    "id": "EE",
+    "label": "Estland"
+   },
+   {
+    "id": "UA",
+    "label": "Oekraïne"
+   },
+   {
+    "id": "RU",
+    "label": "Rusland"
+   }
+  ],
+  "vereist": [
+   "LT",
+   "LV"
+  ],
+  "referentie": "LT",
+  "focus": "LV"
+ },
+ {
+  "id": "southeast-relative",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk land grenst direct ten zuiden aan Roemenië?",
+  "doel": "BG",
+  "hint": "Zoek langs de zuidelijke grens van Roemenië.",
+  "opties": [
+   {
+    "id": "BG",
+    "label": "Bulgarije"
+   },
+   {
+    "id": "SI",
+    "label": "Slovenië"
+   },
+   {
+    "id": "HR",
+    "label": "Kroatië"
+   },
+   {
+    "id": "AL",
+    "label": "Albanië"
+   }
+  ],
+  "vereist": [
+   "RO",
+   "BG"
+  ],
+  "referentie": "RO",
+  "focus": "BG"
+ },
+ {
+  "id": "relative-be-south",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten zuiden van België?",
+  "doel": "FR",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "FR",
+    "label": "Frankrijk"
+   },
+   {
+    "id": "NL",
+    "label": "Nederland"
+   },
+   {
+    "id": "DE",
+    "label": "Duitsland"
+   },
+   {
+    "id": "LU",
+    "label": "Luxemburg"
+   }
+  ],
+  "vereist": [
+   "BE",
+   "FR"
+  ],
+  "referentie": "BE",
+  "focus": "FR"
+ },
+ {
+  "id": "relative-nl-east",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten oosten van Nederland?",
+  "doel": "DE",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "DE",
+    "label": "Duitsland"
+   },
+   {
+    "id": "BE",
+    "label": "België"
+   },
+   {
+    "id": "FR",
+    "label": "Frankrijk"
+   },
+   {
+    "id": "GB",
+    "label": "Verenigd Koninkrijk"
+   }
+  ],
+  "vereist": [
+   "NL",
+   "DE"
+  ],
+  "referentie": "NL",
+  "focus": "DE"
+ },
+ {
+  "id": "relative-fr-north",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten noorden van Frankrijk?",
+  "doel": "GB",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "GB",
+    "label": "Verenigd Koninkrijk"
+   },
+   {
+    "id": "NL",
+    "label": "Nederland"
+   },
+   {
+    "id": "BE",
+    "label": "België"
+   },
+   {
+    "id": "IE",
+    "label": "Ierland"
+   }
+  ],
+  "vereist": [
+   "FR",
+   "GB"
+  ],
+  "referentie": "FR",
+  "focus": "GB"
+ },
+ {
+  "id": "relative-se-west",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten westen van Zweden?",
+  "doel": "NO",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "NO",
+    "label": "Noorwegen"
+   },
+   {
+    "id": "FI",
+    "label": "Finland"
+   },
+   {
+    "id": "DK",
+    "label": "Denemarken"
+   },
+   {
+    "id": "IS",
+    "label": "IJsland"
+   }
+  ],
+  "vereist": [
+   "SE",
+   "NO"
+  ],
+  "referentie": "SE",
+  "focus": "NO"
+ },
+ {
+  "id": "relative-pt-east",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten oosten van Portugal?",
+  "doel": "ES",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "ES",
+    "label": "Spanje"
+   },
+   {
+    "id": "IT",
+    "label": "Italië"
+   },
+   {
+    "id": "GR",
+    "label": "Griekenland"
+   },
+   {
+    "id": "MT",
+    "label": "Malta"
+   }
+  ],
+  "vereist": [
+   "PT",
+   "ES"
+  ],
+  "referentie": "PT",
+  "focus": "ES"
+ },
+ {
+  "id": "relative-ch-east",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten oosten van Zwitserland?",
+  "doel": "AT",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "AT",
+    "label": "Oostenrijk"
+   },
+   {
+    "id": "CZ",
+    "label": "Tsjechië"
+   },
+   {
+    "id": "PL",
+    "label": "Polen"
+   },
+   {
+    "id": "HU",
+    "label": "Hongarije"
+   }
+  ],
+  "vereist": [
+   "CH",
+   "AT"
+  ],
+  "referentie": "CH",
+  "focus": "AT"
+ },
+ {
+  "id": "relative-ee-south",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten zuiden van Estland?",
+  "doel": "LV",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "LV",
+    "label": "Letland"
+   },
+   {
+    "id": "LT",
+    "label": "Litouwen"
+   },
+   {
+    "id": "UA",
+    "label": "Oekraïne"
+   },
+   {
+    "id": "RU",
+    "label": "Rusland"
+   }
+  ],
+  "vereist": [
+   "EE",
+   "LV"
+  ],
+  "referentie": "EE",
+  "focus": "LV"
+ },
+ {
+  "id": "relative-ro-southwest",
+  "module": "relative",
+  "vaardigheid": "relative-position",
+  "type": "choice",
+  "vraag": "Welk donkergrijze land ligt ten zuidwesten van Roemenië?",
+  "doel": "RS",
+  "hint": "Kijk naar het blauwe land en volg de richting uit de vraag.",
+  "opties": [
+   {
+    "id": "RS",
+    "label": "Servië"
+   },
+   {
+    "id": "BG",
+    "label": "Bulgarije"
+   },
+   {
+    "id": "HR",
+    "label": "Kroatië"
+   },
+   {
+    "id": "AL",
+    "label": "Albanië"
+   }
+  ],
+  "vereist": [
+   "RO",
+   "RS"
+  ],
+  "referentie": "RO",
+  "focus": "RS"
+ }
+]

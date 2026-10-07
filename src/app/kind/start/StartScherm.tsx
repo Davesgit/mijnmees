@@ -9,7 +9,8 @@ import { Melding } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
 import { Mees } from "@/components/mees/Mees";
-import { gastLimietBereikt, maakSessie, oefenConfig, openSessie, rondOvergangAf } from "@/features/oefenen/sessie";
+import { gastLimietBereikt, maakSessie, oefenConfig, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
+import { sessieNaam } from "@/features/oefenen/weergave";
 import { useProfiel } from "@/components/mees/Profiel";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 
@@ -28,7 +29,7 @@ export function StartScherm() {
   const voorstelDoel = opslag?.reviews[0]?.leerdoelId ?? STANDAARD_DOEL;
   const voorstel = vindOnderdeelBijLeerdoel(voorstelDoel) ?? vindOnderdeelBijLeerdoel(STANDAARD_DOEL)!;
   const isHerhaling = Boolean(opslag?.reviews[0]);
-  const openOnderdeel = open ? vindOnderdeelBijLeerdoel(open.leerdoelId) : null;
+
 
   function startVoorstel() {
     if (!kind && gastLimietBereikt(haalOpslag())) {
@@ -62,7 +63,7 @@ export function StartScherm() {
     if (!open) return;
     wijzigOpslag((d) => rondOvergangAf(d, open.id));
     const bijgewerkt = haalOpslag().sessies[open.id];
-    router.push(bijgewerkt?.status === "afgerond" ? `/kind/oefening/${open.id}/afgerond` : `/kind/oefenen/${open.id}`);
+    if (bijgewerkt) router.push(sessieRoute(bijgewerkt));
   }
 
   return (
@@ -82,15 +83,15 @@ export function StartScherm() {
 
       {opslag === null ? (
         <div className="h-64 rounded-[16px] bg-blauw-zacht/60" aria-hidden />
-      ) : open && openOnderdeel ? (
+      ) : open ? (
         <section aria-labelledby="hervat-titel" className="rounded-[16px] bg-blauw-zacht p-6 tablet:p-8 desktop:px-14 desktop:py-10">
           <p className="font-semibold text-actie-blauw">Je kunt verder waar je was.</p>
           <h2 id="hervat-titel" className="mt-1 titel-pagina">
-            {openOnderdeel.onderdeel.naam}
+            {sessieNaam(open)}
           </h2>
           <p className="mt-2 flex items-center gap-2 text-tekst-zacht">
             <Icoon naam="document" className="size-6" />
-            Vraag {Math.min(open.index + 1, open.slots.length)} van {open.slots.length}
+            {open.soort === "puzzel" ? `${open.slots.filter((s) => s.uitkomst).length} van ${open.slots.length} landen geplaatst` : `Vraag ${Math.min(open.index + 1, open.slots.length)} van ${open.slots.length}`}
           </p>
           <PrimaireKnop groot className="mt-6 w-full tablet:w-auto" onClick={hervat}>
             Verder oefenen
@@ -148,16 +149,28 @@ export function StartScherm() {
           </span>
         </Link>
 
-        <div className="flex flex-col gap-4 rounded-[16px] border border-rand-zacht bg-wit p-4 tablet:flex-row tablet:items-center tablet:p-6">
+        <Link
+          href="/kind/tafeltrainer"
+          className="flex flex-col gap-4 rounded-[16px] border border-rand-zacht bg-wit p-4 transition-colors hover:border-actie-blauw hover:bg-blauw-zacht tablet:flex-row tablet:items-center tablet:p-6"
+        >
           <span className="grid size-14 shrink-0 place-items-center rounded-full bg-blauw-zacht text-3xl font-extrabold text-[#d99a00]" aria-hidden>
             ×
           </span>
-          <span>
-            <span className="block text-lg font-bold leading-snug tablet:text-xl">Tafeltrainer</span>
-            <span className="mt-0.5 block tekst-klein text-tekst-zacht">Komt binnenkort.</span>
+          <span className="flex flex-1 items-end justify-between gap-2 tablet:items-center">
+            <span>
+              <span className="block text-lg font-bold leading-snug tablet:text-xl">Tafeltrainer</span>
+              <span className="mt-0.5 block tekst-klein text-tekst-zacht">Oefen één of meer tafels.</span>
+            </span>
+            <Icoon naam="chevron-rechts" className="size-6 text-actie-blauw" />
           </span>
-        </div>
+        </Link>
       </section>
+
+      <p className="text-center">
+        <Link href="/kind/niveaubepaling" className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-semibold text-actie-blauw underline underline-offset-4 hover:bg-blauw-zacht">
+          Weet je niet waar je moet beginnen? Ontdek wat bij je past.
+        </Link>
+      </p>
 
       <p className="flex items-center justify-center gap-3 text-center tekst-klein text-tekst-zacht">
         <span aria-hidden className="text-xl">🌱</span>

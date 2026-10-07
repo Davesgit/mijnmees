@@ -46,6 +46,8 @@ export async function POST(request: NextRequest) {
       teSchrijven.map((s) => ({
         id: s.id,
         kind_id: kind.id,
+        soort: s.soort ?? "oefening",
+        instellingen: s.instellingen ?? {},
         leerdoel_id: s.leerdoelId,
         onderdeel_id: s.onderdeelId,
         onderwerp_id: s.onderwerpId,
@@ -84,6 +86,7 @@ export async function POST(request: NextRequest) {
           eerste_poging: p.eerstePoging,
           hulp_hints: p.hulpVooraf.hints,
           hulp_uitleg: p.hulpVooraf.uitleg,
+          actieve_duur_ms: p.actieveDuurMs ?? null,
           op: p.op,
         };
       }),
@@ -141,6 +144,8 @@ export async function GET() {
         s.id,
         {
           id: s.id,
+          soort: s.soort,
+          instellingen: s.instellingen,
           leerdoelId: s.leerdoel_id,
           onderdeelId: s.onderdeel_id,
           onderwerpId: s.onderwerp_id,
@@ -168,6 +173,7 @@ export async function GET() {
         resultaat: p.resultaat,
         eerstePoging: p.eerste_poging,
         hulpVooraf: { hints: p.hulp_hints, uitleg: p.hulp_uitleg },
+        actieveDuurMs: p.actieve_duur_ms ?? undefined,
         op: p.op,
       }),
     ),

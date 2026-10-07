@@ -1,0 +1,235 @@
+{
+ "gebieden": [
+  {
+   "id": "west",
+   "naam": "West-Europa",
+   "basis": [
+    "FR",
+    "NL",
+    "BE",
+    "DE",
+    "LU",
+    "GB",
+    "IE"
+   ],
+   "extra": []
+  },
+  {
+   "id": "north",
+   "naam": "Noord-Europa",
+   "basis": [
+    "NO",
+    "SE",
+    "FI",
+    "DK",
+    "IS"
+   ],
+   "extra": []
+  },
+  {
+   "id": "south",
+   "naam": "Zuid-Europa",
+   "basis": [
+    "ES",
+    "PT",
+    "IT",
+    "GR",
+    "MT",
+    "CY"
+   ],
+   "extra": [
+    "AD",
+    "MC",
+    "SM",
+    "VA"
+   ]
+  },
+  {
+   "id": "central",
+   "naam": "Midden-Europa",
+   "basis": [
+    "CH",
+    "AT",
+    "PL",
+    "CZ",
+    "SK",
+    "HU"
+   ],
+   "extra": [
+    "LI"
+   ]
+  },
+  {
+   "id": "east",
+   "naam": "Oost-Europa",
+   "basis": [
+    "EE",
+    "LV",
+    "LT",
+    "UA",
+    "RU"
+   ],
+   "extra": [
+    "BY",
+    "MD"
+   ]
+  },
+  {
+   "id": "southeast",
+   "naam": "Zuidoost-Europa",
+   "basis": [
+    "SI",
+    "HR",
+    "BA",
+    "RS",
+    "AL",
+    "RO",
+    "BG"
+   ],
+   "extra": [
+    "ME",
+    "MK",
+    "XK",
+    "TR"
+   ]
+  }
+ ],
+ "fysiek": {
+  "atlantic": [
+   "west",
+   "north",
+   "south"
+  ],
+  "north-sea": [
+   "west",
+   "north"
+  ],
+  "baltic": [
+   "north",
+   "east"
+  ],
+  "mediterranean": [
+   "south",
+   "southeast"
+  ],
+  "black-sea": [
+   "east",
+   "southeast"
+  ],
+  "rhine": [
+   "west",
+   "central"
+  ],
+  "danube": [
+   "central",
+   "southeast",
+   "east"
+  ],
+  "volga": [
+   "east"
+  ],
+  "alps": [
+   "central"
+  ],
+  "pyrenees": [
+   "west",
+   "south"
+  ],
+  "carpathians": [
+   "central",
+   "east",
+   "southeast"
+  ]
+ },
+ "rivierLanden": {
+  "rhine": [
+   "CH",
+   "LI",
+   "AT",
+   "DE",
+   "FR",
+   "NL"
+  ],
+  "danube": [
+   "DE",
+   "AT",
+   "SK",
+   "HU",
+   "HR",
+   "RS",
+   "RO",
+   "BG",
+   "MD",
+   "UA"
+  ],
+  "volga": [
+   "RU"
+  ]
+ },
+ "wateren": [
+  "atlantic",
+  "north-sea",
+  "baltic",
+  "mediterranean",
+  "black-sea"
+ ],
+ "rivieren": [
+  "rhine",
+  "danube",
+  "volga"
+ ],
+ "gebergten": [
+  "alps",
+  "pyrenees",
+  "carpathians"
+ ],
+ "landen": [
+  "FR",
+  "AL",
+  "AD",
+  "BY",
+  "BE",
+  "BA",
+  "BG",
+  "CY",
+  "DK",
+  "DE",
+  "EE",
+  "FI",
+  "GR",
+  "HU",
+  "IS",
+  "IE",
+  "IT",
+  "XK",
+  "HR",
+  "LV",
+  "LI",
+  "LT",
+  "LU",
+  "MT",
+  "MD",
+  "MC",
+  "ME",
+  "NL",
+  "MK",
+  "NO",
+  "UA",
+  "AT",
+  "PL",
+  "PT",
+  "RO",
+  "RU",
+  "SM",
+  "RS",
+  "SI",
+  "SK",
+  "ES",
+  "CZ",
+  "TR",
+  "VA",
+  "GB",
+  "SE",
+  "CH"
+ ]
+}

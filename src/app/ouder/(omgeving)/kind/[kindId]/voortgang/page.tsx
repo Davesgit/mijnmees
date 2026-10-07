@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Laden, TerugLink } from "@/components/mees/Bouwstenen";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
-import { vindOnderdeel } from "@/content/onderwerpen";
 import type { Poging, Sessie, Slot } from "@/features/oefenen/types";
-import { vindVraag } from "@/features/oefenen/vragen";
+import { antwoordTekst, opgaveTekst, vindVraag } from "@/features/oefenen/vragen";
+import { sessieNaam } from "@/features/oefenen/weergave";
 import { haalEigenKind, vereisOntgrendeldeOuder } from "@/lib/server/dal";
 import { formatDatum, formatTijd, haalVoortgang, relatieveDag } from "@/lib/server/voortgang";
 
@@ -59,7 +59,7 @@ async function Inhoud({ params, searchParams }: Pick<Props, "params" | "searchPa
                       aria-current={actief ? "true" : undefined}
                       className={`flex min-h-14 flex-col justify-center rounded-[12px] px-3 py-2 ${actief ? "bg-blauw-zacht" : "hover:bg-achtergrond-zacht"}`}
                     >
-                      <span className="font-bold">{vindOnderdeel(s.onderdeelId)?.onderdeel.naam ?? s.onderdeelId}</span>
+                      <span className="font-bold">{sessieNaam(s)}</span>
                       <span className="tekst-klein text-tekst-zacht">
                         {relatieveDag(s.gestartOp)} · {s.status === "afgerond" ? "afgerond" : "nog bezig"}
                       </span>
@@ -77,7 +77,6 @@ async function Inhoud({ params, searchParams }: Pick<Props, "params" | "searchPa
 }
 
 function SessieDetail({ sessie, pogingen }: { sessie: Sessie; pogingen: Poging[] }) {
-  const onderdeel = vindOnderdeel(sessie.onderdeelId);
   const zelfstandig = sessie.slots.filter((s) => s.uitkomst === "zelfstandig").length;
   const ondersteund = sessie.slots.filter((s) => s.uitkomst && s.uitkomst !== "zelfstandig").length;
   const minuten =
@@ -94,7 +93,7 @@ function SessieDetail({ sessie, pogingen }: { sessie: Sessie; pogingen: Poging[]
     <section aria-labelledby="sessie-titel" className="flex flex-col gap-4">
       <div>
         <h2 id="sessie-titel" className="titel-pagina">
-          {onderdeel?.onderdeel.naam ?? sessie.onderdeelId}
+          {sessieNaam(sessie)}
         </h2>
         <p className="mt-1 text-tekst-zacht">
           Oefensessie · {formatDatum(sessie.gestartOp)} · {formatTijd(sessie.gestartOp)}
@@ -129,9 +128,10 @@ function SessieDetail({ sessie, pogingen }: { sessie: Sessie; pogingen: Poging[]
             {sessie.slots.map((slot, i) => {
               const vraag = vindVraag(slot.vraagId);
               const pogingenSlot = pogingen.filter((p) => p.slotId === slot.id);
-              const laatste = pogingenSlot.at(-1)?.antwoord ?? slot.antwoord ?? "–";
+              const ruw = pogingenSlot.at(-1)?.antwoord ?? slot.antwoord;
+              const laatste = ruw ? antwoordTekst(vraag, ruw) : "–";
               const uitkomst = slot.uitkomst ? uitkomstTekst[slot.uitkomst] : null;
-              const opgave = vraag ? `${vraag.visual.links.join("/")}  ?  ${vraag.visual.rechts.join("/")}` : slot.vraagId;
+              const opgave = vraag ? opgaveTekst(vraag) : slot.vraagId;
               return (
                 <tr key={slot.id} className="max-tablet:grid max-tablet:grid-cols-2 max-tablet:gap-x-4 max-tablet:gap-y-1 max-tablet:p-4">
                   <td className="px-4 py-3 font-bold max-tablet:col-span-2 max-tablet:p-0">

@@ -50,6 +50,8 @@ export function InstelScherm(props: {
   onderdeelId: string;
   onderdeelNaam: string;
   leerdoelId: string;
+  /** Uit het beginadvies van de niveaubepaling. */
+  voorkeurNiveau?: Niveau;
 }) {
   const router = useRouter();
   const { kind } = useProfiel();
@@ -57,7 +59,7 @@ export function InstelScherm(props: {
   // Bij terug/vooruit blijft de laatste keuze staan (sessionStorage van dit tabblad).
   const bewaard = useSyncExternalStore(geenAbonnement, () => leesBewaard(sleutel), () => null);
   const [wijzigingen, setWijzigingen] = useState<Partial<Keuze>>({});
-  const keuze: Keuze = { ...standaardKeuze, ...parseKeuze(bewaard), ...wijzigingen, vorm: "scherm" };
+  const keuze: Keuze = { ...standaardKeuze, ...parseKeuze(bewaard), ...(props.voorkeurNiveau ? { niveau: props.voorkeurNiveau } : {}), ...wijzigingen, vorm: "scherm" };
   const [bezig, setBezig] = useState(false);
   const [fout, setFout] = useState(false);
 

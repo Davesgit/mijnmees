@@ -24,6 +24,8 @@ export async function haalVoortgang(kindId: string): Promise<KindVoortgang | nul
         s.id,
         {
           id: s.id,
+          soort: s.soort,
+          instellingen: s.instellingen,
           leerdoelId: s.leerdoel_id,
           onderdeelId: s.onderdeel_id,
           onderwerpId: s.onderwerp_id,
@@ -51,6 +53,7 @@ export async function haalVoortgang(kindId: string): Promise<KindVoortgang | nul
         resultaat: p.resultaat,
         eerstePoging: p.eerste_poging,
         hulpVooraf: { hints: p.hulp_hints, uitleg: p.hulp_uitleg },
+        actieveDuurMs: p.actieve_duur_ms ?? undefined,
         op: p.op,
       }),
     ),

@@ -16,7 +16,7 @@ export default function InstellenPage({ searchParams }: PageProps<"/kind/oefenin
 }
 
 async function Instellen({ searchParams }: { searchParams: PageProps<"/kind/oefening/instellen">["searchParams"] }) {
-  const { onderdeel: onderdeelId } = await searchParams;
+  const { onderdeel: onderdeelId, niveau } = await searchParams;
   const gevonden = typeof onderdeelId === "string" ? vindOnderdeel(onderdeelId) : null;
 
   if (!gevonden || !heeftVragen(gevonden.onderdeel.leerdoelId)) {
@@ -38,6 +38,7 @@ async function Instellen({ searchParams }: { searchParams: PageProps<"/kind/oefe
       onderdeelId={gevonden.onderdeel.id}
       onderdeelNaam={gevonden.onderdeel.naam}
       leerdoelId={gevonden.onderdeel.leerdoelId!}
+      voorkeurNiveau={niveau === "makkelijk" || niveau === "past-bij-mij" || niveau === "uitdagend" ? niveau : undefined}
     />
   );
 }

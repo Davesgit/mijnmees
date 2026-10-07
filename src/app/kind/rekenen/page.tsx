@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { OnderwerpTegel, TerugLink } from "@/components/mees/Bouwstenen";
 import { Mees } from "@/components/mees/Mees";
 import { rekenOnderwerpen } from "@/content/onderwerpen";
@@ -38,7 +39,13 @@ export default function RekenenPage() {
           <Mees pose="blij" breedte={40} className="w-10" />
           Mees helpt je binnen elk onderwerp een passende oefening te kiezen.
         </p>
-        <p>Aardrijkskunde met Europa komt binnenkort.</p>
+        <p>
+          Je kunt ook{" "}
+          <Link href="/kind/aardrijkskunde/europa" className="font-semibold text-actie-blauw underline underline-offset-4">
+            aardrijkskunde oefenen: Europa
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

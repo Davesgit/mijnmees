@@ -6,7 +6,8 @@ import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
 import { OnderdeelPictogram } from "@/components/mees/OnderdeelPictogram";
 import { Avatar } from "@/components/mees/Profiel";
-import { vindOnderdeel, vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
+import { vindOnderdeel } from "@/content/onderwerpen";
+import { leerdoelNaam, sessieNaam } from "@/features/oefenen/weergave";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
 import { berekenBewijs, type BewijsStatus } from "@/features/voortgang/bewijs";
 import { haalKinderen, vereisOntgrendeldeOuder } from "@/lib/server/dal";
@@ -94,10 +95,10 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
                   <li key={s.id}>
                     <Link href={`/ouder/kind/${kind.id}/voortgang?sessie=${s.id}`} className="flex min-h-14 items-center gap-3 py-2 hover:text-actie-blauw">
                       <span className="grid h-11 w-16 shrink-0 place-items-center rounded-full bg-blauw-zacht text-actie-blauw" aria-hidden>
-                        {o && <OnderdeelPictogram soort={o.onderdeel.pictogram} />}
+                        {o ? <OnderdeelPictogram soort={o.onderdeel.pictogram} /> : <Icoon naam={s.soort === "tafels" ? "tafels" : "landen"} className="size-6" />}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block font-bold">{o?.onderdeel.naam ?? s.onderdeelId}</span>
+                        <span className="block font-bold">{sessieNaam(s)}</span>
                         <span className="block tekst-klein text-tekst-zacht">
                           {s.status === "afgerond" ? `${zelfstandig} van ${aantal} zonder hulp` : "Nog bezig"}
                         </span>
@@ -126,7 +127,7 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
                     <span>
                       <span className="block font-bold">{t.titel}</span>
                       <span className="block tekst-klein text-inkt">
-                        {items.map((b) => vindOnderdeelBijLeerdoel(b.leerdoelId)?.onderdeel.naam ?? b.leerdoelId).join(", ")}
+                        {items.map((b) => leerdoelNaam(b.leerdoelId)).join(", ")}
                       </span>
                     </span>
                   </li>

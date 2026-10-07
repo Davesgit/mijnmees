@@ -14,18 +14,31 @@ export const slotSchema = z.object({
   hulp: z.object({ hints: z.union([z.literal(0), z.literal(1), z.literal(2)]), uitleg: z.boolean(), fouten: z.number().int().min(0).max(50) }),
   uitkomst: z.enum(["zelfstandig", "met-hulp", "met-uitleg"]).optional(),
   antwoord: z.string().max(200).optional(),
+  opties: z.array(z.object({ id: z.string().max(40), label: z.string().max(80) })).max(6).optional(),
 });
 
 export const sessieSchema = z.object({
   id: uuid,
+  soort: z.enum(["oefening", "tafels", "europa", "puzzel", "niveau"]).optional(),
+  instellingen: z
+    .object({
+      tafels: z.array(z.number().int().min(1).max(12)).max(12).optional(),
+      bewerkingen: z.array(z.enum(["x", ":"])).max(2).optional(),
+      metTijd: z.boolean().optional(),
+      gebieden: z.array(z.string().max(20)).max(10).optional(),
+      landen: z.array(z.string().max(4)).max(60).optional(),
+      onderwerpen: z.array(z.string().max(20)).max(6).optional(),
+      niveauGebied: z.string().max(20).optional(),
+    })
+    .optional(),
   leerdoelId: z.string().max(80),
   onderdeelId: z.string().max(80),
   onderwerpId: z.string().max(80),
   niveau: z.enum(["makkelijk", "past-bij-mij", "uitdagend"]),
-  aantal: z.number().int().min(1).max(40),
+  aantal: z.number().int().min(1).max(400),
   bron: z.enum(["voorstel", "zelf"]),
-  slots: z.array(slotSchema).min(1).max(40),
-  index: z.number().int().min(0).max(40),
+  slots: z.array(slotSchema).min(1).max(400),
+  index: z.number().int().min(0).max(400),
   versie: z.number().int().min(1),
   status: z.enum(["bezig", "afgerond"]),
   gestartOp: iso,
@@ -43,6 +56,7 @@ export const pogingSchema = z.object({
   resultaat: z.enum(["goed", "fout"]),
   eerstePoging: z.boolean(),
   hulpVooraf: z.object({ hints: z.number().int().min(0).max(2), uitleg: z.boolean() }),
+  actieveDuurMs: z.number().int().min(0).max(3_600_000).optional(),
   op: iso,
 });
 

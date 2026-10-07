@@ -22,10 +22,30 @@ export type Slot = {
   uitkomst?: SlotUitkomst;
   /** Laatst gekozen antwoord, zodat het na hervatten zichtbaar blijft. */
   antwoord?: string;
+  /** Antwoordopties die voor deze sessie zijn gekozen (Europa-meerkeuze). */
+  opties?: { id: string; label: string }[];
+};
+
+export type SessieSoort = "oefening" | "tafels" | "europa" | "puzzel" | "niveau";
+
+export type SessieInstellingen = {
+  /** Tafeltrainer */
+  tafels?: number[];
+  bewerkingen?: ("x" | ":")[];
+  metTijd?: boolean;
+  /** Europa */
+  gebieden?: string[];
+  landen?: string[];
+  onderwerpen?: string[];
+  /** Niveaubepaling: gebied waarvoor een beginadvies wordt gezocht. */
+  niveauGebied?: string;
 };
 
 export type Sessie = {
   id: string;
+  /** Ontbreekt bij oudere sessies: dan is het een gewone oefening. */
+  soort?: SessieSoort;
+  instellingen?: SessieInstellingen;
   leerdoelId: string;
   onderdeelId: string;
   onderwerpId: string;
@@ -55,6 +75,8 @@ export type Poging = {
   eerstePoging: boolean;
   /** Hulp die al gebruikt was vóór deze poging. */
   hulpVooraf: { hints: number; uitleg: boolean };
+  /** Actieve antwoordtijd (tafeltrainer); pauze en voorlezen tellen niet mee. */
+  actieveDuurMs?: number;
   op: string;
 };
 

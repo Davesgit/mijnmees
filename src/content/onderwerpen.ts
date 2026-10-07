@@ -22,7 +22,7 @@ export type Onderwerp = {
 
 // Onderwerpen volgen data/vakken-en-doelen.json uit de overdracht.
 export const rekenOnderwerpen: Onderwerp[] = [
-  { id: "tafels", naam: "Tafels", icoon: "tafels", eigenRoute: "/kind/tafeltrainer", beschikbaar: false, onderdelen: [] },
+  { id: "tafels", naam: "Tafels", icoon: "tafels", eigenRoute: "/kind/tafeltrainer", beschikbaar: true, onderdelen: [] },
   {
     id: "breuken",
     naam: "Breuken",
