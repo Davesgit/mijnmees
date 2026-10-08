@@ -44,7 +44,7 @@ export function KindInstellingen({ kind, tutorhulp: tutorhulpStart }: { kind: Ki
               aan={tutorhulp}
               onWijzig={setTutorhulp}
               label="Tutorhulp toestaan"
-              uitleg={`Als het oefenen niet lukt, kan Mees voorstellen dat een tutor ${kind.voornaam} helpt. Jij ziet elke aanvraag. Tutorhulp komt later beschikbaar.`}
+              uitleg={`Als het oefenen niet lukt, kan Mees voorstellen dat een tutor ${kind.voornaam} helpt. Jij ziet elke aanvraag en beslist zelf of die naar een tutor gaat. Een tutor ziet alleen de voornaam, de groep en de oefeningen.`}
             />
           </div>
           <PrimaireKnop type="submit" disabled={bezig} className="self-start">

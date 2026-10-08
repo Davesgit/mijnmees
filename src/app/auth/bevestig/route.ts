@@ -25,10 +25,15 @@ export async function GET(request: NextRequest) {
   }
 
   if (!gebruikerId) {
-    const fout = doel.startsWith("/ouder/nieuw-wachtwoord") ? "/ouder/nieuw-wachtwoord?link=ongeldig" : "/ouder/verifieer-e-mail?link=ongeldig";
+    const fout = doel.startsWith("/ouder/nieuw-wachtwoord")
+      ? "/ouder/nieuw-wachtwoord?link=ongeldig"
+      : doel.startsWith("/tutor")
+        ? "/tutor/inloggen?link=ongeldig"
+        : "/ouder/verifieer-e-mail?link=ongeldig";
     return NextResponse.redirect(new URL(fout, url.origin));
   }
 
-  await ontgrendelOuder(gebruikerId);
+  // Tutors krijgen geen ontgrendelde ouderomgeving door een bevestigingslink.
+  if (!doel.startsWith("/tutor")) await ontgrendelOuder(gebruikerId);
   return NextResponse.redirect(new URL(doel, url.origin));
 }

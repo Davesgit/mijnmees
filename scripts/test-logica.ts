@@ -15,6 +15,9 @@ import {
 } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie } from "@/features/oefenen/types";
 import { isGoed, vindVraag } from "@/features/oefenen/vragen";
+import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/features/tutorhulp/criteria";
+import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
+import type { Poging } from "@/features/oefenen/types";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
 let geslaagd = 0;
@@ -182,5 +185,64 @@ test("werkblad: juiste aantal, geen dubbele, alleen gekozen tafels", () => {
   }
   assert.match(maakWerkblad(wb).code, /^WB-[A-Z0-9]{6}$/);
 });
+
+console.log("Tutorhulp");
+{
+  const nu = new Date("2026-10-10T12:00:00Z");
+  const dag = (d: number) => new Date(nu.getTime() - d * 86_400_000).toISOString();
+  const slot = (id: string, vraagId: string, uitkomst: "zelfstandig" | "met-hulp" | "met-uitleg", herhalingVan?: string) => ({
+    id, vraagId, vraagVersie: 1, hulp: { hints: 2 as const, uitleg: uitkomst === "met-uitleg", fouten: 3 }, uitkomst, ...(herhalingVan ? { herhalingVan } : {}),
+  });
+  const sessie = (id: string, op: string, slots: ReturnType<typeof slot>[], extra: Partial<Sessie> = {}): Sessie => ({
+    id, soort: "tafels", leerdoelId: "tafels", onderdeelId: "tafels", onderwerpId: "tafels", niveau: "past-bij-mij", aantal: slots.length, bron: "zelf", slots, index: 0, versie: 1, status: "afgerond", gestartOp: op, ...extra,
+  });
+  const poging = (sessieId: string, slotId: string, vraagId: string, op: string, resultaat: "goed" | "fout" = "goed", hints = 0, uitleg = false): Poging => ({
+    eventId: `${sessieId}-${slotId}-${op}-${resultaat}`, sessieId, slotId, vraagId, vraagVersie: 1, leerdoelId: vindVraag(vraagId)!.learningGoalId, antwoord: "1", resultaat, eerstePoging: true, hulpVooraf: { hints, uitleg }, op,
+  });
+  const A = sessie("a", dag(3), [slot("s1", "tafel-7-x-8", "met-uitleg"), slot("s2", "tafel-7-x-6", "met-hulp", "s1")]);
+  const B = sessie("b", dag(1), [slot("s3", "tafel-7-x-9", "met-uitleg")]);
+  const pogA = [poging("a", "s1", "tafel-7-x-8", dag(3)), poging("a", "s2", "tafel-7-x-6", dag(3))];
+  const pogB = [poging("b", "s3", "tafel-7-x-9", dag(1))];
+
+  test("tutorhulp pas na twee dagen vastlopen én een niet-zelfstandige soortgelijke vraag", () => {
+    assert.equal(beoordeelTutorhulp({ sessies: [A, B], pogingen: [...pogA, ...pogB] }, "tafel-7", nu).geschikt, true);
+    const eenDag = beoordeelTutorhulp({ sessies: [A], pogingen: pogA }, "tafel-7", nu);
+    assert.equal(eenDag.geschikt, false);
+    assert.ok(eenDag.ontbreekt.some((o) => o.includes("andere dag")));
+    const zonderVervolg = sessie("a", dag(3), [slot("s1", "tafel-7-x-8", "met-uitleg")]);
+    assert.equal(beoordeelTutorhulp({ sessies: [zonderVervolg, B], pogingen: [pogA[0], ...pogB] }, "tafel-7", nu).geschikt, false);
+    assert.equal(beoordeelTutorhulp({ sessies: [A, B], pogingen: [...pogA, ...pogB] }, "europa-landen", nu).geschikt, false);
+  });
+  test("oude pogingen (buiten de periode) tellen niet", () => {
+    const oud = (p: Poging) => ({ ...p, op: dag(60) });
+    assert.equal(beoordeelTutorhulp({ sessies: [A, B], pogingen: [...pogA.map(oud), ...pogB] }, "tafel-7", nu).geschikt, false);
+  });
+  test("controlevraag: nieuw voor het kind; uitkomst volgt uit servernagekeken pogingen", () => {
+    const gezien = new Set(["tafel-7-x-8", "tafel-7-x-6", "tafel-7-x-9"]);
+    for (let i = 0; i < 20; i++) assert.ok(!gezien.has(kiesControleVraag("tafel-7", gezien)!.id));
+    const C = sessie("c", dag(0), [slot("s9", "tafel-7-x-3", "zelfstandig")], { soort: "controle", instellingen: { controleVoor: "h1" } });
+    assert.equal(controleUitkomst([C], [poging("c", "s9", "tafel-7-x-3", dag(0))], "h1", "tafel-7-x-3"), "zelfstandig");
+    assert.equal(controleUitkomst([C], [poging("c", "s9", "tafel-7-x-3", dag(0), "fout"), poging("c", "s9", "tafel-7-x-3", dag(-0.01), "goed", 1)], "h1", "tafel-7-x-3"), "met-hulp");
+    assert.equal(controleUitkomst([C], [], "h1", "tafel-7-x-3"), null);
+    assert.equal(controleUitkomst([C], [poging("c", "s9", "tafel-7-x-3", dag(0))], "ander", "tafel-7-x-3"), null);
+  });
+  test("bord: afspelen volgt de tijdlijn", () => {
+    const tekst = (id: string, t: string) => ({ id, kleur: "inkt" as const, soort: "tekst" as const, x: 10, y: 10, tekst: t, groot: false });
+    const opname: BordOpname = {
+      elementen: [tekst("a", "start")],
+      gebeurtenissen: [
+        { t: 1000, op: "plaats", element: tekst("b", "twee") },
+        { t: 2000, op: "plaats", element: tekst("a", "anders") },
+        { t: 3000, op: "verwijder", id: "b" },
+        { t: 4000, op: "zet", elementen: [] },
+      ],
+    };
+    assert.equal(bordOp(opname, 500).length, 1);
+    assert.equal(bordOp(opname, 1500).length, 2);
+    assert.equal((bordOp(opname, 2500)[0] as { tekst: string }).tekst, "anders");
+    assert.equal(bordOp(opname, 3500).length, 1);
+    assert.equal(bordOp(opname, 5000).length, 0);
+  });
+}
 
 console.log(`\n${geslaagd} tests geslaagd`);

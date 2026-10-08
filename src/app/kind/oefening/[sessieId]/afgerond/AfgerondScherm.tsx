@@ -12,6 +12,8 @@ import { vindWeetje } from "@/content/weetjes";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useOpslag } from "@/lib/opslag/lokaal";
+import { vindVraag } from "@/features/oefenen/vragen";
+import { beoordeelTutorhulp, tutorhulpMogelijk } from "@/features/tutorhulp/criteria";
 
 export function AfgerondScherm({ sessieId }: { sessieId: string }) {
   const opslag = useOpslag();
@@ -38,6 +40,13 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
   const opnieuw = sessieInstelRoute(sessie);
   const ontdekt = opslag.weetjes.find((w) => w.sessieId === sessie.id);
   const weetje = ontdekt ? vindWeetje(ontdekt.weetjeId) : null;
+  // Extra uitleg alleen voor een ingelogd profiel en alleen als de criteria (ook op de server) gehaald worden.
+  const extraUitleg =
+    kind && sessie.soort !== "controle" && sessie.soort !== "niveau"
+      ? [...new Set(sessie.slots.map((s) => vindVraag(s.vraagId)?.learningGoalId).filter((l): l is string => Boolean(l && tutorhulpMogelijk(l))))].find(
+          (l) => beoordeelTutorhulp({ sessies: Object.values(opslag.sessies), pogingen: opslag.pogingen }, l).geschikt,
+        )
+      : undefined;
 
   const samenvatting =
     zelfstandig === 0
@@ -95,6 +104,28 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
               <Icoon naam="chevron-rechts" className="size-5" />
             </span>
           </span>
+        </Link>
+      )}
+
+      {sessie.soort === "controle" && sessie.instellingen?.controleVoor && (
+        <Melding>
+          Je tutor ziet hoe het ging.{" "}
+          <Link href={`/kind/hulpvragen/${sessie.instellingen.controleVoor}`} className="font-bold text-actie-blauw underline underline-offset-4">
+            Bekijk je hulpvraag
+          </Link>
+        </Melding>
+      )}
+
+      {extraUitleg && (
+        <Link href={`/kind/hulp/${extraUitleg}`} className="flex items-center gap-4 rounded-[16px] border-2 border-actie-blauw bg-wit p-4 hover:bg-blauw-zacht tablet:p-5">
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-blauw-zacht text-actie-blauw" aria-hidden>
+            <Icoon naam="tutor" className="size-6" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-bold">Extra uitleg kan helpen</span>
+            <span className="block tekst-klein text-tekst-zacht">Je hebt de hints, de uitleg en een soortgelijke vraag al geprobeerd.</span>
+          </span>
+          <Icoon naam="chevron-rechts" className="size-6 text-actie-blauw" />
         </Link>
       )}
 

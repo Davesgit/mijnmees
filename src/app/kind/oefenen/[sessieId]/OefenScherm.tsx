@@ -55,6 +55,7 @@ export function OefenScherm({ sessieId }: { sessieId: string }) {
 function terugVoor(sessie: Sessie) {
   if (sessie.soort === "tafels") return { href: "/kind/tafeltrainer", kort: "Tafels", lang: "Tafeltrainer" };
   if (sessie.soort === "niveau") return { href: "/kind/niveaubepaling", kort: "Terug", lang: "Wat past bij jou?" };
+  if (sessie.soort === "controle") return { href: sessie.instellingen?.controleVoor ? `/kind/hulpvragen/${sessie.instellingen.controleVoor}` : "/kind/start", kort: "Terug", lang: "Je hulpvraag" };
   const o = vindOnderdeel(sessie.onderdeelId);
   return { href: `/kind/oefening/instellen?onderdeel=${sessie.onderdeelId}`, kort: o?.onderwerp.naam ?? "Terug", lang: o?.onderdeel.naam ?? "Terug" };
 }

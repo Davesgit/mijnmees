@@ -19,7 +19,7 @@ export const slotSchema = z.object({
 
 export const sessieSchema = z.object({
   id: uuid,
-  soort: z.enum(["oefening", "tafels", "europa", "puzzel", "niveau"]).optional(),
+  soort: z.enum(["oefening", "tafels", "europa", "puzzel", "niveau", "controle"]).optional(),
   instellingen: z
     .object({
       tafels: z.array(z.number().int().min(1).max(12)).max(12).optional(),
@@ -29,6 +29,7 @@ export const sessieSchema = z.object({
       landen: z.array(z.string().max(4)).max(60).optional(),
       onderwerpen: z.array(z.string().max(20)).max(6).optional(),
       niveauGebied: z.string().max(20).optional(),
+      controleVoor: uuid.optional(),
     })
     .optional(),
   leerdoelId: z.string().max(80),

@@ -19,48 +19,51 @@ export async function haalVoortgang(kindId: string): Promise<KindVoortgang | nul
   if (sessies.error || pogingen.error || weetjes.error || reviews.error) throw new Error("Voortgang ophalen lukt niet.");
 
   return {
-    sessies: Object.fromEntries(
-      sessies.data.map((s): [string, Sessie] => [
-        s.id,
-        {
-          id: s.id,
-          soort: s.soort,
-          instellingen: s.instellingen,
-          leerdoelId: s.leerdoel_id,
-          onderdeelId: s.onderdeel_id,
-          onderwerpId: s.onderwerp_id,
-          niveau: s.niveau,
-          aantal: s.aantal,
-          bron: s.bron,
-          slots: s.slots,
-          index: s.huidige_index,
-          versie: s.versie,
-          status: s.status,
-          gestartOp: s.gestart_op,
-          afgerondOp: s.afgerond_op ?? undefined,
-        },
-      ]),
-    ),
-    pogingen: pogingen.data.map(
-      (p): Poging => ({
-        eventId: p.event_id,
-        sessieId: p.sessie_id,
-        slotId: p.slot_id,
-        vraagId: p.vraag_id,
-        vraagVersie: p.vraag_versie,
-        leerdoelId: p.leerdoel_id,
-        antwoord: p.antwoord,
-        resultaat: p.resultaat,
-        eerstePoging: p.eerste_poging,
-        hulpVooraf: { hints: p.hulp_hints, uitleg: p.hulp_uitleg },
-        actieveDuurMs: p.actieve_duur_ms ?? undefined,
-        op: p.op,
-      }),
-    ),
+    sessies: Object.fromEntries(sessies.data.map((s) => [s.id, naarSessie(s)])),
+    pogingen: pogingen.data.map(naarPoging),
     weetjes: weetjes.data.map((w) => ({ weetjeId: w.weetje_id, sessieId: w.sessie_id, dag: w.dag, op: w.op })),
     reviews: reviews.data.map((r) => ({ leerdoelId: r.leerdoel_id, vanSessieId: r.van_sessie_id, op: r.op })),
   };
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any -- databaserijen zonder gegenereerde types */
+export function naarSessie(s: any): Sessie {
+  return {
+    id: s.id,
+    soort: s.soort,
+    instellingen: s.instellingen,
+    leerdoelId: s.leerdoel_id,
+    onderdeelId: s.onderdeel_id,
+    onderwerpId: s.onderwerp_id,
+    niveau: s.niveau,
+    aantal: s.aantal,
+    bron: s.bron,
+    slots: s.slots,
+    index: s.huidige_index,
+    versie: s.versie,
+    status: s.status,
+    gestartOp: s.gestart_op,
+    afgerondOp: s.afgerond_op ?? undefined,
+  };
+}
+
+export function naarPoging(p: any): Poging {
+  return {
+    eventId: p.event_id,
+    sessieId: p.sessie_id,
+    slotId: p.slot_id,
+    vraagId: p.vraag_id,
+    vraagVersie: p.vraag_versie,
+    leerdoelId: p.leerdoel_id,
+    antwoord: p.antwoord,
+    resultaat: p.resultaat,
+    eerstePoging: p.eerste_poging,
+    hulpVooraf: { hints: p.hulp_hints, uitleg: p.hulp_uitleg },
+    actieveDuurMs: p.actieve_duur_ms ?? undefined,
+    op: p.op,
+  };
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 const datumFormaat = new Intl.DateTimeFormat("nl-NL", { timeZone: "Europe/Amsterdam", day: "numeric", month: "long", year: "numeric" });
 const tijdFormaat = new Intl.DateTimeFormat("nl-NL", { timeZone: "Europe/Amsterdam", hour: "2-digit", minute: "2-digit" });

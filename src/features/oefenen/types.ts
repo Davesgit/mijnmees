@@ -26,7 +26,7 @@ export type Slot = {
   opties?: { id: string; label: string }[];
 };
 
-export type SessieSoort = "oefening" | "tafels" | "europa" | "puzzel" | "niveau";
+export type SessieSoort = "oefening" | "tafels" | "europa" | "puzzel" | "niveau" | "controle";
 
 export type SessieInstellingen = {
   /** Tafeltrainer */
@@ -39,6 +39,8 @@ export type SessieInstellingen = {
   onderwerpen?: string[];
   /** Niveaubepaling: gebied waarvoor een beginadvies wordt gezocht. */
   niveauGebied?: string;
+  /** Controlevraag na tutoruitleg: de hulpvraag waar deze sessie bij hoort. */
+  controleVoor?: string;
 };
 
 export type Sessie = {

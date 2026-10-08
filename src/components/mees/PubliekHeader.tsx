@@ -115,6 +115,11 @@ export function PubliekeVoet() {
               Donateurs
             </Link>
           </li>
+          <li>
+            <Link href="/tutoren" className="underline underline-offset-4 hover:text-actie-blauw">
+              Word tutor
+            </Link>
+          </li>
         </ul>
       </div>
     </footer>

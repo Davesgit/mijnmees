@@ -10,6 +10,7 @@ import { vindOnderdeel } from "@/content/onderwerpen";
 import { leerdoelNaam, sessieNaam } from "@/features/oefenen/weergave";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
 import { berekenBewijs, type BewijsStatus } from "@/features/voortgang/bewijs";
+import { HulpKaart } from "@/features/tutorhulp/HulpKaart";
 import { WerkbladenKaart } from "@/features/werkbladen/WerkbladenKaart";
 import { haalKinderen, vereisOntgrendeldeOuder } from "@/lib/server/dal";
 import { haalVoortgang, relatieveDag } from "@/lib/server/voortgang";
@@ -83,6 +84,8 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
         )}
       </div>
 
+      <HulpKaart kindId={kind.id} voornaam={kind.voornaam} />
+
       <div className="grid gap-4 desktop:grid-cols-3">
         <Kaart titel="Onlangs geoefend" link={{ href: `/ouder/kind/${kind.id}/voortgang`, label: "Naar voortgang" }}>
           {sessies.length === 0 ? (
@@ -144,7 +147,7 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
             <span className="text-3xl font-extrabold">{voortgang?.weetjes.length ?? 0}</span>{" "}
             <span className="text-tekst-zacht">weetjes ontdekt</span>
           </p>
-          <p className="mt-4 tekst-klein text-tekst-zacht">Tutorhulp komt later beschikbaar.</p>
+          <p className="mt-4 tekst-klein text-tekst-zacht">Tutorhulp zet je per kind aan of uit bij Instellingen.</p>
         </Kaart>
       </div>
 

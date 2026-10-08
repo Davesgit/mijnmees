@@ -77,6 +77,24 @@ export function maakSessie(
   return nieuweSessie(data, { soort: "oefening", ...instelling, aantal: vragen.length, slots: vragen.map(leegSlot) });
 }
 
+/** Controlevraag na tutoruitleg: één nieuwe, soortgelijke vraag die de server heeft gekozen. */
+export function maakControleSessie(data: OpslagData, instelling: { hulpvraagId: string; vraagId: string }) {
+  const vraag = vindVraag(instelling.vraagId);
+  if (!vraag || vraag.soort === "europa") throw new Error("Deze controlevraag bestaat niet.");
+  const tafel = vraag.soort === "tafel";
+  return nieuweSessie(data, {
+    soort: "controle",
+    instellingen: { controleVoor: instelling.hulpvraagId },
+    leerdoelId: vraag.learningGoalId,
+    onderdeelId: tafel ? "tafels" : vraag.learningGoalId,
+    onderwerpId: tafel ? "tafels" : "breuken",
+    niveau: "past-bij-mij",
+    aantal: 1,
+    bron: "voorstel",
+    slots: [leegSlot(vraag)],
+  });
+}
+
 /** Tafeltrainer: vragen uit de gekozen tafels, vermenigvuldigen en eventueel delen, zonder dubbele vragen. */
 export function maakTafelSessie(
   data: OpslagData,

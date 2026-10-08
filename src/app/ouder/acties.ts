@@ -1,36 +1,15 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import type { FormStatus } from "@/components/mees/Formulier";
 import { OUDERVERKLARING_VERSIE } from "@/lib/kinderen";
 import { ontgrendelOuder, vergrendelOuder, wisKindCookie } from "@/lib/server/cookies";
 import { audit, haalOuder } from "@/lib/server/dal";
+import { emailSchema, herkomst, veiligTerug, wachtwoordSchema } from "@/lib/server/invoer";
 import { createClient } from "@/lib/supabase/server";
 
 const WACHT_EMAIL = "mees_wacht_email";
-
-async function herkomst() {
-  const h = await headers();
-  const origin = h.get("origin");
-  if (origin) return origin;
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-}
-
-/** Alleen interne paden als terugadres (geen open redirect). */
-function veiligTerug(waarde: FormDataEntryValue | null, standaard: string) {
-  const pad = typeof waarde === "string" ? waarde : "";
-  return pad.startsWith("/") && !pad.startsWith("//") && !pad.startsWith("/\\") ? pad : standaard;
-}
-
-const emailSchema = z.email({ error: "Vul een geldig e-mailadres in." }).max(254);
-const wachtwoordSchema = z
-  .string()
-  .min(10, { error: "Gebruik minstens 10 tekens." })
-  .max(72, { error: "Gebruik hoogstens 72 tekens." })
-  .regex(/[A-Za-z]/, { error: "Gebruik minstens één letter." })
-  .regex(/\d/, { error: "Gebruik minstens één cijfer." });
 
 export async function registreer(_: FormStatus, form: FormData): Promise<FormStatus> {
   const waarden = { email: String(form.get("email") ?? "").trim() };

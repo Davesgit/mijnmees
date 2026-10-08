@@ -45,6 +45,8 @@ export function sessieNaam(sessie: Sessie) {
       return "Landenpuzzel";
     case "niveau":
       return "Wat past bij jou?";
+    case "controle":
+      return `Controlevraag: ${leerdoelNaam(sessie.leerdoelId)}`;
     default:
       return vindOnderdeel(sessie.onderdeelId)?.onderdeel.naam ?? sessie.onderdeelId;
   }
