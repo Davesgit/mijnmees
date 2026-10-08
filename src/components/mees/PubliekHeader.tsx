@@ -120,6 +120,11 @@ export function PubliekeVoet() {
               Word tutor
             </Link>
           </li>
+          <li>
+            <Link href="/donateurs/transparantie" className="underline underline-offset-4 hover:text-actie-blauw">
+              Wat kost Mees?
+            </Link>
+          </li>
         </ul>
       </div>
     </footer>

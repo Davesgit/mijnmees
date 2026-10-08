@@ -25,12 +25,13 @@ type TutorRij = { id: string; voornaam: string; achternaam: string; ervaring: st
 async function Inhoud() {
   await vereisBeheerder();
   const db = createAdminClient();
-  const [tutors, ouders, kinderen, open, uitleg] = await Promise.all([
+  const [tutors, ouders, kinderen, open, uitleg, donateurs] = await Promise.all([
     db.from("tutors").select("id, voornaam, achternaam, ervaring, motivatie, status, aangemeld_op, beoordeeld_op").order("aangemeld_op", { ascending: false }),
     db.from("ouders").select("*", { count: "exact", head: true }),
     db.from("kinderen").select("*", { count: "exact", head: true }),
     db.from("hulpvragen").select("*", { count: "exact", head: true }).neq("status", "afgerond"),
     db.from("uitleg").select("*", { count: "exact", head: true }).eq("status", "gepubliceerd"),
+    db.from("donateur_aanmeldingen").select("id, naam, email, organisatie, looptijd, toelichting, status, aangemaakt_op").order("aangemaakt_op", { ascending: false }).limit(50),
   ]);
   const rijen = (tutors.data ?? []) as TutorRij[];
   // E-mailadressen alleen voor de beheerder, om contact op te nemen over een aanmelding.
@@ -99,6 +100,33 @@ async function Inhoud() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section aria-labelledby="donateurs-kop">
+        <h2 id="donateurs-kop" className="subtitel">
+          Aanmeldingen meerjarige steun <span className="text-tekst-zacht">({donateurs.data?.length ?? 0})</span>
+        </h2>
+        {(donateurs.data ?? []).length === 0 ? (
+          <p className="mt-2 text-tekst-zacht">Nog geen aanmeldingen.</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-rand-zacht rounded-[16px] border border-rand-zacht bg-wit">
+            {(donateurs.data ?? []).map((d) => (
+              <li key={d.id} className="flex flex-col gap-1 p-4">
+                <span className="font-bold">
+                  {d.naam}
+                  {d.organisatie ? ` · ${d.organisatie}` : ""}
+                </span>
+                <span className="tekst-klein text-tekst-zacht">
+                  <a href={`mailto:${d.email}`} className="underline">
+                    {d.email}
+                  </a>{" "}
+                  · looptijd: {d.looptijd} · {formatDatum(d.aangemaakt_op)}
+                </span>
+                {d.toelichting && <span className="whitespace-pre-line">{d.toelichting}</span>}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section aria-labelledby="tutors">

@@ -12,6 +12,7 @@ import { vindWeetje } from "@/content/weetjes";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useOpslag } from "@/lib/opslag/lokaal";
+import { OuderUitnodiging } from "@/features/gast/OuderUitnodiging";
 import { vindVraag } from "@/features/oefenen/vragen";
 import { beoordeelTutorhulp, tutorhulpMogelijk } from "@/features/tutorhulp/criteria";
 
@@ -141,6 +142,7 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
         </Link>
       )}
 
+      {!kind && <OuderUitnodiging />}
       {!kind && (
         <Link
           href="/voortgang-bewaren"
