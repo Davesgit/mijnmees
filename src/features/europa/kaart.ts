@@ -40,7 +40,7 @@ export function isKleinLand(land: KaartLand) {
 }
 
 /** Omhullend kader van een aantal landen, met wat ruimte eromheen. */
-export function kaderVoorLanden(ids: string[], marge = 0.18): [number, number, number, number] {
+export function kaderVoorLanden(ids: string[], marge = 0.06): [number, number, number, number] {
   const kaders = ids.map((id) => landPerId.get(id)?.bbox).filter((b): b is Bbox => Boolean(b));
   if (kaders.length === 0) return kaart.viewBox;
   let [x1, y1, x2, y2] = [Infinity, Infinity, -Infinity, -Infinity];
@@ -52,8 +52,8 @@ export function kaderVoorLanden(ids: string[], marge = 0.18): [number, number, n
   }
   const w = x2 - x1;
   const h = y2 - y1;
-  const mx = Math.max(w * marge, 30);
-  const my = Math.max(h * marge, 30);
+  const mx = Math.max(w * marge, 12);
+  const my = Math.max(h * marge, 12);
   return [x1 - mx, y1 - my, w + 2 * mx, h + 2 * my];
 }
 

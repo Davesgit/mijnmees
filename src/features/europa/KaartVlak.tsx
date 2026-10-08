@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { Icoon } from "@/components/mees/Icoon";
 import { isKleinLand, kaart, kaderVoorLanden } from "./kaart";
 
@@ -37,6 +37,7 @@ export function KaartVlak({
   toonDoel,
   label,
   className = "",
+  onderin,
 }: {
   selectie: string[];
   /** Gekleurd: landen in de selectie in pastelkleuren. Neutraal: alles grijs (meerkeuze en puzzel). */
@@ -52,9 +53,16 @@ export function KaartVlak({
   toonDoel?: string | null;
   label: string;
   className?: string;
+  /** Inhoud onderaan in de kaart, bijvoorbeeld de vraag. */
+  onderin?: ReactNode;
 }) {
   const lagen = useMemo(() => (laag === null ? [] : Array.isArray(laag) ? laag : [laag]), [laag]);
-  const thuis = useMemo<View>(() => kaderVoorLanden(selectie), [selectie]);
+  const metBalk = Boolean(onderin);
+  // Met een vraagbalk onderin: extra ruimte onder het gebied, zodat de balk geen landen afdekt.
+  const thuis = useMemo<View>(() => {
+    const [x, y, w, h] = kaderVoorLanden(selectie);
+    return metBalk ? [x, y, w, h * 1.2] : [x, y, w, h];
+  }, [selectie, metBalk]);
   const [view, setView] = useState<View>(thuis);
   const [thuisVoor, setThuisVoor] = useState(thuis);
   if (thuisVoor !== thuis) {
@@ -299,28 +307,46 @@ export function KaartVlak({
         )}
       </svg>
 
-      <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-center text-inkt" aria-hidden>
-        <span className="text-sm font-extrabold">N</span>
-        <svg viewBox="0 0 12 14" className="h-5 w-4">
-          <path d="M6 0 12 14 6 10 0 14z" fill="currentColor" />
-        </svg>
-      </div>
+      {/* Windroos: noord boven, oost rechts, zuid onder, west links. */}
+      <svg viewBox="-34 -34 68 68" className="pointer-events-none absolute left-2 top-2 size-16 tablet:size-[72px]" aria-hidden>
+        <circle r="31" fill="#ffffff" fillOpacity="0.85" stroke="#c8ddf0" />
+        <path d="M0 -21 5 -5 21 0 5 5 0 21 -5 5 -21 0 -5 -5Z" fill="#c8ddf0" />
+        <path d="M0 -21 5 -5 0 0 -5 -5Z" fill="#111d55" />
+        <path d="M0 21 5 5 0 0 -5 5Z" fill="#66809e" />
+        <circle r="2.2" fill="#ffffff" stroke="#111d55" strokeWidth="1" />
+        <g fill="#111d55" fontSize="10" fontWeight="800" textAnchor="middle" dominantBaseline="central" fontFamily="inherit">
+          <text y="-26.5">N</text>
+          <text x="26" fill="#4a5878">O</text>
+          <text y="26.5" fill="#4a5878">Z</text>
+          <text x="-26" fill="#4a5878">W</text>
+        </g>
+      </svg>
 
-      <div className="absolute bottom-3 right-3 flex gap-2">
+      {/* Zoomknoppen rechtsboven, zodat de onderkant vrij is voor de vraag. */}
+      <div className="absolute right-3 top-3 flex flex-col items-end gap-2">
         <button type="button" onClick={() => zoom(1.5)} className="grid size-12 place-items-center rounded-[12px] border border-rand-zacht bg-wit text-inkt shadow-sm hover:bg-blauw-zacht" aria-label="Inzoomen">
           <Icoon naam="plus" />
         </button>
         <button type="button" onClick={() => zoom(1 / 1.5)} className="grid size-12 place-items-center rounded-[12px] border border-rand-zacht bg-wit text-inkt shadow-sm hover:bg-blauw-zacht" aria-label="Uitzoomen">
           <Icoon naam="min" />
         </button>
-        <button type="button" onClick={() => setView(thuis)} className="min-h-12 rounded-[12px] border border-rand-zacht bg-wit px-3 text-base font-semibold text-inkt shadow-sm hover:bg-blauw-zacht">
-          Heel gebied
+        <button
+          type="button"
+          onClick={() => setView(thuis)}
+          aria-label="Heel gebied"
+          className="grid size-12 place-items-center rounded-[12px] border border-rand-zacht bg-wit text-base font-semibold text-inkt shadow-sm hover:bg-blauw-zacht tablet:flex tablet:w-auto tablet:gap-2 tablet:px-3"
+        >
+          <Icoon naam="kader" />
+          <span className="hidden tablet:inline">Heel gebied</span>
         </button>
       </div>
 
       {onKies && plekken.length > 0 && (
-        <details className="absolute right-3 top-3 max-h-[70%] w-auto max-w-[14rem] overflow-auto rounded-[12px] border border-rand-zacht bg-wit/95 text-base shadow-sm open:w-56 open:p-2">
-          <summary className="flex min-h-11 cursor-pointer items-center rounded-[10px] px-3 font-semibold">Plekken als lijst</summary>
+        <details className="absolute left-3 top-[5.25rem] max-h-[60%] w-auto max-w-[14rem] overflow-auto rounded-[12px] border border-rand-zacht bg-wit/95 text-base shadow-sm open:w-56 open:p-2">
+          <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center gap-2 rounded-[10px] px-2 font-semibold tablet:px-3 [&::-webkit-details-marker]:hidden">
+            <Icoon naam="lijst" className="size-5" />
+            <span className="sr-only tablet:not-sr-only">Plekken als lijst</span>
+          </summary>
           <ul className="mt-1 flex flex-col gap-1">
             {plekken.map((p, i) => (
               <li key={p.id}>
@@ -336,6 +362,13 @@ export function KaartVlak({
             ))}
           </ul>
         </details>
+      )}
+      {onderin && (
+        <div className="pointer-events-none absolute inset-x-2 bottom-2 flex justify-center tablet:inset-x-4 tablet:bottom-4">
+          <div className="pointer-events-auto w-full max-w-2xl rounded-[14px] border border-rand-zacht bg-wit/95 px-3 py-2 text-center shadow-zwevend backdrop-blur tablet:rounded-[16px] tablet:px-6 tablet:py-3">
+            {onderin}
+          </div>
+        </div>
       )}
     </div>
   );

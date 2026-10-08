@@ -26,7 +26,7 @@ export const kindNavigatie: NavItem[] = [
 
 /** Tijdens een actieve oefening geen globale onderste navigatie op telefoon (ontwerpregels §6). */
 export function isOefenRoute(pad: string) {
-  return pad.startsWith("/kind/oefenen/");
+  return /^\/kind\/(oefenen|tafeltrainer|niveaubepaling|aardrijkskunde\/europa)\/[0-9a-f-]{36}/.test(pad);
 }
 
 export function MeesHeader() {

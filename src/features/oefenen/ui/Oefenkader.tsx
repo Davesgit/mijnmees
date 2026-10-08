@@ -183,13 +183,24 @@ export function VoortgangBalk({ label, aantal, afgehandeld, huidige }: { label: 
   );
 }
 
-export function VraagTitel({ titelRef, vraag, instructie }: { titelRef: RefObject<HTMLHeadingElement | null>; vraag: string; instructie: string }) {
+export function VraagTitel({
+  titelRef,
+  vraag,
+  instructie,
+  klein = false,
+}: {
+  titelRef: RefObject<HTMLHeadingElement | null>;
+  vraag: string;
+  instructie: string;
+  /** Compacte variant, bijvoorbeeld onderaan in de kaart. */
+  klein?: boolean;
+}) {
   return (
     <>
-      <h1 id="vraag-titel" ref={titelRef} tabIndex={-1} className="titel-oefening outline-none desktop:text-[2.5rem]">
+      <h1 id="vraag-titel" ref={titelRef} tabIndex={-1} className={`outline-none ${klein ? "subtitel tablet:text-[1.75rem] tablet:font-extrabold" : "titel-oefening desktop:text-[2.5rem]"}`}>
         {vraag}
       </h1>
-      <p className="mt-1 tekst-intro text-[#5b6fae]">{instructie}</p>
+      <p className={`mt-1 text-[#5b6fae] ${klein ? "tekst-klein max-tablet:sr-only" : "tekst-intro"}`}>{instructie}</p>
     </>
   );
 }
