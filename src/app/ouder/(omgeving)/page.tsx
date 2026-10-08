@@ -10,6 +10,7 @@ import { vindOnderdeel } from "@/content/onderwerpen";
 import { leerdoelNaam, sessieNaam } from "@/features/oefenen/weergave";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
 import { berekenBewijs, type BewijsStatus } from "@/features/voortgang/bewijs";
+import { LesKaart } from "@/features/live/LesKaart";
 import { HulpKaart } from "@/features/tutorhulp/HulpKaart";
 import { WerkbladenKaart } from "@/features/werkbladen/WerkbladenKaart";
 import { haalKinderen, vereisOntgrendeldeOuder } from "@/lib/server/dal";
@@ -84,6 +85,7 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
         )}
       </div>
 
+      <LesKaart kindId={kind.id} voornaam={kind.voornaam} />
       <HulpKaart kindId={kind.id} voornaam={kind.voornaam} />
 
       <div className="grid gap-4 desktop:grid-cols-3">

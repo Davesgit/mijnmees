@@ -30,7 +30,7 @@ export type BordGebeurtenis =
 
 export type BordOpname = { elementen: BordElement[]; gebeurtenissen: BordGebeurtenis[] };
 
-export const bordLimieten = { elementen: 300, gebeurtenissen: 4000, penPunten: 600, tekst: 120 } as const;
+export const bordLimieten = { elementen: 300, gebeurtenissen: 10000, penPunten: 600, tekst: 120 } as const;
 
 export function pasGebeurtenisToe(elementen: BordElement[], g: BordGebeurtenis): BordElement[] {
   switch (g.op) {

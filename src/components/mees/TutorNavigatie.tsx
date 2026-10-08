@@ -10,6 +10,7 @@ import { Logo } from "./Mees";
 const links = [
   { label: "Dashboard", href: "/tutor", actief: (p: string) => p === "/tutor" },
   { label: "Hulpvragen", href: "/tutor/hulpvragen", actief: (p: string) => p.startsWith("/tutor/hulpvragen") },
+  { label: "Lessen", href: "/tutor/lessen", actief: (p: string) => p.startsWith("/tutor/lessen") || p.startsWith("/tutor/lesvoorstellen") },
   { label: "Uitlegbibliotheek", href: "/tutor/uitlegbibliotheek", actief: (p: string) => p.startsWith("/tutor/uitleg") },
 ];
 

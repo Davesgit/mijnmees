@@ -6,6 +6,9 @@ import { Laden, Melding } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
 import { Mees } from "@/components/mees/Mees";
+import { leerdoelNaam } from "@/features/oefenen/weergave";
+import { formatLesDatum, formatLesTijd } from "@/features/live/regels";
+import { haalLesvoorstellen, haalTutorLessen } from "@/features/live/server";
 import { haalBibliotheek, haalWerkvoorraad } from "@/features/tutorhulp/server";
 import { haalOuder } from "@/lib/server/dal";
 import { haalTutor, type Tutor } from "@/lib/server/rollen";
@@ -29,7 +32,8 @@ async function Inhoud() {
   if (!tutor) redirect("/tutor/aanmelden");
   if (tutor.status !== "goedgekeurd") return <Wachten tutor={tutor} />;
 
-  const [werk, bibliotheek] = await Promise.all([haalWerkvoorraad(tutor), haalBibliotheek(tutor)]);
+  const [werk, bibliotheek, voorstellen, lessen] = await Promise.all([haalWerkvoorraad(tutor), haalBibliotheek(tutor), haalLesvoorstellen(tutor), haalTutorLessen(tutor)]);
+  const komend = lessen.filter((l) => l.status === "gepland" || l.status === "live").reverse().slice(0, 5);
   const nieuw = werk.filter((w) => !w.vanMij && w.status === "nieuw").length;
   const mijn = werk.filter((w) => w.vanMij && w.status !== "afgerond");
   const wachtOpControle = mijn.filter((w) => w.status === "uitleg-verstuurd").length;
@@ -69,10 +73,50 @@ async function Inhoud() {
         </PrimaireKnop>
         <SecundaireKnop href="/tutor/uitlegbibliotheek">Uitlegbibliotheek</SecundaireKnop>
       </div>
-      <section className="rounded-[16px] border border-dashed border-rand-interactief bg-wit p-5">
-        <h2 className="font-bold">Lesvoorstellen en live-lessen</h2>
-        <p className="mt-1 text-tekst-zacht">Komt binnenkort. Als meerdere kinderen op hetzelfde onderdeel vastlopen, kun je hier een korte live-les plannen.</p>
-      </section>
+      <div className="grid gap-4 desktop:grid-cols-2">
+        <section className="rounded-[16px] border border-rand-zacht bg-wit p-5">
+          <h2 className="subtitel">Lesvoorstellen</h2>
+          {voorstellen.length === 0 ? (
+            <p className="mt-2 text-tekst-zacht">Er zijn nu geen lesvoorstellen. Een voorstel verschijnt als meerdere kinderen op hetzelfde onderdeel vastlopen.</p>
+          ) : (
+            <ul className="mt-2 divide-y divide-rand-zacht">
+              {voorstellen.map((v) => (
+                <li key={v.leerdoelId}>
+                  <Link href={`/tutor/lesvoorstellen/${encodeURIComponent(v.leerdoelId)}`} className="flex min-h-14 items-center justify-between gap-3 py-2 hover:text-actie-blauw">
+                    <span>
+                      <span className="block font-bold">{leerdoelNaam(v.leerdoelId)}</span>
+                      <span className="block tekst-klein text-tekst-zacht">{v.aantal} verschillende kinderen</span>
+                    </span>
+                    <Icoon naam="chevron-rechts" className="size-5 text-actie-blauw" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section className="rounded-[16px] border border-rand-zacht bg-wit p-5">
+          <h2 className="subtitel">Mijn lessen</h2>
+          {komend.length === 0 ? (
+            <p className="mt-2 text-tekst-zacht">Je hebt geen geplande lessen.</p>
+          ) : (
+            <ul className="mt-2 divide-y divide-rand-zacht">
+              {komend.map((l) => (
+                <li key={l.id}>
+                  <Link href={`/tutor/lessen/${l.id}/live`} className="flex min-h-14 items-center justify-between gap-3 py-2 hover:text-actie-blauw">
+                    <span>
+                      <span className="block font-bold">{l.titel}</span>
+                      <span className="block tekst-klein text-tekst-zacht">
+                        {l.status === "live" ? "Nu live" : `${formatLesDatum(l.startOp)} om ${formatLesTijd(l.startOp)}`} · {l.aangemeld}/{l.capaciteit} aangemeld
+                      </span>
+                    </span>
+                    <Icoon naam="chevron-rechts" className="size-5 text-actie-blauw" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     </>
   );
 }

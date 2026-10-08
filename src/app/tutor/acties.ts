@@ -211,7 +211,7 @@ const opnameSchema = z.object({
   uitlegId: z.uuid(),
   titel: z.string().trim().min(1).max(120),
   bord: bordSchema,
-  audio: z.object({ pad: z.string().max(200), mime: z.string().max(60), duurMs: z.number().int().min(500).max(900_000) }).nullable(),
+  audio: z.object({ pad: z.string().max(200), mime: z.string().max(60), duurMs: z.number().int().min(500).max(3_600_000) }).nullable(),
 });
 
 /** Bewaart bord (en eventueel een nieuwe opname) als concept. Nooit automatisch versturen. */

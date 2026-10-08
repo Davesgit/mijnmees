@@ -62,7 +62,7 @@ const elementSchema = z.discriminatedUnion("soort", [
   z.object({ ...basis, soort: z.literal("pijl"), x1: x, y1: y, x2: x, y2: y }),
   z.object({ ...basis, soort: z.literal("pen"), punten: z.array(z.tuple([x, y])).min(1).max(bordLimieten.penPunten) }),
 ]);
-const t = z.number().min(0).max(900_000);
+const t = z.number().min(0).max(3_600_000);
 export const bordSchema = z.object({
   elementen: z.array(elementSchema).max(bordLimieten.elementen),
   gebeurtenissen: z
@@ -314,6 +314,12 @@ export async function haalEigenUitleg(tutor: Tutor, uitlegId: string): Promise<U
     privacyGecontroleerd: data.privacy_gecontroleerd,
     bijgewerktOp: data.bijgewerkt_op,
   };
+}
+
+/** Gepubliceerde lesopname (de aanroeper controleert uitnodiging en toestemming). */
+export async function lesOpname(uitlegId: string) {
+  const { data } = await createAdminClient().from("uitleg").select("status").eq("id", uitlegId).maybeSingle();
+  return data?.status === "gepubliceerd" ? speelbareUitleg(uitlegId) : null;
 }
 
 /** Voorbeeld voor de tutor zelf (eigen uitleg, ook als concept). */

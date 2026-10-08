@@ -15,6 +15,8 @@ import {
 } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie } from "@/features/oefenen/types";
 import { isGoed, vindVraag } from "@/features/oefenen/vragen";
+import { amsterdamNaarUtc, kanMeedoen, kanStarten, lesSignalen, modereerVraag } from "@/features/live/regels";
+import { bordInStukjes, decodeer } from "@/features/live/bordkanaal";
 import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/features/tutorhulp/criteria";
 import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
 import type { Poging } from "@/features/oefenen/types";
@@ -244,5 +246,50 @@ console.log("Tutorhulp");
     assert.equal(bordOp(opname, 5000).length, 0);
   });
 }
+
+console.log("Live-lessen");
+test("Nederlandse tijd → UTC, ook rond zomer- en wintertijd", () => {
+  assert.equal(amsterdamNaarUtc("2026-07-01T15:30"), "2026-07-01T13:30:00.000Z");
+  assert.equal(amsterdamNaarUtc("2026-12-01T15:30"), "2026-12-01T14:30:00.000Z");
+  assert.equal(amsterdamNaarUtc("2026-10-25T12:00"), "2026-10-25T11:00:00.000Z");
+  assert.equal(amsterdamNaarUtc("onzin"), null);
+});
+test("startvenster en meedoen", () => {
+  const start = "2026-10-20T14:00:00.000Z", t = (m: number) => Date.parse(start) + m * 60_000;
+  assert.equal(kanStarten(start, 20, t(-20)), false);
+  assert.equal(kanStarten(start, 20, t(-10)), true);
+  assert.equal(kanStarten(start, 20, t(60)), false);
+  assert.equal(kanMeedoen("live", start, 20, t(30)), true);
+  assert.equal(kanMeedoen("gepland", start, 20, t(5)), false);
+  assert.equal(kanMeedoen("live", start, 20, t(80)), false);
+});
+test("privévragen met contactgegevens gaan apart", () => {
+  assert.equal(modereerVraag("Waarom is 3/4 groter dan 2/3?").status, "nieuw");
+  assert.equal(modereerVraag("mail me op sam@voorbeeld.nl").status, "apart");
+  assert.equal(modereerVraag("bel 06 12345678").status, "apart");
+  assert.equal(modereerVraag("kijk op www.site.com").status, "apart");
+  assert.equal(modereerVraag("wat is je snapchat").status, "apart");
+});
+test("lesvoorstel vanaf 3 verschillende kinderen binnen 14 dagen", () => {
+  const nu = Date.parse("2026-10-20T12:00:00Z"), d = (n: number) => new Date(nu - n * 86_400_000).toISOString();
+  const p = (kindId: string, leerdoelId: string, op: string) => ({ kindId, leerdoelId, op });
+  assert.equal(lesSignalen([p("a", "tafel-7", d(1)), p("a", "tafel-7", d(2)), p("b", "tafel-7", d(3))], nu).length, 0);
+  assert.deepEqual(lesSignalen([p("a", "tafel-7", d(1)), p("b", "tafel-7", d(3)), p("c", "tafel-7", d(13))], nu).map((s) => s.kinderen.length), [3]);
+  assert.equal(lesSignalen([p("a", "tafel-7", d(1)), p("b", "tafel-7", d(3)), p("c", "tafel-7", d(20))], nu).length, 0);
+});
+test("groot bord gaat in stukjes die elk passen en samen het hele bord vormen", () => {
+  const pen = (i: number) => ({ id: `p${i}`, kleur: "inkt" as const, soort: "pen" as const, punten: Array.from({ length: 500 }, (_, k): [number, number] => [k % 1000, (k * 7) % 625]) });
+  const elementen = Array.from({ length: 40 }, (_, i) => pen(i));
+  const stukjes = bordInStukjes(elementen);
+  assert.ok(stukjes.every((b) => b.byteLength <= 12_000));
+  let bord: unknown[] = [];
+  for (const b of stukjes) {
+    const m = decodeer(b);
+    assert.ok(m && m.soort === "bord");
+    if (m.g.op === "zet") bord = m.g.elementen;
+    else if (m.g.op === "plaats") bord = [...bord, m.g.element];
+  }
+  assert.equal(bord.length, 40);
+});
 
 console.log(`\n${geslaagd} tests geslaagd`);

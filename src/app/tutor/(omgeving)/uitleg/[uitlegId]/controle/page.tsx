@@ -15,18 +15,18 @@ export const metadata: Metadata = { title: "Controleer de uitleg" };
 type Props = PageProps<"/tutor/uitleg/[uitlegId]/controle">;
 
 /** U05: bekijk en luister vóór je verstuurt. */
-export default function ControlePage({ params }: Props) {
+export default function ControlePage({ params, searchParams }: Props) {
   return (
     <div className="mees-content flex flex-col gap-6 py-6 tablet:py-10">
       <Suspense fallback={<Laden />}>
-        <Inhoud params={params} />
+        <Inhoud params={params} searchParams={searchParams} />
       </Suspense>
     </div>
   );
 }
 
-async function Inhoud({ params }: Pick<Props, "params">) {
-  const { uitlegId } = await params;
+async function Inhoud({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
+  const [{ uitlegId }, { les }] = await Promise.all([params, searchParams]);
   const tutor = await vereisTutor(`/tutor/uitleg/${uitlegId}/controle`);
   const [uitleg, speler] = await Promise.all([haalEigenUitleg(tutor, uitlegId), uitlegVoorTutor(tutor, uitlegId)]);
   if (!uitleg || !speler) notFound();
@@ -40,6 +40,9 @@ async function Inhoud({ params }: Pick<Props, "params">) {
           {uitleg.titel} · {leerdoelNaam(uitleg.leerdoelId)}
         </p>
       </div>
+      {les && !gepubliceerd && (
+        <Melding>Controleer de lesopname: geen kindnamen, privévragen of contactgegevens. Pas na publicatie kunnen uitgenodigde kinderen de les terugkijken.</Melding>
+      )}
       {!uitleg.audioPad ? (
         <Melding soort="probeer-opnieuw">Er is nog geen opname. Neem eerst je uitleg op.</Melding>
       ) : (
