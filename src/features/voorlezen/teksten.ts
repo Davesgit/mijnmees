@@ -24,4 +24,13 @@ export function vraagVoorleesTekst(vraag: Vraag) {
     : `${vraag.prompt.replace("×", "keer").replace(":", "gedeeld door")} ${vraag.instructie}`;
 }
 
+/** Hint 1 of 2 (index 0 of 1). */
+export const hintVoorleesTekst = (vraag: Vraag, i: number) => `Hint ${i + 1}. ${vraag.hints[i] ?? ""}`;
+
+/** Uitleg met het goede antwoord in woorden (geen losse tekens als "<"). */
+export function uitlegVoorleesTekst(vraag: Vraag) {
+  const antwoord = vraag.soort === "breuk" ? vraag.antwoordInWoorden : vraag.soort === "tafel" ? String(vraag.answer) : vraag.doelNaam;
+  return `Uitleg. ${vraag.explanation} Het goede antwoord is: ${antwoord}.`;
+}
+
 export const weetjeVoorleesTekst = (w: { titel: string; kort: string; tekst: string }) => `${w.titel}. ${w.kort} ${w.tekst}`;

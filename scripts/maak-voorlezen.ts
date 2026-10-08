@@ -5,20 +5,21 @@
 import { createClient } from "@supabase/supabase-js";
 import { weetjes } from "../src/content/weetjes";
 import { TAFELS, tafelVraag } from "../src/features/oefenen/tafel-vragen";
-import { vragenVoorLeerdoel } from "../src/features/oefenen/vragen";
-import { normaliseer, publiekeVoorleesUrl, vraagVoorleesTekst, voorleesConfig, voorleesPad, weetjeVoorleesTekst } from "../src/features/voorlezen/teksten";
+import { vragenVoorLeerdoel, type Vraag } from "../src/features/oefenen/vragen";
+import { hintVoorleesTekst, normaliseer, publiekeVoorleesUrl, uitlegVoorleesTekst, vraagVoorleesTekst, voorleesConfig, voorleesPad, weetjeVoorleesTekst } from "../src/features/voorlezen/teksten";
 
 const maak = process.argv.includes("--maak");
 const sleutel = process.env.ELEVENLABS_API_KEY;
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, { auth: { persistSession: false } });
 
 const teksten = new Set<string>();
-for (const v of vragenVoorLeerdoel("breuken-vergelijken")) teksten.add(normaliseer(vraagVoorleesTekst(v)));
+const metHulp = (v: Vraag) => [vraagVoorleesTekst(v), hintVoorleesTekst(v, 0), hintVoorleesTekst(v, 1), uitlegVoorleesTekst(v)].forEach((t) => teksten.add(normaliseer(t)));
+for (const v of vragenVoorLeerdoel("breuken-vergelijken")) metHulp(v);
 for (const t of TAFELS)
   for (let f = 1; f <= 10; f++) {
     for (const id of [`tafel-${t}-x-${f}`, `tafel-${t}-d-${t * f}`]) {
       const v = tafelVraag(id);
-      if (v) teksten.add(normaliseer(vraagVoorleesTekst(v)));
+      if (v) metHulp(v);
     }
   }
 for (const w of weetjes) teksten.add(normaliseer(weetjeVoorleesTekst(w)));
@@ -27,11 +28,19 @@ async function main() {
   const lijst = [...teksten].filter((t) => t.length <= voorleesConfig.maxTekens);
   let bestaand = 0;
   const nodig: { tekst: string; pad: string }[] = [];
-  for (const tekst of lijst) {
-    const pad = await voorleesPad(tekst);
-    const ok = await fetch(publiekeVoorleesUrl(pad), { method: "HEAD" }).then((r) => r.ok).catch(() => false);
-    if (ok) bestaand++;
-    else nodig.push({ tekst, pad });
+  // 20 tegelijk controleren of de audio al bestaat.
+  for (let i = 0; i < lijst.length; i += 20) {
+    const groep = await Promise.all(
+      lijst.slice(i, i + 20).map(async (tekst) => {
+        const pad = await voorleesPad(tekst);
+        const ok = await fetch(publiekeVoorleesUrl(pad), { method: "HEAD" }).then((r) => r.ok).catch(() => false);
+        return { tekst, pad, ok };
+      }),
+    );
+    for (const g of groep) {
+      if (g.ok) bestaand++;
+      else nodig.push({ tekst: g.tekst, pad: g.pad });
+    }
   }
   const tekens = nodig.reduce((s, n) => s + n.tekst.length, 0);
   console.log(`${lijst.length} teksten, ${bestaand} al gemaakt, ${nodig.length} nog te maken (${tekens} tekens).`);

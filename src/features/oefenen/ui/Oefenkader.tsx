@@ -9,6 +9,7 @@ import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop, SecundaireKnop, ZachteKnop } from "@/components/mees/Knoppen";
 import { LeesoptiesKnop } from "@/components/mees/Leesopties";
 import { VoorleesKnop } from "@/components/mees/Voorlezen";
+import { hintVoorleesTekst, uitlegVoorleesTekst } from "@/features/voorlezen/teksten";
 import { gaVerder, oefenConfig, registreerAntwoord, rondOvergangAf, sessieRoute, vraagHulp } from "../sessie";
 import type { Sessie, Slot } from "../types";
 import { goedAntwoordTekst, type Vraag } from "../vragen";
@@ -295,6 +296,11 @@ export function HulpPaneel({ slot, vraag, feedbackTekst }: { slot: Slot; vraag: 
             </>
           )}
         </div>
+        <VoorleesKnop
+          rond
+          tekst={uitleg ? uitlegVoorleesTekst(vraag) : hintVoorleesTekst(vraag, hints - 1)}
+          label={uitleg ? "Lees de uitleg voor" : `Lees hint ${hints} voor`}
+        />
         {!uitleg && (
           <button type="button" onClick={() => setVerborgen(true)} className="-m-2 grid size-12 shrink-0 place-items-center rounded-full hover:bg-wit" aria-label="Hint verbergen">
             <Icoon naam="sluiten" />

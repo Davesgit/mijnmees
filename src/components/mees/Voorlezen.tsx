@@ -80,9 +80,25 @@ export function useVoorlezen() {
   return { status, bezig: status !== "uit", lees };
 }
 
-export function VoorleesKnop({ tekst, className = "", compact = false }: { tekst: string; className?: string; compact?: boolean }) {
+export function VoorleesKnop({ tekst, className = "", compact = false, rond, label: eigenLabel }: { tekst: string; className?: string; compact?: boolean; rond?: boolean; label?: string }) {
   const { status, bezig, lees } = useVoorlezen();
   const label = status === "laden" ? "Even laden…" : bezig ? "Stop voorlezen" : "Voorlezen";
+  // Alleen een speaker-icoon (bijvoorbeeld bij een hint), met een duidelijke naam voor schermlezers.
+  if (rond) {
+    return (
+      <button
+        type="button"
+        onClick={() => void lees(tekst)}
+        aria-pressed={bezig}
+        aria-busy={status === "laden" || undefined}
+        aria-label={bezig ? "Stop voorlezen" : (eigenLabel ?? "Lees voor")}
+        title={bezig ? "Stop voorlezen" : (eigenLabel ?? "Lees voor")}
+        className={`grid size-12 shrink-0 place-items-center rounded-full bg-wit text-actie-blauw shadow-sm hover:bg-[#d9ecfd] ${bezig ? "ring-2 ring-actie-blauw" : ""} ${className}`}
+      >
+        <Icoon naam={bezig ? "stop" : "voorlezen"} className={`size-6 ${status === "laden" ? "animate-pulse" : ""}`} />
+      </button>
+    );
+  }
   return (
     <button
       type="button"

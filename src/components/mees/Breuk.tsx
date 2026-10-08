@@ -19,7 +19,10 @@ export function tekstVoorVoorlezen(tekst: string) {
     .replace(/(\d+)\/(\d+)/g, (_, t, n) => breukInWoorden(Number(t), Number(n)))
     .replace(/ < /g, " is kleiner dan ")
     .replace(/ > /g, " is groter dan ")
-    .replace(/ = /g, " is gelijk aan ");
+    .replace(/ = /g, " is gelijk aan ")
+    .replace(/\s×\s/g, " keer ")
+    .replace(/(\d)\s:\s(\d)/g, "$1 gedeeld door $2")
+    .replace(/…/g, "");
 }
 
 /** Breuk als echte opgebouwde tekst (geen afbeelding), met gesproken alternatief. */
