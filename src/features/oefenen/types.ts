@@ -33,6 +33,8 @@ export type SessieInstellingen = {
   tafels?: number[];
   bewerkingen?: ("x" | ":")[];
   metTijd?: boolean;
+  /** Afteller per vraag (met tijd). */
+  secondenPerVraag?: number;
   /** Europa */
   gebieden?: string[];
   landen?: string[];

@@ -6,6 +6,13 @@ import type { OpslagData, Sessie, SessieInstellingen, Slot } from "./types";
 import { isGoed, vindVraag, vragenVoorLeerdoel, type Niveau, type Vraag } from "./vragen";
 
 /** Bouwvoorstellen uit besluiten-en-open-punten.md; configureerbaar. */
+/** Afteller per vraag in de tafeltrainer. */
+export const tijdKeuzes = [
+  { seconden: 15, titel: "Rustig", omschrijving: "15 seconden per vraag" },
+  { seconden: 10, titel: "Gewoon", omschrijving: "10 seconden per vraag" },
+  { seconden: 6, titel: "Snel", omschrijving: "6 seconden per vraag" },
+] as const;
+
 export const oefenConfig = {
   versie: "2026-10-08",
   standaardAantal: 8,
@@ -98,7 +105,7 @@ export function maakControleSessie(data: OpslagData, instelling: { hulpvraagId: 
 /** Tafeltrainer: vragen uit de gekozen tafels, vermenigvuldigen en eventueel delen, zonder dubbele vragen. */
 export function maakTafelSessie(
   data: OpslagData,
-  instelling: { tafels: number[]; bewerkingen: ("x" | ":")[]; aantal: number; metTijd: boolean; bron: Sessie["bron"] },
+  instelling: { tafels: number[]; bewerkingen: ("x" | ":")[]; aantal: number; metTijd: boolean; secondenPerVraag?: number; bron: Sessie["bron"] },
 ) {
   const pool = schud(
     instelling.tafels.flatMap((t) =>
@@ -114,7 +121,7 @@ export function maakTafelSessie(
   if (vragen.length === 0) throw new Error("Kies eerst een tafel.");
   return nieuweSessie(data, {
     soort: "tafels",
-    instellingen: { tafels: instelling.tafels, bewerkingen: instelling.bewerkingen, metTijd: instelling.metTijd },
+    instellingen: { tafels: instelling.tafels, bewerkingen: instelling.bewerkingen, metTijd: instelling.metTijd, ...(instelling.metTijd ? { secondenPerVraag: instelling.secondenPerVraag ?? tijdKeuzes[1].seconden } : {}) },
     leerdoelId: "tafels",
     onderdeelId: "tafels",
     onderwerpId: "tafels",

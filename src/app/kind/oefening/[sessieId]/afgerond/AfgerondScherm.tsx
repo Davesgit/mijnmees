@@ -48,6 +48,12 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
         )
       : undefined;
 
+  // Met tijd: goed beantwoord binnen de afteller (alleen actieve tijd telt).
+  const limietMs = sessie.soort === "tafels" && sessie.instellingen?.metTijd && sessie.instellingen.secondenPerVraag ? sessie.instellingen.secondenPerVraag * 1000 : null;
+  const opTijd = limietMs
+    ? sessie.slots.filter((sl) => opslag.pogingen.some((p) => p.sessieId === sessie.id && p.slotId === sl.id && p.resultaat === "goed" && (p.actieveDuurMs ?? Infinity) <= limietMs)).length
+    : null;
+
   const samenvatting =
     zelfstandig === 0
       ? "Je hebt alle vragen gemaakt, met hulp. Zo leer je erbij."
@@ -81,6 +87,12 @@ export function AfgerondScherm({ sessieId }: { sessieId: string }) {
           {kind ? `Goed geoefend, ${kind.voornaam}!` : "Goed geoefend!"}
         </h1>
         <p className="mt-2 subtitel font-semibold text-[#5b6fae]">{samenvatting}</p>
+        {opTijd !== null && (
+          <p className="mt-2 inline-flex items-center gap-2 tekst-intro font-semibold">
+            <Icoon naam="tijd" className="size-6 text-actie-blauw" />
+            {opTijd} van de {sessie.slots.length} op tijd goed
+          </p>
+        )}
       </section>
 
       {weetje && (

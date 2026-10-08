@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import { Laden } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { Logo } from "@/components/mees/Mees";
-import { Avatar } from "@/components/mees/Profiel";
 import { haalKinderen, vereisOuder } from "@/lib/server/dal";
+import { ProfielKnop } from "./ProfielKnop";
 import { kiesKind } from "../ouder/kind-acties";
 import { UitlogKnop } from "../ouder/UitlogKnop";
 
@@ -51,16 +51,7 @@ async function Profielen() {
           <li key={k.id}>
             <form action={kiesKind}>
               <input type="hidden" name="kindId" value={k.id} />
-              <button
-                type="submit"
-                className="flex w-full flex-col items-center gap-3 rounded-[16px] border border-rand-zacht bg-wit p-4 transition-colors hover:border-actie-blauw hover:bg-blauw-zacht tablet:gap-4 tablet:p-8"
-              >
-                <Avatar id={k.avatar} className="size-24 tablet:size-36" />
-                <span className="subtitel">{k.voornaam}</span>
-                <span className="grid size-12 place-items-center rounded-full bg-blauw-zacht text-actie-blauw" aria-hidden>
-                  <Icoon naam="pijl-rechts" />
-                </span>
-              </button>
+              <ProfielKnop voornaam={k.voornaam} avatar={k.avatar} />
             </form>
           </li>
         ))}

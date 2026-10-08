@@ -25,6 +25,7 @@ export const sessieSchema = z.object({
       tafels: z.array(z.number().int().min(1).max(12)).max(12).optional(),
       bewerkingen: z.array(z.enum(["x", ":"])).max(2).optional(),
       metTijd: z.boolean().optional(),
+      secondenPerVraag: z.number().int().min(3).max(60).optional(),
       gebieden: z.array(z.string().max(20)).max(10).optional(),
       landen: z.array(z.string().max(4)).max(60).optional(),
       onderwerpen: z.array(z.string().max(20)).max(6).optional(),

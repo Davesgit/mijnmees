@@ -9,7 +9,7 @@ import { KeuzeKaart, StapKop } from "@/components/mees/KeuzeKaart";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
 import { Mees } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
-import { gastLimietBereikt, maakTafelSessie, oefenConfig } from "@/features/oefenen/sessie";
+import { gastLimietBereikt, maakTafelSessie, oefenConfig, tijdKeuzes } from "@/features/oefenen/sessie";
 import { TAFELS } from "@/features/oefenen/tafel-vragen";
 import { haalOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 
@@ -25,6 +25,7 @@ export function TafelInstellen() {
   const [tafels, setTafels] = useState<number[]>([...new Set(voorkeur)].sort((a, b) => a - b));
   const [bewerking, setBewerking] = useState<Bewerking>("x");
   const [metTijd, setMetTijd] = useState(false);
+  const [seconden, setSeconden] = useState<number>(tijdKeuzes[1].seconden);
   const [aantal, setAantal] = useState<number>(oefenConfig.standaardAantal);
   const [fout, setFout] = useState<string | null>(null);
   const [bezig, setBezig] = useState(false);
@@ -52,6 +53,7 @@ export function TafelInstellen() {
           bewerkingen: bewerking === "beide" ? ["x", ":"] : [bewerking],
           aantal,
           metTijd,
+          secondenPerVraag: seconden,
           bron: "zelf",
         });
         sessieId = r.sessie.id;
@@ -65,7 +67,7 @@ export function TafelInstellen() {
     router.push(`/kind/tafeltrainer/${sessieId}`);
   }
 
-  const samenvatting = tafels.length === 0 ? "Nog geen tafel gekozen" : `Tafel${tafels.length > 1 ? "s" : ""} van ${tafels.join(", ")} · ${aantal} vragen`;
+  const samenvatting = tafels.length === 0 ? "Nog geen tafel gekozen" : `Tafel${tafels.length > 1 ? "s" : ""} van ${tafels.join(", ")} · ${aantal} vragen${metTijd ? ` · ${seconden} sec per vraag` : ""}`;
 
   return (
     <div className="mees-content flex flex-col py-6 tablet:max-w-[1000px] tablet:py-8 desktop:py-10">
@@ -135,11 +137,21 @@ export function TafelInstellen() {
               gekozen={metTijd}
               onKies={() => setMetTijd(true)}
               titel="Met tijd"
-              omschrijving="Je ziet hoe lang je bezig bent. Er loopt niets af."
+              omschrijving="Per vraag loopt een tijd af."
               icoon={<Icoon naam="tijd" className="size-8" />}
             />
           </div>
-          <p className="mt-2 tekst-klein text-tekst-zacht">Met tijd oefenen is niet verplicht.</p>
+          {metTijd && (
+            <fieldset className="mt-4">
+              <legend className="mb-2 font-bold">Hoeveel tijd per vraag?</legend>
+              <div className="grid gap-3 min-[480px]:grid-cols-3">
+                {tijdKeuzes.map((k) => (
+                  <KeuzeKaart key={k.seconden} naam="seconden" waarde={String(k.seconden)} gekozen={seconden === k.seconden} onKies={() => setSeconden(k.seconden)} titel={k.titel} omschrijving={k.omschrijving} />
+                ))}
+              </div>
+            </fieldset>
+          )}
+          <p className="mt-2 tekst-klein text-tekst-zacht">Met tijd oefenen is niet verplicht. Is de tijd om, dan mag je het antwoord nog invullen.</p>
         </fieldset>
 
         <fieldset>

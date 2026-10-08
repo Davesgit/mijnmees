@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Breuk } from "@/components/mees/Breuk";
 import { Laden, Melding } from "@/components/mees/Bouwstenen";
+import { Icoon } from "@/components/mees/Icoon";
 import { Mees } from "@/components/mees/Mees";
 import { vindOnderdeel } from "@/content/onderwerpen";
 import { rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
@@ -60,37 +61,42 @@ function terugVoor(sessie: Sessie) {
   return { href: `/kind/oefening/instellen?onderdeel=${sessie.onderdeelId}`, kort: o?.onderwerp.naam ?? "Terug", lang: o?.onderdeel.naam ?? "Terug" };
 }
 
-/** Meet alleen actieve antwoordtijd: niet als het tabblad verborgen is. */
-function useActieveTijd() {
+/** Meet alleen actieve antwoordtijd: niet als het tabblad verborgen is. Stopt zodra de vraag klaar is. */
+function useActieveTijd(tikMs = 1000, gestopt = false) {
   const start = useRef(0);
   const opgeteld = useRef(0);
+  const loopt = useRef(true);
   const [, ververs] = useState(0);
   useEffect(() => {
     start.current = performance.now();
     const zichtbaarheid = () => {
-      if (document.hidden) {
-        opgeteld.current += performance.now() - start.current;
-      } else {
-        start.current = performance.now();
-      }
+      if (!loopt.current) return;
+      if (document.hidden) opgeteld.current += performance.now() - start.current;
+      else start.current = performance.now();
     };
     document.addEventListener("visibilitychange", zichtbaarheid);
-    const tik = setInterval(() => ververs((n) => n + 1), 1000);
-    return () => {
-      document.removeEventListener("visibilitychange", zichtbaarheid);
-      clearInterval(tik);
-    };
+    return () => document.removeEventListener("visibilitychange", zichtbaarheid);
   }, []);
-  return () => opgeteld.current + (document.hidden ? 0 : performance.now() - start.current);
+  useEffect(() => {
+    if (gestopt) {
+      if (loopt.current && !document.hidden) opgeteld.current += performance.now() - start.current;
+      loopt.current = false;
+      return;
+    }
+    const tik = setInterval(() => ververs((n) => n + 1), tikMs);
+    return () => clearInterval(tik);
+  }, [tikMs, gestopt]);
+  return () => opgeteld.current + (loopt.current && !document.hidden ? performance.now() - start.current : 0);
 }
 
 function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; slot: Slot; vraag: Vraag; rustigVerder: boolean }) {
-  const actieveTijd = useActieveTijd();
-  const v = useVraagplaats({ sessie, slot, rustigVerder, actieveDuur: vraag.soort === "tafel" ? actieveTijd : undefined });
+  const limietMs = sessie.soort === "tafels" && sessie.instellingen?.metTijd && sessie.instellingen.secondenPerVraag ? sessie.instellingen.secondenPerVraag * 1000 : null;
+  const actieveTijd = useActieveTijd(limietMs ? 100 : 1000, Boolean(slot.uitkomst));
+  const v = useVraagplaats({ sessie, slot, rustigVerder, actieveDuur: vraag.soort === "tafel" ? actieveTijd : undefined, eigenFocus: vraag.soort === "tafel" });
   const nummer = sessie.index + 1;
   const aantal = sessie.soort === "niveau" ? sessie.aantal : sessie.slots.length;
   const afgehandeld = sessie.slots.filter((s) => s.uitkomst).length;
-  const metTijd = sessie.soort === "tafels" && sessie.instellingen?.metTijd;
+  const metTijd = sessie.soort === "tafels" && sessie.instellingen?.metTijd && !limietMs;
 
   const voorleesTekst =
     vraag.soort === "breuk"
@@ -108,13 +114,15 @@ function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; sl
           rechts={metTijd ? <Tijd ms={actieveTijd()} /> : undefined}
         />
 
+        {limietMs && <Afteller resterendMs={Math.max(0, limietMs - actieveTijd())} totaalMs={limietMs} klaar={Boolean(slot.uitkomst)} />}
+
         <section aria-labelledby="vraag-titel" className="flex flex-1 flex-col items-center py-6 text-center tablet:py-8">
           {sessie.soort === "niveau" && <p className="mb-2 tekst-klein font-semibold text-actie-blauw">Dit helpt Mees een passend begin te kiezen.</p>}
           <VraagTitel titelRef={v.titelRef} vraag={vraag.soort === "breuk" && sessie.soort === "niveau" ? "Vergelijk de breuken" : vraag.prompt} instructie={vraag.soort === "breuk" ? vraag.instructie : "Vul het antwoord in."} />
           {vraag.soort === "breuk" ? (
             <BreukAntwoord vraag={vraag} gekozen={v.gekozen} kies={v.kies} vergrendeld={v.vergrendeld} />
           ) : vraag.soort === "tafel" ? (
-            <TafelAntwoord vraag={vraag} gekozen={v.gekozen} kies={v.kies} vergrendeld={v.vergrendeld} onEnter={() => v.controleer()} />
+            <TafelAntwoord vraag={vraag} gekozen={v.gekozen} kies={v.kies} vergrendeld={v.vergrendeld} poging={slot.hulp.fouten + slot.hulp.hints} onEnter={() => v.controleer()} />
           ) : null}
           <FeedbackEnHulp feedback={v.feedback} slot={slot} vraag={vraag} bewaarFout={v.bewaarFout} />
         </section>
@@ -133,6 +141,36 @@ function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; sl
         onControleer={() => v.controleer()}
         onVolgende={v.volgende}
       />
+    </div>
+  );
+}
+
+const BIJNA_OM_MS = 3000;
+
+/** Afteller per vraag: de balk loopt leeg en wordt oranje in de laatste seconden. Is de tijd om, dan mag het antwoord nog. */
+function Afteller({ resterendMs, totaalMs, klaar }: { resterendMs: number; totaalMs: number; klaar: boolean }) {
+  const seconden = Math.ceil(resterendMs / 1000);
+  const om = resterendMs <= 0;
+  const bijnaOm = !om && resterendMs <= BIJNA_OM_MS;
+  const melding = klaar ? "" : om ? "De tijd is om. Je mag het antwoord nog invullen." : bijnaOm ? "Nog 3 seconden." : "";
+  return (
+    <div className="mx-auto mt-3 w-full max-w-xl">
+      <div className="flex items-center justify-between gap-3 tekst-klein font-bold" aria-hidden>
+        <span className={`inline-flex items-center gap-1.5 ${bijnaOm ? "text-probeer-opnieuw" : om ? "text-tekst-zacht" : "text-inkt"}`}>
+          <Icoon naam="tijd" className="size-5" />
+          {klaar ? (om ? "Klaar" : "Op tijd!") : om ? "De tijd is om" : bijnaOm ? `Nog ${seconden}…` : `Nog ${seconden} seconden`}
+        </span>
+        {om && !klaar && <span className="font-semibold text-tekst-zacht">Je mag het nog invullen</span>}
+      </div>
+      <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-uitgeschakeld-vlak" aria-hidden>
+        <div
+          className={`h-full rounded-full transition-[width,background-color] duration-100 ease-linear ${bijnaOm ? "bg-[#ea580c]" : "bg-actie-blauw"} ${bijnaOm && !klaar ? "animate-pulse" : ""}`}
+          style={{ width: `${(resterendMs / totaalMs) * 100}%` }}
+        />
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {melding}
+      </p>
     </div>
   );
 }
@@ -192,18 +230,24 @@ function TafelAntwoord({
   gekozen,
   kies,
   vergrendeld,
+  poging,
   onEnter,
 }: {
   vraag: TafelVraag;
   gekozen: string | null;
   kies: (w: string) => void;
   vergrendeld: boolean;
+  /** Verandert na een fout antwoord of een hint: dan staat het veld meteen weer klaar. */
+  poging: number;
   onEnter: () => void;
 }) {
   const veld = useRef<HTMLInputElement>(null);
+  // Het antwoordveld staat altijd klaar om te typen: bij een nieuwe vraag, na een fout antwoord en na een hint.
   useEffect(() => {
-    if (!vergrendeld) veld.current?.focus({ preventScroll: true });
-  }, [vergrendeld]);
+    if (vergrendeld || !veld.current) return;
+    veld.current.focus({ preventScroll: true });
+    veld.current.select();
+  }, [vergrendeld, poging, vraag.id]);
   return (
     <div className="mt-6 flex flex-col items-center gap-6 tablet:mt-10">
       <div className="som flex items-center justify-center gap-4 text-inkt tablet:gap-8">
@@ -213,7 +257,7 @@ function TafelAntwoord({
         </span>
       </div>
       <label className="sr-only" htmlFor="tafel-antwoord">
-        Antwoord
+        Antwoord op {vraag.links} {vraag.bewerking === "x" ? "keer" : "gedeeld door"} {vraag.rechts}
       </label>
       <input
         ref={veld}

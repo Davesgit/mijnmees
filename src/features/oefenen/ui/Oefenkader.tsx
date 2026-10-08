@@ -34,12 +34,15 @@ export function useVraagplaats({
   slot,
   rustigVerder,
   actieveDuur,
+  eigenFocus = false,
 }: {
   sessie: Sessie;
   slot: Slot;
   rustigVerder: boolean;
   /** Geeft de actieve antwoordtijd (tafeltrainer). */
   actieveDuur?: () => number;
+  /** Het antwoordveld zet zelf de focus (tafels): dan niet naar de vraagtitel springen. */
+  eigenFocus?: boolean;
 }) {
   const router = useRouter();
   const [gekozen, setGekozen] = useState<string | null>(slot.hulp.fouten > 0 ? (slot.antwoord ?? null) : null);
@@ -54,10 +57,11 @@ export function useVraagplaats({
 
   // Nieuwe vraag: focus op de vraag, zodat toetsenbord en schermlezer meteen goed staan.
   useEffect(() => {
-    if (sessie.index > 0) titelRef.current?.focus();
+    if (sessie.index > 0 && !eigenFocus) titelRef.current?.focus();
     return () => {
       if (overgang.current) clearTimeout(overgang.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen bij een nieuwe vraag
   }, [sessie.index]);
 
   function bewaar(wijziging: Parameters<typeof wijzigOpslag>[0]) {
