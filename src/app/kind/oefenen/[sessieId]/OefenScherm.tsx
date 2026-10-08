@@ -13,6 +13,7 @@ import type { Sessie, Slot } from "@/features/oefenen/types";
 import { FeedbackEnHulp, OefenBediening, OefenKop, useVraagplaats, VraagTitel } from "@/features/oefenen/ui/Oefenkader";
 import { vindVraag, type BreukVergelijkVraag, type TafelVraag, type Vraag } from "@/features/oefenen/vragen";
 import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
+import { vraagVoorleesTekst } from "@/features/voorlezen/teksten";
 
 /** Oefenscherm voor rekenoefeningen, de tafeltrainer en de niveaubepaling. */
 export function OefenScherm({ sessieId }: { sessieId: string }) {
@@ -98,10 +99,7 @@ function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; sl
   const afgehandeld = sessie.slots.filter((s) => s.uitkomst).length;
   const metTijd = sessie.soort === "tafels" && sessie.instellingen?.metTijd && !limietMs;
 
-  const voorleesTekst =
-    vraag.soort === "breuk"
-      ? `${vraag.prompt} ${vraag.visual.links.join("/")} en ${vraag.visual.rechts.join("/")}. ${vraag.instructie}`
-      : `${vraag.prompt.replace("×", "keer").replace(":", "gedeeld door")} ${vraag.instructie}`;
+  const voorleesTekst = vraagVoorleesTekst(vraag);
 
   return (
     <div className="flex flex-1 flex-col">

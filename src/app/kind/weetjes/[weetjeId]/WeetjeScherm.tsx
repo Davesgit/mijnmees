@@ -5,6 +5,7 @@ import { Laden, Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { SecundaireKnop } from "@/components/mees/Knoppen";
 import { VoorleesKnop } from "@/components/mees/Voorlezen";
+import { weetjeVoorleesTekst } from "@/features/voorlezen/teksten";
 import { vindWeetje } from "@/content/weetjes";
 import { useOpslag } from "@/lib/opslag/lokaal";
 
@@ -33,7 +34,7 @@ export function WeetjeScherm({ weetjeId }: { weetjeId: string }) {
           <p className="font-semibold text-actie-blauw">{weetje.categorie}</p>
           <h1 className="mt-1 titel-held">{weetje.titel}</h1>
           <p className="mt-2 subtitel font-semibold text-[#4b5e9a]">{weetje.kort}</p>
-          <VoorleesKnop tekst={`${weetje.titel}. ${weetje.kort} ${weetje.tekst}`} className="mt-6 border-transparent bg-blauw-zacht" />
+          <VoorleesKnop tekst={weetjeVoorleesTekst(weetje)} className="mt-6 border-transparent bg-blauw-zacht" />
           <p className="mt-6 max-w-[60ch] text-lg leading-relaxed tablet:text-xl tablet:leading-relaxed">{weetje.tekst}</p>
           {!weetje.bronGecontroleerd && (
             <p className="mt-4 tekst-klein text-tekst-zacht">De bron van dit weetje wordt nog gecontroleerd.</p>

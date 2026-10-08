@@ -1,17 +1,16 @@
 import { createHash } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
-import { tekstVoorVoorlezen } from "@/components/mees/Breuk";
+import { normaliseer, publiekeVoorleesUrl, voorleesConfig, voorleesPad } from "@/features/voorlezen/teksten";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Voorlezen met ElevenLabs. De sleutel blijft op de server. Elke tekst wordt één keer gemaakt en daarna
 // uit de opslag geleverd. Geen persoonsgegevens: alleen vaste lestekst. Lukt het niet, dan valt de
 // browser terug op de eigen computerstem.
 
-const BUCKET = "voorlezen";
-const MAX_TEKENS = 600;
+const BUCKET = voorleesConfig.bucket;
+const MAX_TEKENS = voorleesConfig.maxTekens;
 const PER_UUR_PER_GEBRUIKER = 60;
 const DAGBUDGET = Number(process.env.ELEVENLABS_DAGBUDGET ?? 30000);
-const MODEL = process.env.ELEVENLABS_MODEL ?? "eleven_multilingual_v2";
 
 const antwoord = (body: object, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
@@ -19,20 +18,20 @@ export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
   if (origin && origin !== request.nextUrl.origin) return antwoord({ status: "geweigerd" }, 403);
   const sleutel = process.env.ELEVENLABS_API_KEY;
-  const stem = process.env.ELEVENLABS_VOICE_ID;
-  if (!sleutel || !stem) return antwoord({ status: "niet-ingesteld" }, 503);
+  const { stem, model: MODEL } = voorleesConfig;
+  if (!sleutel) return antwoord({ status: "niet-ingesteld" }, 503);
 
   const body = (await request.json().catch(() => null)) as { tekst?: unknown } | null;
-  const tekst = tekstVoorVoorlezen(String(body?.tekst ?? "")).replace(/\s+/g, " ").trim();
+  const tekst = normaliseer(String(body?.tekst ?? ""));
   if (!tekst || tekst.length > MAX_TEKENS) return antwoord({ status: "ongeldig" }, 400);
 
   const db = createAdminClient();
-  const pad = `${createHash("sha256").update(`${stem}|${MODEL}|${tekst}`).digest("hex")}.mp3`;
-  const publiek = db.storage.from(BUCKET).getPublicUrl(pad).data.publicUrl;
+  const pad = await voorleesPad(tekst);
+  const publiek = publiekeVoorleesUrl(pad);
 
   // Al gemaakt? Dan kost het niets.
-  const { data: bestaand } = await db.storage.from(BUCKET).list("", { search: pad, limit: 1 });
-  if (bestaand?.some((b) => b.name === pad)) return antwoord({ url: publiek });
+  const bestaat = await fetch(publiek, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false);
+  if (bestaat) return antwoord({ url: publiek });
 
   // Begrenzing: per gebruiker (gehasht IP + dag, niet te herleiden) en een dagbudget voor heel Mees.
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "onbekend";

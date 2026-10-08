@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { tekstVoorVoorlezen } from "./Breuk";
+import { publiekeVoorleesUrl, voorleesPad } from "@/features/voorlezen/teksten";
 import { Icoon } from "./Icoon";
 
 type Status = "uit" | "laden" | "leest";
@@ -47,6 +48,18 @@ export function useVoorlezen() {
     // Audio-element meteen bij de klik maken: dan mag de browser hem straks afspelen.
     const speler = new Audio();
     audio.current = speler;
+    speler.onended = () => setStatus("uit");
+    // 1. Al eerder gemaakt? Dan direct uit de opslag (en daarna uit de browsercache), zonder tussenstap.
+    try {
+      speler.src = publiekeVoorleesUrl(await voorleesPad(tekst));
+      if (mijn !== poging.current) return;
+      await speler.play();
+      setStatus("leest");
+      return;
+    } catch {
+      if (mijn !== poging.current) return;
+    }
+    // 2. Nog niet gemaakt: de server maakt hem één keer en bewaart hem. 3. Anders de systeemstem.
     try {
       const a = await fetch("/api/voorlezen", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tekst }) });
       if (mijn !== poging.current) return;
@@ -54,7 +67,6 @@ export function useVoorlezen() {
       const bron = a.headers.get("Content-Type")?.includes("audio") ? URL.createObjectURL(await a.blob()) : ((await a.json()) as { url: string }).url;
       if (mijn !== poging.current) return;
       speler.src = bron;
-      speler.onended = () => setStatus("uit");
       speler.onerror = () => {
         if (mijn === poging.current) systeemstem(tekst);
       };
