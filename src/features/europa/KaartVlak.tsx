@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Icoon } from "@/components/mees/Icoon";
 import { isKleinLand, kaart, kaderVoorLanden } from "./kaart";
 
@@ -37,7 +37,6 @@ export function KaartVlak({
   toonDoel,
   label,
   className = "",
-  onderin,
 }: {
   selectie: string[];
   /** Gekleurd: landen in de selectie in pastelkleuren. Neutraal: alles grijs (meerkeuze en puzzel). */
@@ -53,16 +52,9 @@ export function KaartVlak({
   toonDoel?: string | null;
   label: string;
   className?: string;
-  /** Inhoud onderaan in de kaart, bijvoorbeeld de vraag. */
-  onderin?: ReactNode;
 }) {
   const lagen = useMemo(() => (laag === null ? [] : Array.isArray(laag) ? laag : [laag]), [laag]);
-  const metBalk = Boolean(onderin);
-  // Met een vraagbalk onderin: extra ruimte onder het gebied, zodat de balk geen landen afdekt.
-  const thuis = useMemo<View>(() => {
-    const [x, y, w, h] = kaderVoorLanden(selectie);
-    return metBalk ? [x, y, w, h * 1.2] : [x, y, w, h];
-  }, [selectie, metBalk]);
+  const thuis = useMemo<View>(() => kaderVoorLanden(selectie) as View, [selectie]);
   const [view, setView] = useState<View>(thuis);
   const [thuisVoor, setThuisVoor] = useState(thuis);
   if (thuisVoor !== thuis) {
@@ -362,13 +354,6 @@ export function KaartVlak({
             ))}
           </ul>
         </details>
-      )}
-      {onderin && (
-        <div className="pointer-events-none absolute inset-x-2 bottom-2 flex justify-center tablet:inset-x-4 tablet:bottom-4">
-          <div className="pointer-events-auto w-full max-w-2xl rounded-[14px] border border-rand-zacht bg-wit/95 px-3 py-2 text-center shadow-zwevend backdrop-blur tablet:rounded-[16px] tablet:px-6 tablet:py-3">
-            {onderin}
-          </div>
-        </div>
       )}
     </div>
   );

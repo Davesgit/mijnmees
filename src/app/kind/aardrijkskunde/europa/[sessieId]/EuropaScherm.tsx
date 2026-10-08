@@ -90,7 +90,7 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
         <OefenKop terug={terug} voortgang={voortgangEuropa(sessie)} onStop={v.stop} onTerug={v.stopOvergang} />
         <section aria-labelledby="vraag-titel" className="flex flex-1 flex-col items-center py-3 text-center tablet:py-4">
           <KaartVlak
-            className="h-[clamp(320px,calc(100dvh-22rem),940px)] tablet:h-[clamp(340px,calc(100dvh-20.5rem),940px)] w-full"
+            className="h-[clamp(280px,calc(100dvh-27rem),900px)] tablet:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
             label={vraag.type === "map-click" ? "Kaart van Europa. Tik een plek aan." : "Kaart van Europa."}
             selectie={landen}
             stijl={vraag.type === "map-click" && vraag.module === "countries" ? "gekleurd" : "neutraal"}
@@ -101,18 +101,16 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
             donker={isLigging ? opties.map((o) => o.id).filter((id) => landPerId.has(id)) : []}
             goed={v.klaar && vraag.type === "map-click" ? vraag.doel : null}
             toonDoel={uitleg && vraag.type === "map-click" ? vraag.doel : null}
-            onderin={
-              // De vraag staat onderaan in de kaart (ontwerpregels §6: vraag onder de kaart), altijd in beeld.
-              <>
-                <VraagTitel titelRef={v.titelRef} vraag={vraag.prompt} instructie={vraag.instructie} klein />
-                {vraag.type === "map-click" && (
-                  <p className="mt-1 tekst-klein font-semibold text-actie-blauw" aria-live="polite">
-                    {v.gekozen ? "Je hebt een plek gekozen." : "Nog geen plek gekozen."}
-                  </p>
-                )}
-              </>
-            }
           />
+          {/* De vraag staat direct onder de kaart (ontwerpregels §6), zonder landen af te dekken. */}
+          <div className="mt-3 w-full max-w-2xl">
+            <VraagTitel titelRef={v.titelRef} vraag={vraag.prompt} instructie={vraag.instructie} klein />
+            {vraag.type === "map-click" && (
+              <p className="mt-1 tekst-klein font-semibold text-actie-blauw" aria-live="polite">
+                {v.gekozen ? "Je hebt een plek gekozen." : "Nog geen plek gekozen."}
+              </p>
+            )}
+          </div>
           {vraag.type === "map-click" ? null : (
             <fieldset className="mt-4 w-full" disabled={v.vergrendeld}>
               <legend className="mb-2 tekst-klein text-tekst-zacht">Kies één antwoord.</legend>
@@ -233,17 +231,10 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
         />
         <section aria-labelledby="puzzel-titel" className="flex flex-1 flex-col py-3 text-center tablet:py-4">
           <div className="grid gap-4 landscape:tablet:grid-cols-[1fr_16rem] desktop:grid-cols-[1fr_17rem]">
+            <div className="flex min-w-0 flex-col">
             <KaartVlak
-              className="h-[clamp(320px,calc(100dvh-22rem),940px)] tablet:h-[clamp(340px,calc(100dvh-20.5rem),940px)] w-full"
+              className="h-[clamp(280px,calc(100dvh-27rem),900px)] tablet:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
               label="Kaart van Europa. Kies eerst een land en tik dan de plek aan."
-              onderin={
-                <>
-                  <h1 id="puzzel-titel" className="subtitel tablet:text-[1.75rem] tablet:font-extrabold">
-                    Leg de landen op hun plek
-                  </h1>
-                  <p className="mt-1 tekst-klein text-[#5b6fae]">Tik een land aan en tik daarna op de kaart.</p>
-                </>
-              }
               selectie={landen}
               stijl="neutraal"
               laag={slot && !uitleg ? "landen" : null}
@@ -251,6 +242,14 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
               geplaatst={gelegd}
               toonDoel={uitleg && vraag?.soort === "europa" ? vraag.doel : null}
             />
+            {/* Titel onder de kaart: dekt geen landen af. */}
+            <div className="mt-3">
+              <h1 id="puzzel-titel" className="subtitel tablet:text-[1.75rem] tablet:font-extrabold">
+                Leg de landen op hun plek
+              </h1>
+              <p className="mt-1 tekst-klein text-[#5b6fae]">Tik een land aan en tik daarna op de kaart.</p>
+            </div>
+            </div>
             <fieldset className="rounded-[20px] border border-rand-zacht bg-wit p-3 text-left">
               <legend className="sr-only">Kies een land</legend>
               <p className="px-1 pb-2 font-bold">Kies een land</p>
