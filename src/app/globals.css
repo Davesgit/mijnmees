@@ -186,3 +186,18 @@
 .mees-verschijn {
   animation: mees-verschijn 160ms ease-out;
 }
+
+/* Werkbladen: schoon A4, zonder appnavigatie. */
+@page {
+  size: A4;
+  margin: 14mm;
+}
+@media print {
+  body {
+    background: #ffffff;
+    font-size: 12pt;
+  }
+  .werkblad {
+    color: #111d55;
+  }
+}

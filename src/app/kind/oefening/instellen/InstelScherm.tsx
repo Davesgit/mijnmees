@@ -59,7 +59,9 @@ export function InstelScherm(props: {
   // Bij terug/vooruit blijft de laatste keuze staan (sessionStorage van dit tabblad).
   const bewaard = useSyncExternalStore(geenAbonnement, () => leesBewaard(sleutel), () => null);
   const [wijzigingen, setWijzigingen] = useState<Partial<Keuze>>({});
-  const keuze: Keuze = { ...standaardKeuze, ...parseKeuze(bewaard), ...(props.voorkeurNiveau ? { niveau: props.voorkeurNiveau } : {}), ...wijzigingen, vorm: "scherm" };
+  const keuze: Keuze = { ...standaardKeuze, ...parseKeuze(bewaard), ...(props.voorkeurNiveau ? { niveau: props.voorkeurNiveau } : {}), ...wijzigingen };
+  // Werkbladen bestaan nu alleen voor breuken vergelijken.
+  const papierKan = props.onderdeelId === "breuken-vergelijken";
   const [bezig, setBezig] = useState(false);
   const [fout, setFout] = useState(false);
 
@@ -72,6 +74,11 @@ export function InstelScherm(props: {
   }
 
   function start() {
+    if (keuze.vorm === "papier" && papierKan) {
+      const aantal = Math.min(20, Math.max(4, keuze.aantal));
+      router.push(`/werkbladen/samenstellen?onderwerpen=breuken&niveau=${keuze.niveau}&aantal=${aantal}`);
+      return;
+    }
     if (!kind && gastLimietBereikt(haalOpslag())) {
       router.push("/voortgang-bewaren");
       return;
@@ -137,11 +144,12 @@ export function InstelScherm(props: {
             <KeuzeKaart
               naam="vorm"
               waarde="papier"
-              gekozen={false}
-              onKies={() => {}}
+              gekozen={keuze.vorm === "papier"}
+              onKies={() => pasAan({ vorm: "papier" })}
               titel="Op papier"
-              reden="Werkbladen komen binnenkort."
-              uitgeschakeld
+              omschrijving={papierKan ? "Maak een werkblad om te printen." : undefined}
+              reden={papierKan ? undefined : "Voor dit onderdeel komen werkbladen later."}
+              uitgeschakeld={!papierKan}
               icoon={<Icoon naam="printer" className="size-8" />}
             />
           </div>
@@ -205,7 +213,7 @@ export function InstelScherm(props: {
 
         <div className="flex flex-col items-stretch gap-3 tablet:flex-row tablet:items-center tablet:gap-5">
           <PrimaireKnop type="submit" groot disabled={bezig} className="w-full tablet:w-auto">
-            {bezig ? "Even wachten…" : "Start oefenen"}
+            {bezig ? "Even wachten…" : keuze.vorm === "papier" ? "Maak werkblad" : "Start oefenen"}
             {!bezig && <Icoon naam="pijl-rechts" />}
           </PrimaireKnop>
           <p className="text-center text-tekst-zacht tablet:border-l tablet:border-rand-zacht tablet:pl-5 tablet:text-left">

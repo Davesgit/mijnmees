@@ -10,15 +10,17 @@ export async function GET() {
     return NextResponse.json({ status: "unauthorized" }, { status: 401 });
   }
   const supabase = await createClient();
-  const [ouderRij, kinderen, toestemmingen, sessies, pogingen, weetjes] = await Promise.all([
+  const [ouderRij, kinderen, toestemmingen, sessies, pogingen, weetjes, werkbladen, papier] = await Promise.all([
     supabase.from("ouders").select("verklaring_versie, verklaring_op, email_uitleg, email_lessen, aangemaakt_op").eq("id", ouder.id).single(),
     supabase.from("kinderen").select("id, voornaam, groep, avatar, tutorhulp_toegestaan, aangemaakt_op").eq("ouder_id", ouder.id),
     supabase.from("toestemmingen").select("kind_id, soort, waarde, beleid_versie, op").eq("ouder_id", ouder.id),
     supabase.from("sessies").select("*"),
     supabase.from("pogingen").select("*"),
     supabase.from("weetjes_ontdekt").select("*"),
+    supabase.from("werkbladen").select("id, code, kind_id, titel, instellingen, vragen, aangemaakt_op").eq("ouder_id", ouder.id),
+    supabase.from("papier_resultaten").select("werkblad_id, kind_id, versie, regels, op").eq("ouder_id", ouder.id),
   ]);
-  if ([ouderRij, kinderen, toestemmingen, sessies, pogingen, weetjes].some((r) => r.error)) {
+  if ([ouderRij, kinderen, toestemmingen, sessies, pogingen, weetjes, werkbladen, papier].some((r) => r.error)) {
     return NextResponse.json({ status: "retryable" }, { status: 503 });
   }
 
@@ -32,6 +34,8 @@ export async function GET() {
     sessies: sessies.data,
     pogingen: pogingen.data,
     weetjes: weetjes.data,
+    werkbladen: werkbladen.data,
+    papier_resultaten: papier.data,
   };
   return new NextResponse(JSON.stringify(inhoud, null, 2), {
     headers: {

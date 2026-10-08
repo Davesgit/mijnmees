@@ -172,6 +172,13 @@ export function StartScherm() {
         </Link>
       </p>
 
+      <p className="-mt-2 text-center">
+        <Link href="/werkbladen/samenstellen" className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-semibold text-actie-blauw hover:bg-blauw-zacht">
+          <Icoon naam="printer" className="size-5" />
+          Liever op papier? Maak een werkblad
+        </Link>
+      </p>
+
       <p className="flex items-center justify-center gap-3 text-center tekst-klein text-tekst-zacht">
         <span aria-hidden className="text-xl">🌱</span>
         Een kort oefenmoment is ook waardevol.

@@ -10,6 +10,7 @@ import { vindOnderdeel } from "@/content/onderwerpen";
 import { leerdoelNaam, sessieNaam } from "@/features/oefenen/weergave";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
 import { berekenBewijs, type BewijsStatus } from "@/features/voortgang/bewijs";
+import { WerkbladenKaart } from "@/features/werkbladen/WerkbladenKaart";
 import { haalKinderen, vereisOntgrendeldeOuder } from "@/lib/server/dal";
 import { haalVoortgang, relatieveDag } from "@/lib/server/voortgang";
 
@@ -143,9 +144,11 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
             <span className="text-3xl font-extrabold">{voortgang?.weetjes.length ?? 0}</span>{" "}
             <span className="text-tekst-zacht">weetjes ontdekt</span>
           </p>
-          <p className="mt-4 tekst-klein text-tekst-zacht">Werkbladen en tutorhulp komen later beschikbaar. Je krijgt dan hier een overzicht.</p>
+          <p className="mt-4 tekst-klein text-tekst-zacht">Tutorhulp komt later beschikbaar.</p>
         </Kaart>
       </div>
+
+      <WerkbladenKaart kindId={kind.id} voornaam={kind.voornaam} />
 
       <div className="flex flex-wrap gap-3">
         <PrimaireKnop href="/profielen">Laat {kind.voornaam} oefenen</PrimaireKnop>

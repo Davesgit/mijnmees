@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Melding, TerugLink } from "@/components/mees/Bouwstenen";
@@ -178,6 +179,13 @@ export function TafelInstellen() {
           </PrimaireKnop>
           <p className="text-center text-tekst-zacht tablet:border-l tablet:border-rand-zacht tablet:pl-5 tablet:text-left">{samenvatting}</p>
         </div>
+        <Link
+          href={`/werkbladen/samenstellen?onderwerpen=tafels&tafels=${tafels.join(",")}&bewerkingen=${bewerking === "beide" ? "x,:" : bewerking}&aantal=${Math.min(20, Math.max(4, aantal))}`}
+          className="inline-flex min-h-12 items-center justify-center gap-2 self-center rounded-[12px] px-3 font-semibold text-actie-blauw hover:bg-blauw-zacht tablet:self-start"
+        >
+          <Icoon naam="printer" />
+          Liever op papier? Maak een werkblad
+        </Link>
       </form>
     </div>
   );

@@ -41,7 +41,7 @@ export default function HoeMeesWerktPage() {
           <Icoon naam="werkblad" className="mt-0.5 size-6 text-actie-blauw" />
           <span>
             <span className="block font-bold">Ook op papier</span>
-            <span className="block text-tekst-zacht">Werkbladen om te printen komen binnenkort.</span>
+            <span className="block text-tekst-zacht">Maak een werkblad om te printen, met antwoordblad voor ouders.</span>
           </span>
         </li>
         <li className="flex items-start gap-3 rounded-[16px] bg-blauw-zacht p-5">

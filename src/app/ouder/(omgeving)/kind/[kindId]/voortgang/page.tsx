@@ -7,6 +7,7 @@ import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import type { Poging, Sessie, Slot } from "@/features/oefenen/types";
 import { antwoordTekst, opgaveTekst, vindVraag } from "@/features/oefenen/vragen";
 import { sessieNaam } from "@/features/oefenen/weergave";
+import { WerkbladenKaart } from "@/features/werkbladen/WerkbladenKaart";
 import { haalEigenKind, vereisOntgrendeldeOuder } from "@/lib/server/dal";
 import { formatDatum, formatTijd, haalVoortgang, relatieveDag } from "@/lib/server/voortgang";
 
@@ -72,6 +73,7 @@ async function Inhoud({ params, searchParams }: Pick<Props, "params" | "searchPa
           <SessieDetail sessie={gekozen} pogingen={(voortgang?.pogingen ?? []).filter((p) => p.sessieId === gekozen.id)} />
         </div>
       )}
+      <WerkbladenKaart kindId={kind.id} voornaam={kind.voornaam} />
     </>
   );
 }

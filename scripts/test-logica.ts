@@ -15,6 +15,7 @@ import {
 } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie } from "@/features/oefenen/types";
 import { isGoed, vindVraag } from "@/features/oefenen/vragen";
+import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
 let geslaagd = 0;
 function test(naam: string, fn: () => void) {
@@ -159,6 +160,27 @@ test("breukensessie werkt nog", () => {
   const { data, sessie } = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 8, bron: "zelf" });
   const klaar = speelUit(data, sessie.id, [1]);
   assert.equal(klaar.sessies[sessie.id].status, "afgerond");
+});
+
+console.log("Werkbladen");
+const wb: WerkbladInstellingen = { vak: "rekenen", onderwerpen: ["breuken", "tafels"], niveau: "past-bij-mij", tafels: [3, 7], bewerkingen: ["x", ":"], aantal: 12, seed: 42 };
+test("werkblad: zelfde seed geeft hetzelfde blad als het voorbeeld", () => {
+  assert.deepEqual(kiesWerkbladVragen(wb), kiesWerkbladVragen({ ...wb }));
+  assert.deepEqual(maakWerkblad(wb).vragen.map((v) => v.vraagId), kiesWerkbladVragen(wb));
+  assert.notDeepEqual(kiesWerkbladVragen(wb), kiesWerkbladVragen({ ...wb, seed: 43 }));
+});
+test("werkblad: juiste aantal, geen dubbele, alleen gekozen tafels", () => {
+  for (const aantal of [4, 12, 20]) {
+    const ids = kiesWerkbladVragen({ ...wb, aantal });
+    assert.equal(ids.length, aantal);
+    assert.equal(new Set(ids).size, aantal);
+    for (const id of ids) {
+      const v = vindVraag(id);
+      assert.ok(v && v.soort !== "europa", id);
+      if (v.soort === "tafel") assert.ok(v.tafel === 3 || v.tafel === 7, id);
+    }
+  }
+  assert.match(maakWerkblad(wb).code, /^WB-[A-Z0-9]{6}$/);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);
