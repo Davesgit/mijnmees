@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Breuk } from "@/components/mees/Breuk";
 import { Laden, Melding } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
@@ -116,7 +116,7 @@ function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; sl
 
         <section aria-labelledby="vraag-titel" className="flex flex-1 flex-col items-center py-6 text-center tablet:py-8">
           {sessie.soort === "niveau" && <p className="mb-2 tekst-klein font-semibold text-actie-blauw">Dit helpt Mees een passend begin te kiezen.</p>}
-          <VraagTitel titelRef={v.titelRef} vraag={vraag.soort === "breuk" && sessie.soort === "niveau" ? "Vergelijk de breuken" : vraag.prompt} instructie={vraag.soort === "breuk" ? vraag.instructie : "Vul het antwoord in."} />
+          <VraagTitel titelRef={v.titelRef} vraag={vraag.soort === "breuk" && sessie.soort === "niveau" ? "Vergelijk de breuken" : vraag.prompt} instructie={vraag.soort === "breuk" ? vraag.instructie : "Vul het antwoord in."} klein={vraag.soort === "tafel"} />
           {vraag.soort === "breuk" ? (
             <BreukAntwoord vraag={vraag} gekozen={v.gekozen} kies={v.kies} vergrendeld={v.vergrendeld} />
           ) : vraag.soort === "tafel" ? (
@@ -223,6 +223,10 @@ function BreukAntwoord({ vraag, gekozen, kies, vergrendeld }: { vraag: BreukVerg
   );
 }
 
+const geenAbonnement = () => () => {};
+/** Telefoon of tablet (aanraakscherm als belangrijkste invoer). */
+const isAanraak = () => matchMedia("(pointer: coarse)").matches;
+
 function TafelAntwoord({
   vraag,
   gekozen,
@@ -240,20 +244,39 @@ function TafelAntwoord({
   onEnter: () => void;
 }) {
   const veld = useRef<HTMLInputElement>(null);
+  // Op een aanraakscherm: eigen cijfertoetsen in plaats van het toetsenbord van het apparaat
+  // (dat springt op, dekt de knoppen af en moet op een iPhone eerst weer weg).
+  const aanraak = useSyncExternalStore(geenAbonnement, isAanraak, () => false);
+  const waarde = gekozen ?? "";
+  const zet = (nieuw: string) => kies(nieuw.replace(/[^0-9]/g, "").slice(0, 4));
+
   // Het antwoordveld staat altijd klaar om te typen: bij een nieuwe vraag, na een fout antwoord en na een hint.
   useEffect(() => {
-    if (vergrendeld || !veld.current) return;
+    if (vergrendeld || aanraak || !veld.current) return;
     veld.current.focus({ preventScroll: true });
     veld.current.select();
-  }, [vergrendeld, poging, vraag.id]);
-  return (
-    <div className="mt-6 flex flex-col items-center gap-6 tablet:mt-10">
-      <div className="som flex items-center justify-center gap-4 text-inkt tablet:gap-8">
-        <Mees pose="blij" breedte={140} className="hidden w-28 tablet:block desktop:w-36" />
-        <span aria-hidden className="text-[1.15em]">
-          {vraag.links} {vraag.bewerking === "x" ? "×" : ":"} {vraag.rechts} =
-        </span>
-      </div>
+  }, [vergrendeld, poging, vraag.id, aanraak]);
+
+  // Aanraakscherm met een los toetsenbord (bijvoorbeeld een iPad): typen werkt ook zonder het veld aan te tikken.
+  useEffect(() => {
+    if (!aanraak || vergrendeld) return;
+    const toets = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement)?.closest("input, textarea, select")) return;
+      if (/^[0-9]$/.test(e.key)) zet(waarde + e.key);
+      else if (e.key === "Backspace") zet(waarde.slice(0, -1));
+      else if (e.key === "Enter") onEnter();
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", toets);
+    return () => window.removeEventListener("keydown", toets);
+  });
+
+  const basisToets = "grid min-h-12 place-items-center rounded-[14px] border text-2xl font-bold select-none [touch-action:manipulation] disabled:opacity-40";
+  const toetsKlasse = `${basisToets} border-rand-interactief bg-wit text-inkt active:bg-blauw-zacht`;
+
+  const antwoordVeld = (
+    <>
       <label className="sr-only" htmlFor="tafel-antwoord">
         Antwoord op {vraag.links} {vraag.bewerking === "x" ? "keer" : "gedeeld door"} {vraag.rechts}
       </label>
@@ -261,21 +284,58 @@ function TafelAntwoord({
         ref={veld}
         id="tafel-antwoord"
         type="text"
-        inputMode="numeric"
+        inputMode={aanraak ? "none" : "numeric"}
         pattern="[0-9]*"
         autoComplete="off"
         maxLength={4}
-        value={gekozen ?? ""}
-        readOnly={vergrendeld}
-        onChange={(e) => kies(e.target.value.replace(/[^0-9]/g, ""))}
+        value={waarde}
+        readOnly={vergrendeld || aanraak}
+        onChange={(e) => zet(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
             onEnter();
           }
         }}
-        className="som h-20 w-48 rounded-[16px] border-2 border-rand-interactief bg-wit text-center text-inkt focus:border-actie-blauw tablet:h-24 tablet:w-64"
+        className={`som rounded-[16px] border-2 border-rand-interactief bg-wit text-center text-inkt focus:border-actie-blauw ${aanraak ? "h-16 w-32 tablet:h-20 tablet:w-44" : "h-20 w-48 tablet:h-24 tablet:w-64"}`}
       />
+    </>
+  );
+
+  return (
+    <div className="mt-3 flex w-full flex-col items-center gap-3 tablet:mt-10 tablet:gap-6">
+      <div className="som flex items-center justify-center gap-3 text-inkt tablet:gap-8">
+        <Mees pose="blij" breedte={140} className="hidden w-28 tablet:block desktop:w-36" />
+        <span aria-hidden className="text-[1.15em]">
+          {vraag.links} {vraag.bewerking === "x" ? "×" : ":"} {vraag.rechts} =
+        </span>
+        {aanraak && antwoordVeld}
+      </div>
+      {!aanraak && antwoordVeld}
+      {aanraak && (
+        <div role="group" aria-label="Cijfers" className="grid w-full max-w-[18rem] grid-cols-3 gap-2 tablet:max-w-[22rem] tablet:[&>button]:min-h-16">
+          {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((c) => (
+            <button key={c} type="button" className={toetsKlasse} disabled={vergrendeld} onClick={() => zet(waarde + c)}>
+              {c}
+            </button>
+          ))}
+          <button type="button" className={toetsKlasse} disabled={vergrendeld || !waarde} onClick={() => zet(waarde.slice(0, -1))} aria-label="Wis laatste cijfer">
+            <Icoon naam="pijl-links" className="size-7" />
+          </button>
+          <button type="button" className={toetsKlasse} disabled={vergrendeld} onClick={() => zet(waarde + "0")}>
+            0
+          </button>
+          <button
+            type="button"
+            className={`${basisToets} border-actie-blauw bg-actie-blauw text-wit active:bg-actie-ingedrukt`}
+            disabled={vergrendeld || !waarde}
+            onClick={onEnter}
+            aria-label="Controleer antwoord"
+          >
+            <Icoon naam="check" className="size-8" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

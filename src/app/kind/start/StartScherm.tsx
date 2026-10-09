@@ -128,61 +128,49 @@ export function StartScherm() {
       )}
 
       <section aria-label="Andere keuzes" className="grid grid-cols-2 gap-3 tablet:gap-4">
-        <Link
+        <KeuzeTegel
           href="/kind/rekenen"
-          className="flex flex-col gap-4 rounded-[16px] border border-rand-zacht bg-wit p-4 transition-colors hover:border-actie-blauw hover:bg-blauw-zacht tablet:flex-row tablet:items-center tablet:p-6"
-        >
-          <span className="grid size-14 shrink-0 grid-cols-2 gap-1.5 p-1" aria-hidden>
-            <span className="rounded-[5px] bg-actie-blauw" />
-            <span className="rounded-[5px] bg-[#b9dcfb]" />
-            <span className="rounded-[5px] bg-[#b9dcfb]" />
-            <span className="rounded-[5px] bg-geel" />
-          </span>
-          <span className="flex flex-1 items-end justify-between gap-2 tablet:items-center">
-            <span>
-              <span className="block text-lg font-bold leading-snug tablet:text-xl">
-                Kies zelf<span className="hidden tablet:inline"> een onderwerp</span>
-              </span>
-              <span className="mt-0.5 block tekst-klein text-tekst-zacht">Kies wat je wilt oefenen.</span>
+          titel="Kies zelf"
+          tekst="Kies wat je wilt oefenen."
+          beeld={
+            <span className="grid size-12 grid-cols-2 gap-1.5 p-1">
+              <span className="rounded-[5px] bg-actie-blauw" />
+              <span className="rounded-[5px] bg-[#b9dcfb]" />
+              <span className="rounded-[5px] bg-[#b9dcfb]" />
+              <span className="rounded-[5px] bg-geel" />
             </span>
-            <Icoon naam="chevron-rechts" className="size-6 text-actie-blauw" />
-          </span>
-        </Link>
-
-        <Link
-          href="/kind/tafeltrainer"
-          className="flex flex-col gap-4 rounded-[16px] border border-rand-zacht bg-wit p-4 transition-colors hover:border-actie-blauw hover:bg-blauw-zacht tablet:flex-row tablet:items-center tablet:p-6"
-        >
-          <span className="grid size-14 shrink-0 place-items-center rounded-full bg-blauw-zacht text-3xl font-extrabold text-[#d99a00]" aria-hidden>
-            ×
-          </span>
-          <span className="flex flex-1 items-end justify-between gap-2 tablet:items-center">
-            <span>
-              <span className="block text-lg font-bold leading-snug tablet:text-xl">Tafeltrainer</span>
-              <span className="mt-0.5 block tekst-klein text-tekst-zacht">Oefen één of meer tafels.</span>
-            </span>
-            <Icoon naam="chevron-rechts" className="size-6 text-actie-blauw" />
-          </span>
-        </Link>
+          }
+        />
+        <KeuzeTegel href="/kind/tafeltrainer" titel="Tafeltrainer" tekst="Oefen één of meer tafels." beeld={<span className="text-4xl font-extrabold leading-none text-[#d99a00]">×</span>} />
+        <KeuzeTegel href="/kind/niveaubepaling" titel="Wat past bij jou?" tekst="Ontdek waar je kunt beginnen." beeld={<Icoon naam="voortgang" className="size-7 text-actie-blauw" />} />
+        <KeuzeTegel href="/werkbladen/samenstellen" titel="Op papier" tekst="Maak een werkblad om te printen." beeld={<Icoon naam="printer" className="size-7 text-actie-blauw" />} />
       </section>
-
-      <p className="text-center">
-        <Link href="/kind/niveaubepaling" className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-semibold text-actie-blauw underline underline-offset-4 hover:bg-blauw-zacht">
-          Weet je niet waar je moet beginnen? Ontdek wat bij je past.
-        </Link>
-      </p>
-
-      <p className="-mt-2 text-center">
-        <Link href="/werkbladen/samenstellen" className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-semibold text-actie-blauw hover:bg-blauw-zacht">
-          <Icoon naam="printer" className="size-5" />
-          Liever op papier? Maak een werkblad
-        </Link>
-      </p>
 
       <p className="flex items-center justify-center gap-3 text-center tekst-klein text-tekst-zacht">
         <span aria-hidden className="text-xl">🌱</span>
         Een kort oefenmoment is ook waardevol.
       </p>
     </div>
+  );
+}
+
+/** Gelijke keuzetegels: op de telefoon 2 × 2, rustig en even groot. */
+function KeuzeTegel({ href, titel, tekst, beeld }: { href: string; titel: string; tekst: string; beeld: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="flex min-h-36 flex-col gap-3 rounded-[16px] border border-rand-zacht bg-wit p-4 transition-colors hover:border-actie-blauw hover:bg-blauw-zacht active:bg-blauw-zacht tablet:min-h-0 tablet:flex-row tablet:items-center tablet:p-6"
+    >
+      <span className="grid size-14 shrink-0 place-items-center rounded-full bg-blauw-zacht" aria-hidden>
+        {beeld}
+      </span>
+      <span className="flex flex-1 items-start justify-between gap-2 tablet:items-center">
+        <span>
+          <span className="block text-lg font-bold leading-snug tablet:text-xl">{titel}</span>
+          <span className="mt-0.5 block tekst-klein text-tekst-zacht">{tekst}</span>
+        </span>
+        <Icoon naam="chevron-rechts" className="size-6 shrink-0 self-end text-actie-blauw tablet:self-center" />
+      </span>
+    </Link>
   );
 }
