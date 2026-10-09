@@ -81,7 +81,7 @@ export function StartScherm() {
           <h1 className="titel-held mt-1">Wat wil je oefenen?</h1>
           <p className="mt-2 tekst-intro text-tekst-zacht">Mees helpt je op weg.</p>
         </div>
-        <Mees pose="op-boeken" breedte={200} prioriteit className="w-24 shrink-0 tablet:w-36 desktop:mr-10 desktop:w-44" />
+        <Mees pose="op-boeken" breedte={200} prioriteit className="w-24 shrink-0 -scale-x-100 tablet:w-36 desktop:mr-10 desktop:w-44" />
       </section>
 
       {fout && (
