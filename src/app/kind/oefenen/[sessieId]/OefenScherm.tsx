@@ -103,7 +103,7 @@ function Vraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sessie; sl
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mees-content flex flex-1 flex-col pt-4 tablet:max-w-[1100px] tablet:pt-6 desktop:pt-8">
+      <div className="mees-content flex flex-1 flex-col pt-[max(1rem,env(safe-area-inset-top))] tablet:max-w-[1100px] tablet:pt-6 desktop:pt-8">
         <OefenKop
           terug={terugVoor(sessie)}
           voortgang={{ label: `Vraag ${nummer} van ${aantal}`, aantal, afgehandeld, huidige: sessie.index }}
@@ -272,7 +272,7 @@ function TafelAntwoord({
     return () => window.removeEventListener("keydown", toets);
   });
 
-  const basisToets = "grid min-h-12 place-items-center rounded-[14px] border text-2xl font-bold select-none [touch-action:manipulation] disabled:opacity-40";
+  const basisToets = "grid min-h-14 place-items-center rounded-[14px] border text-2xl font-bold select-none [touch-action:manipulation] disabled:opacity-40";
   const toetsKlasse = `${basisToets} border-rand-interactief bg-wit text-inkt active:bg-blauw-zacht`;
 
   const antwoordVeld = (
@@ -313,7 +313,7 @@ function TafelAntwoord({
       </div>
       {!aanraak && antwoordVeld}
       {aanraak && (
-        <div role="group" aria-label="Cijfers" className="grid w-full max-w-[18rem] grid-cols-3 gap-2 tablet:max-w-[22rem] tablet:[&>button]:min-h-16">
+        <div role="group" aria-label="Cijfers" className="grid w-full max-w-[20rem] grid-cols-3 gap-2.5 tablet:max-w-[22rem] tablet:[&>button]:min-h-16">
           {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((c) => (
             <button key={c} type="button" className={toetsKlasse} disabled={vergrendeld} onClick={() => zet(waarde + c)}>
               {c}

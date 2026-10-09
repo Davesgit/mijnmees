@@ -325,6 +325,7 @@ export function OefenBediening({
   onControleer,
   onVolgende,
   controleerLabel = "Controleer antwoord",
+  controleerKort = "Controleer",
   hulpUit,
 }: {
   slot: Slot;
@@ -339,6 +340,8 @@ export function OefenBediening({
   onControleer: () => void;
   onVolgende: () => void;
   controleerLabel?: string;
+  /** Korte tekst op de telefoon. */
+  controleerKort?: string;
   /** Hulpknop verbergen (bijv. als er geen stukje geselecteerd is). */
   hulpUit?: string;
 }) {
@@ -346,34 +349,50 @@ export function OefenBediening({
   const hulpKort = slot.hulp.hints === 0 ? "Hint" : slot.hulp.hints === 1 ? "Hint 2" : "Uitleg";
   const hulpUitleg = hulpUit ?? (slot.hulp.hints === 0 ? "Je kunt twee hints bekijken." : slot.hulp.hints === 1 ? "Hint 1 is bekeken." : "Beide hints zijn bekeken.");
 
+  const volgendeLabel = uitlegZichtbaar && !klaar ? "Verder" : laatste ? "Afronden" : "Volgende vraag";
+  const volgendeKort = uitlegZichtbaar && !klaar ? "Verder" : laatste ? "Afronden" : "Volgende";
+
+  // Telefoon: alles op één regel (Hint · voorlezen · leesopties · hoofdknop), zodat de vraag meer ruimte heeft.
   return (
-    <div className="sticky bottom-0 z-20 border-t border-rand-zacht bg-wit/95 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur tablet:pb-6 tablet:pt-5">
+    <div className="sticky bottom-0 z-20 border-t border-rand-zacht bg-wit/95 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur tablet:pb-6 tablet:pt-5">
       <div className="mees-content tablet:max-w-[1100px]">
-        <div className="grid grid-cols-[1fr_auto_auto] gap-2 tablet:grid-cols-[auto_1fr_auto] tablet:items-start tablet:gap-6">
-          <div className="flex min-w-0 flex-col gap-1">
-            <SecundaireKnop onClick={onHulp} disabled={vergrendeld || Boolean(hulpUit)} className="w-full border-actie-blauw px-3 tablet:w-auto desktop:min-w-56">
+        <div className="flex items-center gap-2 tablet:grid tablet:grid-cols-[auto_1fr_auto] tablet:items-start tablet:gap-6">
+          <div className="flex shrink-0 flex-col gap-1">
+            <SecundaireKnop onClick={onHulp} disabled={vergrendeld || Boolean(hulpUit)} aria-label={hulpLabel} className="border-actie-blauw px-3 tablet:w-auto desktop:min-w-56">
               <Icoon naam="hint" className="size-6" />
-              <span className="min-[360px]:hidden" aria-hidden>
+              <span className="tablet:hidden" aria-hidden>
                 {hulpKort}
               </span>
-              <span className="max-[359px]:sr-only">{hulpLabel}</span>
+              <span className="max-tablet:hidden" aria-hidden>
+                {hulpLabel}
+              </span>
             </SecundaireKnop>
             <p className="hidden pl-2 tekst-klein text-tekst-zacht desktop:block">{hulpUitleg}</p>
           </div>
-          <div className="col-span-2 flex gap-2 tablet:col-span-1 tablet:justify-center tablet:gap-3">
+          <div className="flex shrink-0 gap-2 tablet:justify-center tablet:gap-3">
             <VoorleesKnop tekst={voorleesTekst} compact />
             <LeesoptiesKnop compact />
           </div>
-          <div className="col-span-3 tablet:col-span-1">
+          <div className="min-w-0 flex-1 tablet:flex-none">
             {klaar || uitlegZichtbaar ? (
-              <PrimaireKnop groot onClick={onVolgende} className="w-full tablet:w-auto desktop:min-w-64">
-                {uitlegZichtbaar && !klaar ? "Verder" : laatste ? "Afronden" : "Volgende vraag"}
+              <PrimaireKnop groot onClick={onVolgende} aria-label={volgendeLabel} className="w-full px-4 tablet:w-auto tablet:px-8 desktop:min-w-64">
+                <span className="tablet:hidden" aria-hidden>
+                  {volgendeKort}
+                </span>
+                <span className="max-tablet:hidden" aria-hidden>
+                  {volgendeLabel}
+                </span>
                 <Icoon naam="pijl-rechts" />
               </PrimaireKnop>
             ) : (
               <div className="flex flex-col gap-1">
-                <PrimaireKnop groot onClick={onControleer} disabled={!kanControleren} className="w-full tablet:w-auto desktop:min-w-64">
-                  {controleerLabel}
+                <PrimaireKnop groot onClick={onControleer} disabled={!kanControleren} aria-label={controleerLabel} className="w-full px-4 tablet:w-auto tablet:px-8 desktop:min-w-64">
+                  <span className="tablet:hidden" aria-hidden>
+                    {controleerKort}
+                  </span>
+                  <span className="max-tablet:hidden" aria-hidden>
+                    {controleerLabel}
+                  </span>
                 </PrimaireKnop>
                 {!kanControleren && <p className="hidden tekst-klein text-tekst-zacht desktop:block desktop:text-right">{kiesEerst}</p>}
               </div>

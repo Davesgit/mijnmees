@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Laden, Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
 import { WerkbladBlad } from "@/features/werkbladen/WerkbladBlad";
 import { aanpasLink, useWerkblad } from "@/features/werkbladen/useWerkblad";
 
+const geenAbonnement = () => () => {};
+const isTelefoon = () => matchMedia("(pointer: coarse) and (max-width: 767px)").matches;
+
 /** W02: het gemaakte werkblad met printen, PDF, antwoordblad en aanpassen. */
 export function WerkbladWeergave({ id }: { id: string }) {
   const staat = useWerkblad(id);
   const [pdfUitleg, setPdfUitleg] = useState(false);
+  const telefoon = useSyncExternalStore(geenAbonnement, isTelefoon, () => false);
 
   if (staat.status === "laden") return <Laden />;
   if (staat.status === "niet-gevonden") {
@@ -38,6 +42,15 @@ export function WerkbladWeergave({ id }: { id: string }) {
           {werkblad.titel} · {werkblad.vragen.length} vragen · code {werkblad.code}
         </p>
       </div>
+
+      {telefoon && (
+        <Melding className="print:hidden">
+          <p>
+            <strong>Printen gaat het makkelijkst op een computer.</strong> Vanaf je telefoon kan het ook: tik op Print werkblad en kies je printer (of bewaar als PDF).{" "}
+            {opServer ? "Dit werkblad staat ook bij je ouderaccount, dus je kunt het op de computer openen via Voor ouders." : "Let op: zonder ouderaccount staat dit werkblad alleen op deze telefoon."}
+          </p>
+        </Melding>
+      )}
 
       {/* Acties boven het blad: op de telefoon onder elkaar, op groter scherm naast elkaar. */}
       <div className="grid gap-3 print:hidden tablet:grid-cols-2 desktop:grid-cols-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Icoon } from "@/components/mees/Icoon";
 import { isKleinLand, kaart, kaderVoorLanden } from "./kaart";
 
@@ -64,7 +64,7 @@ export function KaartVlak({
 
   const svgRef = useRef<SVGSVGElement>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
-  const sleep = useRef<{ startX: number; startY: number; view: View; afstand?: number; bewogen: boolean } | null>(null);
+  const sleep = useRef<{ startX: number; startY: number; view: View; afstand?: number; anker?: [number, number]; bewogen: boolean } | null>(null);
 
   const inSelectie = useMemo(() => new Set(selectie), [selectie]);
   const geplaatstSet = useMemo(() => new Set(geplaatst), [geplaatst]);
@@ -85,17 +85,38 @@ export function KaartVlak({
     });
   }
 
+  /** Schermpunt → kaartcoördinaat voor een gegeven beeld (rekening houdend met 'meet'-schaling). */
+  function naarKaart(cx: number, cy: number, v: View = view): [number, number] {
+    const r = svgRef.current!.getBoundingClientRect();
+    const sc = Math.max(v[2] / r.width, v[3] / r.height);
+    const ox = v[0] + (v[2] - r.width * sc) / 2;
+    const oy = v[1] + (v[3] - r.height * sc) / 2;
+    return [ox + (cx - r.left) * sc, oy + (cy - r.top) * sc];
+  }
+
+  /** Begin (opnieuw) te volgen vanaf de vingers die nu op de kaart staan. */
+  function startSleep(v: View, bewogen: boolean) {
+    const p = [...pointers.current.values()];
+    if (p.length === 0) {
+      sleep.current = null;
+      return;
+    }
+    const twee = p.length >= 2;
+    const midden = twee ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : p[0];
+    sleep.current = {
+      startX: midden.x,
+      startY: midden.y,
+      view: v,
+      afstand: twee ? Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) : undefined,
+      anker: twee ? naarKaart(midden.x, midden.y, v) : undefined,
+      bewogen,
+    };
+  }
+
   function onPointerDown(e: ReactPointerEvent<SVGSVGElement>) {
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
-    const p = [...pointers.current.values()];
-    sleep.current = {
-      startX: p[0].x,
-      startY: p[0].y,
-      view,
-      afstand: p.length === 2 ? Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) : undefined,
-      bewogen: p.length > 1,
-    };
+    startSleep(view, pointers.current.size > 1);
   }
 
   function onPointerMove(e: ReactPointerEvent<SVGSVGElement>) {
@@ -103,13 +124,19 @@ export function KaartVlak({
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     const p = [...pointers.current.values()];
     const s = schaal();
-    if (p.length === 2 && sleep.current.afstand) {
-      const afstand = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
-      const [x, y, w, h] = sleep.current.view;
-      const factor = afstand / sleep.current.afstand;
+    if (p.length >= 2 && sleep.current.afstand && sleep.current.anker) {
+      // Knijpen: zoomen rond het punt tussen de vingers, en meeschuiven met dat punt.
+      const r = svgRef.current!.getBoundingClientRect();
+      const midden = { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
+      const factor = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) / sleep.current.afstand;
+      const [, , w, h] = sleep.current.view;
       const nw = Math.min(kaart.viewBox[2] * 1.2, Math.max(40, w / factor));
       const nh = (nw / w) * h;
-      setView([x + (w - nw) / 2, y + (h - nh) / 2, nw, nh]);
+      const sc = Math.max(nw / r.width, nh / r.height);
+      const [ax, ay] = sleep.current.anker;
+      const x = ax - (midden.x - r.left) * sc - (nw - r.width * sc) / 2;
+      const y = ay - (midden.y - r.top) * sc - (nh - r.height * sc) / 2;
+      setView([x, y, nw, nh]);
       sleep.current.bewogen = true;
       return;
     }
@@ -125,7 +152,11 @@ export function KaartVlak({
   function onPointerUp(e: ReactPointerEvent<SVGSVGElement>) {
     const was = sleep.current;
     pointers.current.delete(e.pointerId);
-    if (pointers.current.size > 0) return;
+    if (pointers.current.size > 0) {
+      // Eén vinger los na knijpen: verder schuiven vanaf hier, zonder sprong en zonder aantikken.
+      startSleep(view, true);
+      return;
+    }
     sleep.current = null;
     if (was && !was.bewogen && onKies) {
       const doel = (document.elementFromPoint(e.clientX, e.clientY) as Element | null)?.closest("[data-id]");
@@ -133,6 +164,22 @@ export function KaartVlak({
       if (id) onKies(id);
     }
   }
+
+  // Muiswiel/trackpad (computer): zoomen rond de muisaanwijzer.
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const wiel = (e: WheelEvent) => {
+      e.preventDefault();
+      const r = svg.getBoundingClientRect();
+      const v = svg.viewBox.baseVal;
+      const sc = Math.max(v.width / r.width, v.height / r.height);
+      const punt: [number, number] = [v.x + (v.width - r.width * sc) / 2 + (e.clientX - r.left) * sc, v.y + (v.height - r.height * sc) / 2 + (e.clientY - r.top) * sc];
+      zoom(Math.exp(-e.deltaY * 0.0015), punt);
+    };
+    svg.addEventListener("wheel", wiel, { passive: false });
+    return () => svg.removeEventListener("wheel", wiel);
+  }, []);
 
   const klikbaarLand = lagen.includes("landen");
   const kleurLand = (id: string, eigenKleur: string) => {

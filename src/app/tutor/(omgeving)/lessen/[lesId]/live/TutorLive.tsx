@@ -10,6 +10,7 @@ import { bordInStukjes, codeer, wijzigingInStukjes } from "@/features/live/bordk
 import { kiesMime, Niveaumeter, useMicrofoon } from "@/features/live/useMicrofoon";
 import { bordLimieten, type BordElement, type BordGebeurtenis } from "@/features/tutorhulp/bord";
 import { Tekenbord, type ZonderTijd } from "@/features/tutorhulp/Tekenbord";
+import { useSchermAan } from "@/components/mees/useSchermAan";
 import { createClient } from "@/lib/supabase/client";
 import { bewaarUitleg, vraagUploadLink } from "@/app/tutor/acties";
 import { beeindigLes, markeerVraag, pauzeerVragen, startLes } from "@/app/tutor/les-acties";
@@ -32,6 +33,7 @@ export function TutorLive({ les }: { les: { id: string; titel: string; opnemen: 
   const [verstreken, setVerstreken] = useState(0);
   const [neemtOp, setNeemtOp] = useState(false);
   const [download, setDownload] = useState<string | null>(null);
+  useSchermAan(fase === "live" || fase === "verbinden");
 
   const room = useRef<Room | null>(null);
   const micTrack = useRef<LocalAudioTrack | null>(null);

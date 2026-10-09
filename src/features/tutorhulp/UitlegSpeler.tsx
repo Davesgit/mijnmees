@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
+import { useSchermAan } from "@/components/mees/useSchermAan";
 import { BordWeergave } from "./BordWeergave";
 import { bordEind, bordOp, type BordOpname } from "./bord";
 
@@ -20,6 +21,7 @@ export function UitlegSpeler({ titel, bord, duurMs, audioUrl, transcript }: { ti
   const [geluidFout, setGeluidFout] = useState(!audioUrl);
   const [meelezen, setMeelezen] = useState(false);
   const eigenKlok = useRef<{ start: number; vanaf: number } | null>(null);
+  useSchermAan(speelt);
 
   const totaal = Math.max(duurMs, 1);
   const nu = positie ?? totaal;

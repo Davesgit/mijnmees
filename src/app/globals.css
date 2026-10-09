@@ -43,6 +43,8 @@
   html {
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
+    /* Snel twee keer tikken zoomt de pagina niet in; knijpen om te zoomen blijft gewoon werken. */
+    touch-action: manipulation;
   }
   html[data-grote-tekst="true"] {
     font-size: 112.5%;

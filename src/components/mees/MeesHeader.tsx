@@ -31,7 +31,20 @@ export function isOefenRoute(pad: string) {
 
 export function MeesHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-rand-zacht bg-wit/95 backdrop-blur supports-[backdrop-filter]:bg-wit/85">
+    <Suspense fallback={<HeaderInhoud oefenen={false} />}>
+      <HeaderMetPad />
+    </Suspense>
+  );
+}
+
+function HeaderMetPad() {
+  return <HeaderInhoud oefenen={isOefenRoute(usePathname())} />;
+}
+
+/** Tijdens een oefening op telefoon en tablet geen bovenbalk: rust en meer ruimte (bijv. voor de kaart). "Stop voor nu" blijft in de oefening staan. */
+function HeaderInhoud({ oefenen }: { oefenen: boolean }) {
+  return (
+    <header className={`sticky top-0 z-30 border-b border-rand-zacht bg-wit/95 backdrop-blur supports-[backdrop-filter]:bg-wit/85 ${oefenen ? "max-desktop:hidden" : ""}`}>
       <a
         href="#inhoud"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-full focus:bg-wit focus:px-4 focus:py-3 focus:text-actie-blauw"

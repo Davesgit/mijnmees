@@ -198,7 +198,7 @@ export function EuropaInstellen() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-20 mt-auto border-t border-rand-zacht bg-wit/95 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur">
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 mt-auto border-t border-rand-zacht bg-wit/95 pb-4 pt-4 backdrop-blur tablet:bottom-0 tablet:pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="mees-content flex flex-col gap-3 tablet:max-w-[1100px] tablet:flex-row tablet:items-center tablet:justify-between">
           <div>
             <p className="font-bold">{samenvatting}</p>

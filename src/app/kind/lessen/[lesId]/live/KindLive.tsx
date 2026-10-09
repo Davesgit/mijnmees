@@ -8,6 +8,7 @@ import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
 import { decodeer } from "@/features/live/bordkanaal";
 import { BordWeergave } from "@/features/tutorhulp/BordWeergave";
 import { pasGebeurtenisToe, type BordElement, type BordGebeurtenis } from "@/features/tutorhulp/bord";
+import { useSchermAan } from "@/components/mees/useSchermAan";
 import { stelVraag } from "../../acties";
 
 type Verbinding = "uit" | "verbinden" | "verbonden" | "opnieuw" | "afgelopen" | "fout";
@@ -26,6 +27,7 @@ export function KindLive({ les }: { les: { id: string; titel: string; tutorVoorn
   const room = useRef<Room | null>(null);
   const audioPlek = useRef<HTMLDivElement>(null);
   const bordKader = useRef<HTMLDivElement>(null);
+  useSchermAan(verbinding === "verbonden" || verbinding === "opnieuw");
 
   async function doeMee() {
     setVerbinding("verbinden");

@@ -91,8 +91,8 @@ export function VoortgangScherm() {
                         const o = vindOnderdeelBijLeerdoel(b.leerdoelId);
                         const soort = leerdoelSoort(b.leerdoelId);
                         return (
-                          <li key={b.leerdoelId} className="flex flex-wrap items-center gap-4 px-5 py-4 tablet:px-6">
-                            <span className="grid h-14 w-20 place-items-center rounded-full bg-blauw-zacht text-actie-blauw" aria-hidden>
+                          <li key={b.leerdoelId} className="flex items-center gap-3 px-4 py-4 tablet:gap-4 tablet:px-6">
+                            <span className="grid size-12 shrink-0 place-items-center rounded-full bg-blauw-zacht text-actie-blauw tablet:h-14 tablet:w-20" aria-hidden>
                               {o ? (
                                 <OnderdeelPictogram soort={o.onderdeel.pictogram} />
                               ) : (
@@ -105,9 +105,9 @@ export function VoortgangScherm() {
                             </span>
                             <Link
                               href={leerdoelOefenRoute(b.leerdoelId)}
-                              className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-bold text-actie-blauw hover:bg-blauw-zacht"
+                              className="inline-flex min-h-12 min-w-12 shrink-0 items-center justify-center gap-2 rounded-[12px] px-2 font-bold text-actie-blauw hover:bg-blauw-zacht tablet:px-3"
                             >
-                              Oefenen
+                              <span className="max-[479px]:sr-only">Oefenen</span>
                               <span className="sr-only"> {leerdoelNaam(b.leerdoelId)}</span>
                               <Icoon naam="pijl-rechts" />
                             </Link>

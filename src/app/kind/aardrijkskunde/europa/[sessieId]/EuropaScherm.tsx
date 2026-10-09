@@ -86,11 +86,11 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mees-content flex flex-1 flex-col pt-4 tablet:max-w-[1200px] tablet:pt-6">
+      <div className="mees-content flex flex-1 flex-col pt-[max(1rem,env(safe-area-inset-top))] tablet:max-w-[1200px] tablet:pt-6">
         <OefenKop terug={terug} voortgang={voortgangEuropa(sessie)} onStop={v.stop} onTerug={v.stopOvergang} />
         <section aria-labelledby="vraag-titel" className="flex flex-1 flex-col items-center py-3 text-center tablet:py-4">
           <KaartVlak
-            className="h-[clamp(280px,calc(100dvh-27rem),900px)] tablet:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
+            className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
             label={vraag.type === "map-click" ? "Kaart van Europa. Tik een plek aan." : "Kaart van Europa."}
             selectie={landen}
             stijl={vraag.type === "map-click" && vraag.module === "countries" ? "gekleurd" : "neutraal"}
@@ -223,7 +223,7 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mees-content flex flex-1 flex-col pt-4 tablet:max-w-[1280px] tablet:pt-6">
+      <div className="mees-content flex flex-1 flex-col pt-[max(1rem,env(safe-area-inset-top))] tablet:max-w-[1280px] tablet:pt-6">
         <OefenKop
           terug={terug}
           voortgang={{ label: `${gelegd.length} van ${sessie.slots.length} landen geplaatst`, aantal: sessie.slots.length, afgehandeld: gelegd.length }}
@@ -233,7 +233,7 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
           <div className="grid gap-4 landscape:tablet:grid-cols-[1fr_16rem] desktop:grid-cols-[1fr_17rem]">
             <div className="flex min-w-0 flex-col">
             <KaartVlak
-              className="h-[clamp(280px,calc(100dvh-27rem),900px)] tablet:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
+              className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
               label="Kaart van Europa. Kies eerst een land en tik dan de plek aan."
               selectie={landen}
               stijl="neutraal"
@@ -309,6 +309,7 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
           onControleer={() => {}}
           onVolgende={legNaUitleg}
           controleerLabel={`${vraag.soort === "europa" ? vraag.doelNaam : "Land"} gekozen`}
+          controleerKort={`${vraag.soort === "europa" ? vraag.doelNaam : "Land"} gekozen`}
         />
       ) : (
         <div className="sticky bottom-0 border-t border-rand-zacht bg-wit p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-center">
