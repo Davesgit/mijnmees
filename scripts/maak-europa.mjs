@@ -58,6 +58,17 @@ const kaart = {
   gebieden: DATA.regions,
 };
 
+// Windrichtingen in de bron gebruiken codes als "SE" en "NO": dat zijn ook landcodes (Zweden, Noorwegen).
+// Geef richtingen een eigen code, zodat een land nooit een richting wordt (en andersom).
+const RICHTINGEN = new Set(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]);
+const isRichting = (q, id) => q.module === "relative" && RICHTINGEN.has(id) && (q.options ?? []).every((o) => RICHTINGEN.has(o.id));
+const richtingId = (q, id) => (isRichting(q, id) ? `richting-${id.toLowerCase()}` : id);
+for (const q of DATA.questions) {
+  if (!q.options) continue;
+  q.targetId = richtingId(q, q.targetId);
+  q.options = q.options.map((o) => ({ ...o, id: richtingId(q, o.id) }));
+}
+
 const vragen = DATA.questions.map((q) => ({
   id: q.id,
   module: q.module,
@@ -77,8 +88,9 @@ const namen = Object.fromEntries([
   ...kaart.wateren.map((w) => [w.id, w.naam]),
   ...kaart.rivieren.map((r) => [r.id, r.naam]),
   ...kaart.gebergten.map((g) => [g.id, g.naam]),
-  ...DATA.questions.flatMap((q) => (q.options ?? []).map((o) => [o.id, o.label])),
 ]);
+// Optielabels alleen toevoegen als de code nog geen naam heeft (nooit een land, stad of water overschrijven).
+for (const q of DATA.questions) for (const o of q.options ?? []) if (!(o.id in namen)) namen[o.id] = o.label;
 writeFileSync(new URL("../src/content/europa/namen.json", import.meta.url), JSON.stringify(namen, null, 1));
 
 // Klein metabestand voor het samenstellen van sessies (zonder kaartvormen).

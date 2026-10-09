@@ -1,3 +1,6 @@
+import europaNamenJson from "../src/content/europa/namen.json";
+import europaVragen from "../src/content/europa/vragen.json";
+import { kaart as europaKaart } from "../src/features/europa/kaart";
 // Logicatests voor de oefensessies (zonder browser). Draaien: npx tsx scripts/test-logica.ts
 import assert from "node:assert/strict";
 import { landenVanGebieden, telEuropaOnderdelen } from "@/features/oefenen/europa-sessie";
@@ -290,6 +293,14 @@ test("groot bord gaat in stukjes die elk passen en samen het hele bord vormen", 
     else if (m.g.op === "plaats") bord = [...bord, m.g.element];
   }
   assert.equal(bord.length, 40);
+});
+
+const europaNamen = europaNamenJson as Record<string, string>;
+console.log("Europa-inhoud");
+test("landnamen worden nooit overschreven door antwoordopties (Zweden ≠ Zuidoost)", () => {
+  for (const l of europaKaart.landen) assert.equal(europaNamen[l.id], l.naam, l.id);
+  assert.equal(europaNamen.SE, "Zweden");
+  for (const q of europaVragen as { opties?: { id: string; label: string }[] }[]) for (const o of q.opties ?? []) assert.equal(europaNamen[o.id], o.label, `optie ${o.id}`);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);

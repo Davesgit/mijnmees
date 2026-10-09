@@ -2266,23 +2266,23 @@
   "vaardigheid": "relative-position",
   "type": "choice",
   "vraag": "Je reist vanuit Nederland naar Spanje. Welke richting ga je op?",
-  "doel": "SW",
+  "doel": "richting-sw",
   "hint": "Spanje ligt lager en meer naar links dan Nederland.",
   "opties": [
    {
-    "id": "SW",
+    "id": "richting-sw",
     "label": "Zuidwest"
    },
    {
-    "id": "NE",
+    "id": "richting-ne",
     "label": "Noordoost"
    },
    {
-    "id": "NW",
+    "id": "richting-nw",
     "label": "Noordwest"
    },
    {
-    "id": "SE",
+    "id": "richting-se",
     "label": "Zuidoost"
    }
   ],
