@@ -4,6 +4,9 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointer
 import { Icoon } from "@/components/mees/Icoon";
 import { heeftRingNodig, isKleinLand, kaart, kaderVoorLanden } from "./kaart";
 
+/** Zo ver mag je inzoomen (kaartbreedte in kaarteenheden; de hele kaart is 1100 breed): genoeg voor Vaticaanstad. */
+const MIN_BREEDTE = 8;
+
 export type KaartLaag = "landen" | "hoofdsteden" | "wateren" | "rivieren" | "gebergten";
 type View = [number, number, number, number];
 
@@ -64,6 +67,7 @@ export function KaartVlak({
 
   const svgRef = useRef<SVGSVGElement>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const laatsteTik = useRef<{ t: number; x: number; y: number } | null>(null);
   const sleep = useRef<{ startX: number; startY: number; view: View; afstand?: number; anker?: [number, number]; bewogen: boolean } | null>(null);
 
   const inSelectie = useMemo(() => new Set(selectie), [selectie]);
@@ -78,7 +82,7 @@ export function KaartVlak({
 
   function zoom(factor: number, rond?: [number, number]) {
     setView(([x, y, w, h]) => {
-      const nw = Math.min(kaart.viewBox[2] * 1.2, Math.max(40, w / factor));
+      const nw = Math.min(kaart.viewBox[2] * 1.2, Math.max(MIN_BREEDTE, w / factor));
       const nh = (nw / w) * h;
       const [cx, cy] = rond ?? [x + w / 2, y + h / 2];
       return [cx - ((cx - x) * nw) / w, cy - ((cy - y) * nh) / h, nw, nh];
@@ -130,7 +134,7 @@ export function KaartVlak({
       const midden = { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
       const factor = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) / sleep.current.afstand;
       const [, , w, h] = sleep.current.view;
-      const nw = Math.min(kaart.viewBox[2] * 1.2, Math.max(40, w / factor));
+      const nw = Math.min(kaart.viewBox[2] * 1.2, Math.max(MIN_BREEDTE, w / factor));
       const nh = (nw / w) * h;
       const sc = Math.max(nw / r.width, nh / r.height);
       const [ax, ay] = sleep.current.anker;
@@ -158,6 +162,16 @@ export function KaartVlak({
       return;
     }
     sleep.current = null;
+    if (was && !was.bewogen && e.pointerType !== "mouse") {
+      // Dubbeltikken met een vinger: inzoomen op die plek (zoals in kaart-apps).
+      const vorige = laatsteTik.current;
+      if (vorige && e.timeStamp - vorige.t < 320 && Math.hypot(e.clientX - vorige.x, e.clientY - vorige.y) < 30) {
+        laatsteTik.current = null;
+        zoom(2, naarKaart(e.clientX, e.clientY));
+        return;
+      }
+      laatsteTik.current = { t: e.timeStamp, x: e.clientX, y: e.clientY };
+    }
     if (was && !was.bewogen && onKies) {
       const doel = (document.elementFromPoint(e.clientX, e.clientY) as Element | null)?.closest("[data-id]");
       const id = doel?.getAttribute("data-id");
@@ -180,6 +194,9 @@ export function KaartVlak({
     svg.addEventListener("wheel", wiel, { passive: false });
     return () => svg.removeEventListener("wheel", wiel);
   }, []);
+
+  // Klein land dat gekleurd is als vraag of als goed antwoord: daar kan de knop "Zoom in" naartoe (alleen op verzoek, nooit vanzelf).
+  const uitgelicht = kaart.landen.find((l) => heeftRingNodig(l) && [markering, toonDoel, goed].includes(l.id)) ?? null;
 
   const klikbaarLand = lagen.includes("landen");
   const kleurLand = (id: string, eigenKleur: string) => {
@@ -376,6 +393,21 @@ export function KaartVlak({
           <text x="-26" fill="#4a5878">W</text>
         </g>
       </svg>
+
+      {uitgelicht && view[2] > 90 && (
+        <button
+          type="button"
+          onClick={() => {
+            const b = 70;
+            const h = (b * view[3]) / view[2];
+            setView([uitgelicht.midden[0] - b / 2, uitgelicht.midden[1] - h / 2, b, h]);
+          }}
+          className="absolute bottom-3 left-3 inline-flex min-h-12 items-center gap-2 rounded-[12px] border border-rand-zacht bg-wit px-3 font-semibold text-actie-blauw shadow-sm hover:bg-blauw-zacht"
+        >
+          <Icoon naam="zoom-in" className="size-5" />
+          Zoom in op het gekleurde land
+        </button>
+      )}
 
       {/* Zoomknoppen rechtsboven, zodat de onderkant vrij is voor de vraag. */}
       <div className="absolute right-3 top-3 flex flex-col items-end gap-2">
