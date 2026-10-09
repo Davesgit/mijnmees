@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { KeuzeKaart, StapKop } from "@/components/mees/KeuzeKaart";
@@ -28,7 +28,11 @@ export function TafelInstellen() {
   const [seconden, setSeconden] = useState<number>(tijdKeuzes[1].seconden);
   const [aantal, setAantal] = useState<number>(oefenConfig.standaardAantal);
   const [fout, setFout] = useState<string | null>(null);
-  const [bezig, setBezig] = useState(false);
+  // "Even wachten…" hoort bij het laden van de volgende pagina. Ga je terug, dan staat de knop vanzelf weer goed
+  // (Next bewaart verlaten pagina's, inclusief hun toestand).
+  const [bezigLokaal, setBezig] = useState(false);
+  const [navigeert, startNavigatie] = useTransition();
+  const bezig = bezigLokaal || navigeert;
 
   function wissel(t: number) {
     setFout(null);
@@ -64,7 +68,10 @@ export function TafelInstellen() {
       setBezig(false);
       return;
     }
-    router.push(`/kind/tafeltrainer/${sessieId}`);
+    startNavigatie(() => {
+      setBezig(false);
+      router.push(`/kind/tafeltrainer/${sessieId}`);
+    });
   }
 
   const samenvatting = tafels.length === 0 ? "Nog geen tafel gekozen" : `Tafel${tafels.length > 1 ? "s" : ""} van ${tafels.join(", ")} · ${aantal} vragen${metTijd ? ` · ${seconden} sec per vraag` : ""}`;

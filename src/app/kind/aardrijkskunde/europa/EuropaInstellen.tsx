@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Dialoog } from "@/components/mees/Dialoog";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
@@ -54,7 +54,11 @@ export function EuropaInstellen() {
   const [onderwerpen, setOnderwerpen] = useState<EuropaOnderwerp[]>(["landen"]);
   const [vorm, setVorm] = useState<"afwisselend" | "puzzel">("afwisselend");
   const [fout, setFout] = useState<string | null>(null);
-  const [bezig, setBezig] = useState(false);
+  // "Even wachten…" hoort bij het laden van de volgende pagina. Ga je terug, dan staat de knop vanzelf weer goed
+  // (Next bewaart verlaten pagina's, inclusief hun toestand).
+  const [bezigLokaal, setBezig] = useState(false);
+  const [navigeert, startNavigatie] = useTransition();
+  const bezig = bezigLokaal || navigeert;
 
   const landen = useMemo(() => eigenLanden ?? landenVanGebieden(gebieden), [eigenLanden, gebieden]);
   const liggingMogelijk = useMemo(
@@ -108,7 +112,10 @@ export function EuropaInstellen() {
       setBezig(false);
       return;
     }
-    router.push(`/kind/aardrijkskunde/europa/${sessieId}`);
+    startNavigatie(() => {
+      setBezig(false);
+      router.push(`/kind/aardrijkskunde/europa/${sessieId}`);
+    });
   }
 
   const samenvatting = `${eigenLanden ? `${eigenLanden.length} zelf gekozen landen` : gebieden.map(gebiedNaam).join(" + ") || "Nog geen gebied"}${

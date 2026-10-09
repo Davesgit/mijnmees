@@ -189,6 +189,23 @@
   animation: mees-verschijn 160ms ease-out;
 }
 
+/* Pulserende ring om een gekleurd klein land op de kaart. */
+@keyframes mees-puls {
+  from {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+.mees-puls {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mees-puls 1.6s ease-out infinite;
+}
+
 /* Werkbladen: schoon A4, zonder appnavigatie. */
 @page {
   size: A4;

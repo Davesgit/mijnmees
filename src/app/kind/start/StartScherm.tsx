@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
 import { BreukKaartjes } from "@/components/mees/Breuk";
 import { Melding } from "@/components/mees/Bouwstenen";
@@ -21,7 +21,11 @@ export function StartScherm() {
   const opslag = useOpslag();
   const { kind } = useProfiel();
   const [fout, setFout] = useState(false);
-  const [bezig, setBezig] = useState(false);
+  // "Even wachten…" hoort bij het laden van de volgende pagina. Ga je terug, dan staat de knop vanzelf weer goed
+  // (Next bewaart verlaten pagina's, inclusief hun toestand).
+  const [bezigLokaal, setBezig] = useState(false);
+  const [navigeert, startNavigatie] = useTransition();
+  const bezig = bezigLokaal || navigeert;
 
   // Tijdens het starten blijft het voorstel staan, ook al bestaat de nieuwe sessie al.
   const open = opslag && !bezig ? openSessie(opslag) : null;
@@ -56,7 +60,10 @@ export function StartScherm() {
       return;
     }
     if (!gelukt) setFout(true);
-    router.push(`/kind/oefenen/${sessieId}`);
+    startNavigatie(() => {
+      setBezig(false);
+      router.push(`/kind/oefenen/${sessieId}`);
+    });
   }
 
   function hervat() {

@@ -39,6 +39,12 @@ export function isKleinLand(land: KaartLand) {
   return x2 - x1 < 9 && y2 - y1 < 9;
 }
 
+/** Zo klein dat een kleur alleen niet opvalt (microstaten en Luxemburg): dan een ring erbij. */
+export function heeftRingNodig(land: KaartLand) {
+  const [x1, y1, x2, y2] = land.bbox;
+  return Math.max(x2 - x1, y2 - y1) < 15;
+}
+
 /** Omhullend kader van een aantal landen, met wat ruimte eromheen. */
 export function kaderVoorLanden(ids: string[], marge = 0.06): [number, number, number, number] {
   const kaders = ids.map((id) => landPerId.get(id)?.bbox).filter((b): b is Bbox => Boolean(b));

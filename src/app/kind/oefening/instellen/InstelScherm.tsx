@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore, useTransition } from "react";
 import { BreukKaartjes } from "@/components/mees/Breuk";
 import { Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
@@ -62,7 +62,11 @@ export function InstelScherm(props: {
   const keuze: Keuze = { ...standaardKeuze, ...parseKeuze(bewaard), ...(props.voorkeurNiveau ? { niveau: props.voorkeurNiveau } : {}), ...wijzigingen };
   // Werkbladen bestaan nu alleen voor breuken vergelijken.
   const papierKan = props.onderdeelId === "breuken-vergelijken";
-  const [bezig, setBezig] = useState(false);
+  // "Even wachten…" hoort bij het laden van de volgende pagina. Ga je terug, dan staat de knop vanzelf weer goed
+  // (Next bewaart verlaten pagina's, inclusief hun toestand).
+  const [bezigLokaal, setBezig] = useState(false);
+  const [navigeert, startNavigatie] = useTransition();
+  const bezig = bezigLokaal || navigeert;
   const [fout, setFout] = useState(false);
 
   function pasAan(wijziging: Partial<Keuze>) {
@@ -104,7 +108,10 @@ export function InstelScherm(props: {
       setBezig(false);
       return;
     }
-    router.push(`/kind/oefenen/${sessieId}`);
+    startNavigatie(() => {
+      setBezig(false);
+      router.push(`/kind/oefenen/${sessieId}`);
+    });
   }
 
   const niveauNaam = niveaus.find((n) => n.waarde === keuze.niveau)!.titel;

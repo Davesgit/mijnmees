@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Icoon } from "@/components/mees/Icoon";
-import { isKleinLand, kaart, kaderVoorLanden } from "./kaart";
+import { heeftRingNodig, isKleinLand, kaart, kaderVoorLanden } from "./kaart";
 
 export type KaartLaag = "landen" | "hoofdsteden" | "wateren" | "rivieren" | "gebergten";
 type View = [number, number, number, number];
@@ -328,6 +328,22 @@ export function KaartVlak({
               ))}
           </g>
         )}
+        {/* Gekleurd klein land (vraag "welk land is gekleurd?", goed antwoord, eigen keuze): stip + ring, anders zie je het niet. */}
+        <g style={{ pointerEvents: "none" }}>
+          {kaart.landen
+            .filter((l) => heeftRingNodig(l) && [markering, toonDoel, goed, gekozen].includes(l.id))
+            .map((l) => {
+              const kleur = kleurLand(l.id, l.kleur);
+              const [x, y] = l.midden;
+              return (
+                <g key={`ring-${l.id}`}>
+                  <circle cx={x} cy={y} r={view[2] / 26} fill="none" stroke={kleur} strokeWidth={3.5} vectorEffect="non-scaling-stroke" className="mees-puls" />
+                  <circle cx={x} cy={y} r={view[2] / 26} fill="none" stroke={kleur} strokeWidth={3.5} vectorEffect="non-scaling-stroke" />
+                  <circle cx={x} cy={y} r={view[2] / 70} fill={kleur} stroke="#ffffff" strokeWidth={2} vectorEffect="non-scaling-stroke" />
+                </g>
+              );
+            })}
+        </g>
         {(lagen.includes("hoofdsteden") || kaart.hoofdsteden.some((h) => [markering, toonDoel, goed, gekozen].includes(h.id))) && (
           <g>
             {kaart.hoofdsteden

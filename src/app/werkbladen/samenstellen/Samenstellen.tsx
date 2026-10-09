@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { KeuzeKaart, StapKop } from "@/components/mees/KeuzeKaart";
@@ -51,7 +51,11 @@ export function Samenstellen() {
   const [inst, setInst] = useState<WerkbladInstellingen>(() => leesBegin(params));
   const [voorbeeldOpen, setVoorbeeldOpen] = useState(true);
   const [fout, setFout] = useState<string | null>(null);
-  const [bezig, setBezig] = useState(false);
+  // "Even wachten…" hoort bij het laden van de volgende pagina. Ga je terug, dan staat de knop vanzelf weer goed
+  // (Next bewaart verlaten pagina's, inclusief hun toestand).
+  const [bezigLokaal, setBezig] = useState(false);
+  const [navigeert, startNavigatie] = useTransition();
+  const bezig = bezigLokaal || navigeert;
 
   const vragen = useMemo(() => kiesWerkbladVragen(inst), [inst]);
   const pas = (w: Partial<WerkbladInstellingen>) => {
@@ -74,7 +78,10 @@ export function Samenstellen() {
       return setFout("Dit lukt nu niet. Je invoer blijft staan. Probeer het nog eens.");
     }
     bewaarLokaalWerkblad(werkblad);
-    router.push(`/werkbladen/${werkblad.id}`);
+    startNavigatie(() => {
+      setBezig(false);
+      router.push(`/werkbladen/${werkblad.id}`);
+    });
   }
 
   return (
