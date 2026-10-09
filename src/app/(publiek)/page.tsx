@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BreukKaartjes } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
+import { InstallTip } from "@/components/mees/Webapp";
 import { Mees } from "@/components/mees/Mees";
 
 export default function Home() {
@@ -36,6 +37,10 @@ export default function Home() {
           className="aspect-[3/2] w-full rounded-[20px] object-cover"
         />
       </section>
+
+      <div className="mees-content">
+        <InstallTip />
+      </div>
 
       <section aria-label="Wat Mees doet" className="mees-content grid gap-8 py-8 tablet:grid-cols-3 tablet:py-12">
         <Kenmerk

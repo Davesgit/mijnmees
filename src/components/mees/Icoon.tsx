@@ -21,6 +21,7 @@ const extra = {
   uitloggen: '<path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/>',
   persoon: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
   download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  delen: '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M8 10H6v10h12V10h-2"/>',
   prullenbak: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
 } as const;
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
+import { WebappRegistratie } from "@/components/mees/Webapp";
 
 const meesSans = Nunito_Sans({
   variable: "--font-mees-sans",
@@ -16,10 +17,16 @@ export const metadata: Metadata = {
     template: "%s · Mees",
   },
   description: "Gratis leren en oefenen voor kinderen van groep 5 tot en met 8.",
+  applicationName: "Mees",
   icons: {
-    icon: [{ url: "/assets/merk/favicon-32.png", sizes: "32x32", type: "image/png" }],
-    apple: [{ url: "/assets/merk/favicon-180.png", sizes: "180x180" }],
+    icon: [
+      { url: "/assets/merk/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/app/icoon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/app/apple-touch-icon.png", sizes: "180x180" }],
   },
+  appleWebApp: { capable: true, title: "Mees", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
   openGraph: {
     title: "Mees – gratis leren en oefenen",
     description: "Gratis leren en oefenen voor kinderen van groep 5 tot en met 8.",
@@ -37,7 +44,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="nl" className={`${meesSans.variable} antialiased`}>
-      <body className="flex min-h-dvh flex-col">{children}</body>
+      <body className="flex min-h-dvh flex-col">
+        {children}
+        <WebappRegistratie />
+      </body>
     </html>
   );
 }

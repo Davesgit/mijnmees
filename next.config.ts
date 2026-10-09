@@ -3,6 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  async headers() {
+    return [
+      // De service worker altijd vers ophalen, zodat updates direct werken.
+      { source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }, { key: "Service-Worker-Allowed", value: "/" }] },
+    ];
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {

@@ -311,7 +311,7 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
           controleerLabel={`${vraag.soort === "europa" ? vraag.doelNaam : "Land"} gekozen`}
         />
       ) : (
-        <div className="sticky bottom-0 border-t border-rand-zacht bg-wit p-4 text-center">
+        <div className="sticky bottom-0 border-t border-rand-zacht bg-wit p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-center">
           <PrimaireKnop onClick={naKlaar}>
             Verder
             <Icoon naam="pijl-rechts" />

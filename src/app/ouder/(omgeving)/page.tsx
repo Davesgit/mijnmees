@@ -4,6 +4,7 @@ import { Suspense, type ReactNode } from "react";
 import { Laden } from "@/components/mees/Bouwstenen";
 import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
+import { InstallTip } from "@/components/mees/Webapp";
 import { OnderdeelPictogram } from "@/components/mees/OnderdeelPictogram";
 import { Avatar } from "@/components/mees/Profiel";
 import { vindOnderdeel } from "@/content/onderwerpen";
@@ -154,6 +155,8 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
       </div>
 
       <WerkbladenKaart kindId={kind.id} voornaam={kind.voornaam} />
+
+      <InstallTip />
 
       <div className="flex flex-wrap gap-3">
         <PrimaireKnop href="/profielen">Laat {kind.voornaam} oefenen</PrimaireKnop>
