@@ -5,12 +5,13 @@ import { useMemo, useState, useTransition } from "react";
 import { Melding, TerugLink } from "@/components/mees/Bouwstenen";
 import { Dialoog } from "@/components/mees/Dialoog";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
+import { Schakelaar } from "@/components/mees/Formulier";
 import { KeuzeKaart, StapKop } from "@/components/mees/KeuzeKaart";
 import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
 import { Mees } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
 import { alleEuropaVragen, namen } from "@/features/oefenen/europa-vragen";
-import { europaMeta, europaOnderwerpen, landenVanGebieden, telEuropaOnderdelen, type EuropaOnderwerp } from "@/features/oefenen/europa-sessie";
+import { MICROSTATEN, europaMeta, europaOnderwerpen, landenVanGebieden, telEuropaOnderdelen, type EuropaOnderwerp } from "@/features/oefenen/europa-sessie";
 import { gastLimietBereikt, maakEuropaSessie } from "@/features/oefenen/sessie";
 import { haalOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 
@@ -52,6 +53,7 @@ export function EuropaInstellen() {
   const [kiezerOpen, setKiezerOpen] = useState(false);
   const [concept, setConcept] = useState<string[]>([]);
   const [onderwerpen, setOnderwerpen] = useState<EuropaOnderwerp[]>(["landen"]);
+  const [metMicrostaten, setMetMicrostaten] = useState(true);
   const [vorm, setVorm] = useState<"afwisselend" | "puzzel">("afwisselend");
   const [fout, setFout] = useState<string | null>(null);
   // "Even wachten…" hoort bij het laden van de volgende pagina. Ga je terug, dan staat de knop vanzelf weer goed
@@ -60,7 +62,13 @@ export function EuropaInstellen() {
   const [navigeert, startNavigatie] = useTransition();
   const bezig = bezigLokaal || navigeert;
 
-  const landen = useMemo(() => eigenLanden ?? landenVanGebieden(gebieden), [eigenLanden, gebieden]);
+  const gebiedLanden = useMemo(() => landenVanGebieden(gebieden), [gebieden]);
+  const heeftMicrostaten = !eigenLanden && gebiedLanden.some((id) => (MICROSTATEN as readonly string[]).includes(id));
+  // Zelf gekozen landen gelden zoals gekozen; bij gebieden kun je de heel kleine landen overslaan.
+  const landen = useMemo(
+    () => eigenLanden ?? (metMicrostaten ? gebiedLanden : gebiedLanden.filter((id) => !(MICROSTATEN as readonly string[]).includes(id))),
+    [eigenLanden, gebiedLanden, metMicrostaten],
+  );
   const liggingMogelijk = useMemo(
     () => alleEuropaVragen().some((v) => v.module === "relative" && (v.vereist ?? [v.doel]).every((id) => landen.includes(id))),
     [landen],
@@ -163,6 +171,16 @@ export function EuropaInstellen() {
                 </button>
               </div>
             </div>
+            {heeftMicrostaten && (
+              <div className="mt-3 rounded-[16px] border border-rand-zacht bg-wit px-4 py-2">
+                <Schakelaar
+                  label="Ook de heel kleine landen"
+                  uitleg="Andorra, Liechtenstein, Malta, Monaco, San Marino en Vaticaanstad. Zet uit om ze over te slaan."
+                  aan={metMicrostaten}
+                  onWijzig={setMetMicrostaten}
+                />
+              </div>
+            )}
             {eigenLanden && (
               <p className="mt-2 rounded-[12px] bg-blauw-zacht p-3">
                 Je oefent met {eigenLanden.length} zelf gekozen landen.{" "}

@@ -90,7 +90,7 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
         <OefenKop terug={terug} voortgang={voortgangEuropa(sessie)} onStop={v.stop} onTerug={v.stopOvergang} />
         <section aria-labelledby="vraag-titel" className="flex flex-1 flex-col items-center py-3 text-center tablet:py-4">
           <KaartVlak
-            className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
+            className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-21rem),1000px)] w-full"
             label={vraag.type === "map-click" ? "Kaart van Europa. Tik een plek aan." : "Kaart van Europa."}
             selectie={landen}
             stijl={vraag.type === "map-click" && vraag.module === "countries" ? "gekleurd" : "neutraal"}
@@ -169,6 +169,12 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
   const slot = sessie.slots.find((s) => s.id === gekozenSlot && !s.uitkomst) ?? null;
   const vraag = slot ? vindVraag(slot.vraagId) : null;
 
+  useEffect(() => {
+    if (feedback?.soort !== "goed") return;
+    const t = setTimeout(() => setFeedback(null), 2500);
+    return () => clearTimeout(t);
+  }, [feedback]);
+
   function bewaar(w: Parameters<typeof wijzigOpslag>[0]) {
     setBewaarFout(!wijzigOpslag(w));
   }
@@ -231,9 +237,9 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
         />
         <section aria-labelledby="puzzel-titel" className="flex flex-1 flex-col py-3 text-center tablet:py-4">
           <div className="grid gap-4 landscape:tablet:grid-cols-[1fr_16rem] desktop:grid-cols-[1fr_17rem]">
-            <div className="flex min-w-0 flex-col">
+            <div className="relative flex min-w-0 flex-col">
             <KaartVlak
-              className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-26rem),900px)] w-full"
+              className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] landscape:tablet:h-[clamp(320px,calc(100dvh-16rem),1000px)] desktop:h-[clamp(320px,calc(100dvh-16rem),1000px)] w-full"
               label="Kaart van Europa. Kies eerst een land en tik dan de plek aan."
               selectie={landen}
               stijl="neutraal"
@@ -242,13 +248,25 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
               geplaatst={gelegd}
               toonDoel={uitleg && vraag?.soort === "europa" ? vraag.doel : null}
             />
-            {/* Titel onder de kaart: dekt geen landen af. */}
-            <div className="mt-3">
-              <h1 id="puzzel-titel" className="subtitel tablet:text-[1.75rem] tablet:font-extrabold">
+            {/* Melding óp de kaart: verdwijnt vanzelf en laat het beeld niet verspringen. */}
+            <div className="pointer-events-none absolute inset-x-3 top-3 flex justify-center" aria-live="polite">
+              {feedback && (
+                <p
+                  key={feedback.tekst + gelegd.length}
+                  className={`mees-verschijn max-w-md rounded-full px-5 py-2.5 text-center font-bold shadow-zwevend ${feedback.soort === "goed" ? "bg-succes-zacht text-succes" : "bg-probeer-opnieuw-zacht text-probeer-opnieuw"}`}
+                >
+                  {feedback.tekst}
+                </p>
+              )}
+            </div>
+            </div>
+            <div className="flex flex-col gap-3">
+            {/* Titel bij de stukjes (op de computer naast de kaart): de kaart houdt de volle hoogte. */}
+            <div className="text-center landscape:tablet:text-left desktop:text-left">
+              <h1 id="puzzel-titel" className="subtitel tablet:text-[1.5rem] tablet:font-extrabold">
                 Leg de landen op hun plek
               </h1>
               <p className="mt-1 tekst-klein text-[#5b6fae]">Tik een land aan en tik daarna op de kaart.</p>
-            </div>
             </div>
             <fieldset className="rounded-[20px] border border-rand-zacht bg-wit p-3 text-left">
               <legend className="sr-only">Kies een land</legend>
@@ -279,19 +297,12 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
               </div>
               <p className="mt-2 px-1 tekst-klein text-tekst-zacht">Na het plaatsen verschijnt een nieuw stukje.</p>
             </fieldset>
+            </div>
           </div>
           <div className="mx-auto w-full max-w-[1000px]">
             {slot && vraag ? (
-              <FeedbackEnHulp feedback={feedback} slot={slot} vraag={vraag} bewaarFout={bewaarFout} />
-            ) : (
-              feedback && (
-                <div className="mt-4 text-left" aria-live="polite">
-                  <Melding soort="succes" className="mx-auto max-w-xl font-bold">
-                    {feedback.tekst}
-                  </Melding>
-                </div>
-              )
-            )}
+              <FeedbackEnHulp feedback={null} slot={slot} vraag={vraag} bewaarFout={bewaarFout} />
+            ) : null}
           </div>
         </section>
       </div>

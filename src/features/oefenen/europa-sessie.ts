@@ -35,6 +35,9 @@ function schud<T>(lijst: T[]): T[] {
   return kopie;
 }
 
+/** Heel kleine landen; die kun je bij het instellen overslaan. */
+export const MICROSTATEN = ["AD", "LI", "MC", "MT", "SM", "VA"] as const;
+
 export function landenVanGebieden(gebieden: string[]) {
   if (gebieden.includes("heel")) return [...europaMeta.landen];
   return [...new Set(europaMeta.gebieden.filter((g) => gebieden.includes(g.id)).flatMap((g) => [...g.basis, ...g.extra]))];
