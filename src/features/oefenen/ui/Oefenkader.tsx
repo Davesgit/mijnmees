@@ -375,15 +375,20 @@ export function OefenBediening({
           </div>
           <div className="min-w-0 flex-1 tablet:flex-none">
             {klaar || uitlegZichtbaar ? (
-              <PrimaireKnop groot onClick={onVolgende} aria-label={volgendeLabel} className="w-full px-4 tablet:w-auto tablet:px-8 desktop:min-w-64">
-                <span className="tablet:hidden" aria-hidden>
-                  {volgendeKort}
-                </span>
-                <span className="max-tablet:hidden" aria-hidden>
-                  {volgendeLabel}
-                </span>
-                <Icoon naam="pijl-rechts" />
-              </PrimaireKnop>
+              <div className="flex flex-col gap-1">
+                <PrimaireKnop groot onClick={onVolgende} aria-label={volgendeLabel} className="w-full px-4 tablet:w-auto tablet:px-8 desktop:min-w-64">
+                  <span className="tablet:hidden" aria-hidden>
+                    {volgendeKort}
+                  </span>
+                  <span className="max-tablet:hidden" aria-hidden>
+                    {volgendeLabel}
+                  </span>
+                  <Icoon naam="pijl-rechts" />
+                </PrimaireKnop>
+                <p className="invisible hidden tekst-klein desktop:block" aria-hidden>
+                  {"\u00a0"}
+                </p>
+              </div>
             ) : (
               <div className="flex flex-col gap-1">
                 <PrimaireKnop groot onClick={onControleer} disabled={!kanControleren} aria-label={controleerLabel} className="w-full px-4 tablet:w-auto tablet:px-8 desktop:min-w-64">
@@ -394,7 +399,10 @@ export function OefenBediening({
                     {controleerLabel}
                   </span>
                 </PrimaireKnop>
-                {!kanControleren && <p className="hidden tekst-klein text-tekst-zacht desktop:block desktop:text-right">{kiesEerst}</p>}
+                {/* Ruimte blijft altijd gereserveerd: de knop verspringt niet als je een antwoord kiest. */}
+                <p className={`hidden tekst-klein text-tekst-zacht desktop:block desktop:text-right ${kanControleren ? "invisible" : ""}`} aria-hidden={kanControleren || undefined}>
+                  {kiesEerst || "\u00a0"}
+                </p>
               </div>
             )}
           </div>
