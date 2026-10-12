@@ -89,8 +89,14 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
       <div className="mees-content flex flex-1 flex-col pt-[max(1rem,env(safe-area-inset-top))] tablet:max-w-[1200px] tablet:pt-6">
         <OefenKop terug={terug} voortgang={voortgangEuropa(sessie)} onStop={v.stop} onTerug={v.stopOvergang} />
         <section aria-labelledby="vraag-titel" className="flex flex-1 flex-col items-center py-3 text-center tablet:py-4">
+          <div className="relative w-full">
           <KaartVlak
-            className="h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-21rem),1000px)] w-full"
+            className={`w-full ${
+              vraag.type === "map-click"
+                ? "h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-21rem),1000px)]"
+                : // Meerkeuze: kaart iets lager, zodat de antwoorden zonder scrollen in beeld staan.
+                  "h-[clamp(240px,calc(100dvh-29rem),900px)] tablet:h-[clamp(300px,calc(100dvh-30rem),900px)] desktop:h-[clamp(300px,calc(100dvh-26.5rem),1000px)]"
+            }`}
             label={vraag.type === "map-click" ? "Kaart van Europa. Tik een plek aan." : "Kaart van Europa."}
             selectie={landen}
             stijl={vraag.type === "map-click" && vraag.module === "countries" ? "gekleurd" : "neutraal"}
@@ -102,6 +108,8 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
             goed={v.klaar && vraag.type === "map-click" ? vraag.doel : null}
             toonDoel={uitleg && vraag.type === "map-click" ? vraag.doel : null}
           />
+          <MeldingOpKaart feedback={v.feedback} sleutel={slot.id} />
+          </div>
           {/* De vraag staat direct onder de kaart (ontwerpregels §6), zonder landen af te dekken. */}
           <div className="mt-3 w-full max-w-2xl">
             <VraagTitel titelRef={v.titelRef} vraag={vraag.prompt} instructie={vraag.instructie} klein />
@@ -112,16 +120,16 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
             )}
           </div>
           {vraag.type === "map-click" ? null : (
-            <fieldset className="mt-4 w-full" disabled={v.vergrendeld}>
-              <legend className="mb-2 tekst-klein text-tekst-zacht">Kies één antwoord.</legend>
-              <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 desktop:grid-cols-4">
+            <fieldset className="mt-3 w-full" disabled={v.vergrendeld}>
+              <legend className="sr-only">Kies één antwoord.</legend>
+              <div className="grid grid-cols-2 gap-2 tablet:gap-3 desktop:grid-cols-4">
                 {opties.map((o) => {
                   const gekozen = v.gekozen === o.id;
                   const isGoed = v.klaar && o.id === vraag.doel;
                   return (
                     <label
                       key={o.id}
-                      className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-[16px] border px-4 text-left text-lg font-bold transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-focus ${
+                      className={`flex min-h-14 cursor-pointer items-center gap-2 rounded-[16px] border px-3 text-left text-base font-bold tablet:gap-3 tablet:px-4 tablet:text-lg transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-focus ${
                         isGoed ? "border-2 border-succes bg-succes-zacht" : gekozen ? "border-2 border-actie-blauw bg-blauw-zacht" : "border-rand-interactief bg-wit hover:bg-blauw-zacht"
                       }`}
                     >
@@ -136,7 +144,8 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
               </div>
             </fieldset>
           )}
-          <FeedbackEnHulp feedback={v.feedback} slot={slot} vraag={vraag} bewaarFout={v.bewaarFout} />
+          {/* Goed/fout staat op de kaart; hier alleen de hints of uitleg waar het kind om vroeg. */}
+          <FeedbackEnHulp feedback={null} slot={slot} vraag={vraag} bewaarFout={v.bewaarFout} />
         </section>
       </div>
       <OefenBediening
@@ -248,17 +257,7 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
               geplaatst={gelegd}
               toonDoel={uitleg && vraag?.soort === "europa" ? vraag.doel : null}
             />
-            {/* Melding óp de kaart: verdwijnt vanzelf en laat het beeld niet verspringen. */}
-            <div className="pointer-events-none absolute inset-x-3 top-3 flex justify-center" aria-live="polite">
-              {feedback && (
-                <p
-                  key={feedback.tekst + gelegd.length}
-                  className={`mees-verschijn max-w-md rounded-full px-5 py-2.5 text-center font-bold shadow-zwevend ${feedback.soort === "goed" ? "bg-succes-zacht text-succes" : "bg-probeer-opnieuw-zacht text-probeer-opnieuw"}`}
-                >
-                  {feedback.tekst}
-                </p>
-              )}
-            </div>
+            <MeldingOpKaart feedback={feedback} sleutel={String(gelegd.length)} />
             </div>
             <div className="flex flex-col gap-3">
             {/* Titel bij de stukjes (op de computer naast de kaart): de kaart houdt de volle hoogte. */}
@@ -334,3 +333,18 @@ function Puzzel({ sessie }: { sessie: Sessie }) {
   );
 }
 
+/** Goed/fout als label bovenin óp de kaart: het beeld verspringt niet. */
+function MeldingOpKaart({ feedback, sleutel }: { feedback: Feedback; sleutel: string }) {
+  return (
+    <div className="pointer-events-none absolute inset-x-3 top-3 flex justify-center" aria-live="polite">
+      {feedback && (
+        <p
+          key={feedback.tekst + sleutel}
+          className={`mees-verschijn max-w-md rounded-full px-5 py-2.5 text-center font-bold shadow-zwevend ${feedback.soort === "goed" ? "bg-succes-zacht text-succes" : "bg-probeer-opnieuw-zacht text-probeer-opnieuw"}`}
+        >
+          {feedback.tekst}
+        </p>
+      )}
+    </div>
+  );
+}
