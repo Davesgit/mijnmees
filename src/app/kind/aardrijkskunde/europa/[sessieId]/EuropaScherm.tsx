@@ -93,7 +93,7 @@ function EuropaVraagplaats({ sessie, slot, vraag, rustigVerder }: { sessie: Sess
           <KaartVlak
             className={`w-full ${
               vraag.type === "map-click"
-                ? "h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-21rem),1000px)]"
+                ? "h-[clamp(280px,calc(100dvh-20rem),900px)] tablet:h-[clamp(320px,calc(100dvh-21.5rem),900px)] desktop:h-[clamp(320px,calc(100dvh-23rem),1000px)]"
                 : // Meerkeuze: kaart iets lager, zodat de antwoorden zonder scrollen in beeld staan.
                   "h-[clamp(240px,calc(100dvh-29rem),900px)] tablet:h-[clamp(300px,calc(100dvh-30rem),900px)] desktop:h-[clamp(300px,calc(100dvh-26.5rem),1000px)]"
             }`}

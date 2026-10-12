@@ -45,6 +45,8 @@
     -webkit-text-size-adjust: 100%;
     /* Snel twee keer tikken zoomt de pagina niet in; knijpen om te zoomen blijft gewoon werken. */
     touch-action: manipulation;
+    /* Ruimte voor de schuifbalk blijft altijd vrij: de pagina schuift niet opzij als die verschijnt of verdwijnt. */
+    scrollbar-gutter: stable;
   }
   html[data-grote-tekst="true"] {
     font-size: 112.5%;

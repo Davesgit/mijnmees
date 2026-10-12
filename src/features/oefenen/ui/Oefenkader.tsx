@@ -367,7 +367,7 @@ export function OefenBediening({
                 {hulpLabel}
               </span>
             </SecundaireKnop>
-            <p className="hidden pl-2 tekst-klein text-tekst-zacht desktop:block">{hulpUitleg}</p>
+            <p className="hidden w-0 min-w-full pl-2 tekst-klein text-tekst-zacht desktop:block">{hulpUitleg}</p>
           </div>
           <div className="flex shrink-0 gap-2 tablet:justify-center tablet:gap-3">
             <VoorleesKnop tekst={voorleesTekst} compact />
@@ -399,8 +399,8 @@ export function OefenBediening({
                     {controleerLabel}
                   </span>
                 </PrimaireKnop>
-                {/* Ruimte blijft altijd gereserveerd: de knop verspringt niet als je een antwoord kiest. */}
-                <p className={`hidden tekst-klein text-tekst-zacht desktop:block desktop:text-right ${kanControleren ? "invisible" : ""}`} aria-hidden={kanControleren || undefined}>
+                {/* Ruimte blijft altijd gereserveerd, en de tekst bepaalt de kolombreedte niet (w-0 min-w-full): niets verspringt als je een antwoord kiest. */}
+                <p className={`hidden w-0 min-w-full tekst-klein text-tekst-zacht desktop:block desktop:text-right ${kanControleren ? "invisible" : ""}`} aria-hidden={kanControleren || undefined}>
                   {kiesEerst || "\u00a0"}
                 </p>
               </div>
