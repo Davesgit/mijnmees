@@ -48,6 +48,11 @@
     /* Ruimte voor de schuifbalk blijft altijd vrij: de pagina schuift niet opzij als die verschijnt of verdwijnt. */
     scrollbar-gutter: stable;
   }
+  /* App-modus (zie features/app/appmodus.ts): webonderdelen weg in de app, appdelen weg op de website. */
+  html[data-app="true"] .alleen-web,
+  html:not([data-app="true"]) .alleen-app {
+    display: none !important;
+  }
   html[data-grote-tekst="true"] {
     font-size: 112.5%;
   }

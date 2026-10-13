@@ -6,10 +6,10 @@ import { Suspense, useState } from "react";
 import { Icoon } from "./Icoon";
 import { Logo } from "./Mees";
 
-const links = [
+const links: { label: string; href: string; alleenWeb?: boolean }[] = [
   { label: "Voor ouders", href: "/" },
   { label: "Hoe het werkt", href: "/hoe-mees-werkt" },
-  { label: "Onze donateurs", href: "/donateurs" },
+  { label: "Onze donateurs", href: "/donateurs", alleenWeb: true },
 ];
 
 /** Publieke navigatie voor ouders (A00, A01–A04, A06, A07, I01). */
@@ -55,7 +55,7 @@ export function PubliekHeader() {
         <nav id="publiek-menu" aria-label="Hoofdmenu" className="border-t border-rand-zacht desktop:hidden">
           <ul className="mees-content flex flex-col py-2">
             {links.map((l) => (
-              <li key={l.href}>
+              <li key={l.href} className={l.alleenWeb ? "alleen-web" : undefined}>
                 <Link href={l.href} onClick={() => setOpen(false)} className="flex min-h-12 items-center rounded-[12px] px-2 text-lg font-bold">
                   {l.label}
                 </Link>
@@ -78,7 +78,7 @@ function Lijst({ pad }: { pad: string }) {
       {links.map((l) => {
         const actief = pad === l.href;
         return (
-          <li key={l.href} className="flex">
+          <li key={l.href} className={`flex ${l.alleenWeb ? "alleen-web" : ""}`}>
             <Link
               href={l.href}
               aria-current={actief ? "page" : undefined}
@@ -110,17 +110,17 @@ export function PubliekeVoet() {
               Hoe Mees werkt
             </Link>
           </li>
-          <li>
+          <li className="alleen-web">
             <Link href="/donateurs" className="underline underline-offset-4 hover:text-actie-blauw">
               Donateurs
             </Link>
           </li>
-          <li>
+          <li className="alleen-web">
             <Link href="/tutoren" className="underline underline-offset-4 hover:text-actie-blauw">
               Word tutor
             </Link>
           </li>
-          <li>
+          <li className="alleen-web">
             <Link href="/donateurs/transparantie" className="underline underline-offset-4 hover:text-actie-blauw">
               Wat kost Mees?
             </Link>

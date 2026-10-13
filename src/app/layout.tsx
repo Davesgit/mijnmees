@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { WebappRegistratie } from "@/components/mees/Webapp";
+import { appModusScript } from "@/features/app/appmodus";
 
 const meesSans = Nunito_Sans({
   variable: "--font-mees-sans",
@@ -43,7 +44,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="nl" className={`${meesSans.variable} antialiased`}>
+    // suppressHydrationWarning: het app-script zet data-app op <html> vóór React laadt.
+    <html lang="nl" className={`${meesSans.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: appModusScript }} />
+      </head>
       <body className="flex min-h-dvh flex-col">
         {children}
         <WebappRegistratie />

@@ -18,6 +18,7 @@ const geenAbonnement = () => () => {};
 const WEG = "mees:installtip:weg";
 
 function platform(): "app" | "ios" | "anders" {
+  if (document.documentElement.dataset.app === "true") return "app";
   const standalone = matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
   if (standalone) return "app";
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);

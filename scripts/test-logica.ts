@@ -23,6 +23,7 @@ import { bordInStukjes, decodeer } from "@/features/live/bordkanaal";
 import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/features/tutorhulp/criteria";
 import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
 import type { Poging } from "@/features/oefenen/types";
+import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
 let geslaagd = 0;
@@ -301,6 +302,15 @@ test("landnamen worden nooit overschreven door antwoordopties (Zweden ≠ Zuidoo
   for (const l of europaKaart.landen) assert.equal(europaNamen[l.id], l.naam, l.id);
   assert.equal(europaNamen.SE, "Zweden");
   for (const q of europaVragen as { opties?: { id: string; label: string }[] }[]) for (const o of q.opties ?? []) assert.equal(europaNamen[o.id], o.label, `optie ${o.id}`);
+});
+
+test("app-modus: herkenning en doorsturen", () => {
+  assert.equal(isAppVerzoek("Mozilla/5.0 (iPhone) MeesApp/1.0", undefined), true);
+  assert.equal(isAppVerzoek("Mozilla/5.0 (iPhone)", "1"), true);
+  assert.equal(isAppVerzoek("Mozilla/5.0 (iPhone)", undefined), false);
+  assert.equal(appDoorsturing("/"), "/welkom");
+  for (const pad of ["/donateurs", "/donateurs/transparantie", "/tutoren", "/tutor/lessen", "/beheer"]) assert.equal(appDoorsturing(pad), "/welkom", pad);
+  for (const pad of ["/kind/start", "/ouder", "/profielen", "/privacy", "/welkom", "/tutorial", "/api/voorlezen"]) assert.equal(appDoorsturing(pad), null, pad);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);
