@@ -152,7 +152,7 @@ export function Invoer<T>({
           <Icoon naam="verstuur" className="size-6 tablet:size-7" />
         </button>
       </form>
-      <p role="status" className="mt-2 min-h-5 px-4 tekst-klein text-[#52649b]">
+      <p role="status" className="mt-1 min-h-5 px-4 tekst-klein text-[#52649b] empty:hidden">
         {luistert ? "Mees luistert… Tik op stop als je klaar bent." : melding}
       </p>
     </div>

@@ -304,9 +304,10 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
       voegToe([bericht("kind", label), bericht("mees", "Dat lukt nu even niet. Probeer het nog eens, of kies iets anders.", { keuzes: naTerugkomst })]);
       return;
     }
+    // Meteen de eerste vraag (zonder extra bericht ertussen), zodat die direct helemaal in beeld komt.
     voegToe([
       bericht("kind", label),
-      bericht("mees", gelukt ? "Fijn! Neem rustig de tijd. Je kunt altijd een hint vragen." : "Fijn! Let op: bewaren lukt nu niet in deze browser."),
+      ...(gelukt ? [] : [bericht("mees", "Let op: bewaren lukt nu niet in deze browser. Je kunt wel oefenen.")]),
       bericht("mees", "", { oefening: { sessieId, vanaf: 0 } }),
     ]);
   }
@@ -543,7 +544,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
         </div>
 
         {/* De chatbalk staat altijd onderaan, zoals in een AI-chat; daarboven verschijnen de berichten van Mees. */}
-        <div data-sticky-onder className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
+        <div data-sticky-onder className="sticky bottom-0 z-10 border-t border-[#dcebf8] bg-[#f5fbff] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_#69b5ec1a] tablet:px-8">
           <div className="mx-auto max-w-[860px]">
             {bewaarFout && <p className="mb-2 rounded-[12px] bg-fout-zacht px-4 py-2 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
             {invoerVeld}
