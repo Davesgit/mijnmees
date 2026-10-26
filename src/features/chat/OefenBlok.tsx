@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
@@ -12,7 +13,44 @@ import { antwoordTekst, goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, 
 import { hintVoorleesTekst, uitlegVoorleesTekst, vraagVoorleesTekst } from "@/features/voorlezen/teksten";
 import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
-import { EuropaOpgave, EuropaUitlegKaart, PuzzelBlok } from "./EuropaInChat";
+import { Puntjes } from "./ChatTypen";
+
+// De kaart van Europa is groot (alle landvormen): pas laden als er echt Europa geoefend wordt.
+const kaartRuimte = () => <div className="mt-3 h-[clamp(260px,52dvh,560px)] animate-pulse rounded-[16px] bg-blauw-zacht tablet:h-[clamp(320px,58dvh,640px)]" aria-hidden />;
+const EuropaOpgave = dynamic(() => import("./EuropaInChat").then((m) => m.EuropaOpgave), { ssr: false, loading: kaartRuimte });
+const EuropaUitlegKaart = dynamic(() => import("./EuropaInChat").then((m) => m.EuropaUitlegKaart), { ssr: false, loading: kaartRuimte });
+const PuzzelBlok = dynamic(() => import("./EuropaInChat").then((m) => m.PuzzelBlok), { ssr: false, loading: kaartRuimte });
+
+// Na een actie van het kind (antwoord, hint, volgende) reageert Mees zichtbaar: eerst even de puntjes, dan
+// verschijnt de melding; de vraag om het opnieuw te proberen komt daar weer even later onder.
+// Bij herladen of het openen van een oud gesprek staat alles er meteen.
+let netGehandeld = false;
+let netGehandeldTimer: ReturnType<typeof setTimeout> | undefined;
+function markeerActie() {
+  netGehandeld = true;
+  clearTimeout(netGehandeldTimer);
+  netGehandeldTimer = setTimeout(() => (netGehandeld = false), 1200);
+}
+const REACTIE_MS = 900;
+const DAARNA_MS = 500;
+
+/** Toont een nieuwe stap pas na een korte pauze; met puntjes van Mees als die stap een reactie van Mees is. */
+function NaActie({ id, ms, puntjes, children }: { id: string; ms: number; puntjes: boolean; children: ReactNode }) {
+  const [wacht, setWacht] = useState(() => netGehandeld && document.documentElement.dataset.rustigeOvergangen !== "true" && !matchMedia("(prefers-reduced-motion: reduce)").matches);
+  useEffect(() => {
+    if (!wacht) return;
+    const t = setTimeout(() => setWacht(false), ms);
+    return () => clearTimeout(t);
+  }, [wacht, ms]);
+  if (!wacht) return <>{children}</>;
+  if (!puntjes) return null;
+  return (
+    <div data-stap={id} className="w-full rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:max-w-[92%]">
+      <MeesAfzender />
+      <Puntjes />
+    </div>
+  );
+}
 import type { OefenVerwijzing } from "./gesprek";
 import { verloopVanSlot, type Hulp, type Stap } from "./oefen-verloop";
 
@@ -30,7 +68,10 @@ export function OefenBlok({ verwijzing, actief, onNogEenRondje, onIetsAnders }: 
 
   const eind = verwijzing.tot ?? Math.min(sessie.index + 1, sessie.slots.length);
   const interactief = actief && verwijzing.tot === undefined && sessie.status === "bezig";
-  const bewaar = (w: (d: OpslagData) => OpslagData) => setBewaarFout(!wijzigOpslag(w));
+  const bewaar = (w: (d: OpslagData) => OpslagData) => {
+    markeerActie();
+    setBewaarFout(!wijzigOpslag(w));
+  };
 
   if (sessie.soort === "puzzel")
     return (
@@ -91,74 +132,86 @@ function SlotVerloop({
     <>
       {stappen.map((stap, i) => {
         const id = sleutel(stap, i);
-        switch (stap.soort) {
-          case "vraag":
-            return (
-              <VraagKaart
-                key={id}
-                id={id}
-                vraag={vraag}
-                sessie={sessie}
-                opties={vraag.soort === "europa" ? (vraag.opties ?? slot.opties ?? []) : []}
-                nummer={nummer}
-                herhaling={Boolean(slot.herhalingVan)}
-                stap={stap}
-                interactief={interactief && stap.status === "open" && i === laatsteVraag}
-                seconden={sessie.soort === "tafels" && sessie.instellingen?.metTijd ? (sessie.instellingen.secondenPerVraag ?? null) : null}
-                onControleer={(antwoord, actieveDuurMs) => bewaar((d) => registreerAntwoord(d, sessie.id, antwoord, { actieveDuurMs })?.data ?? d)}
-                onHint={() => bewaar((d) => vraagHulp(d, sessie.id))}
-                hintLabel={slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien"}
-              />
-            );
-          case "fout":
-            return (
-              <Kaart key={id} toon="fout" voorlees={{ id, tekst: `Nog niet helemaal. Jij koos ${antwoordWoorden(vraag, stap.antwoord)}. ${hulpTekstVoorlezen(vraag, stap.hulp)}` }}>
-                <h3 className="text-xl font-extrabold text-probeer-opnieuw">Nog niet helemaal</h3>
-                <p className="mt-2 rounded-[12px] bg-[#fdebc8] px-4 py-2.5 font-bold text-probeer-opnieuw">
-                  Jij koos {antwoordWoorden(vraag, stap.antwoord)}. Dat is nog niet het goede antwoord.
-                </p>
-                {stap.hulp ? <HulpInhoud vraag={vraag} hulp={stap.hulp} /> : <p className="mt-3 text-lg">Kijk nog eens rustig naar de vraag. Probeer het hieronder opnieuw.</p>}
-              </Kaart>
-            );
-          case "hulpVraag":
-            return (
-              <div key={id} data-stap={id} className="ml-auto max-w-[85%] rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
-                <span className="sr-only">Jij: </span>
-                {stap.hulp.soort === "uitleg" ? "Laat de uitleg zien." : stap.hulp.niveau === 1 ? "Geef me een hint." : "Mag ik nog een hint?"}
-              </div>
-            );
-          case "hulp":
-            return (
-              <Kaart key={id} toon="hulp" voorlees={{ id, tekst: hulpTekstVoorlezen(vraag, stap.hulp) }}>
-                <HulpInhoud vraag={vraag} hulp={stap.hulp} />
-              </Kaart>
-            );
-          case "goed":
-            return (
-              <Kaart key={id} toon="goed" voorlees={{ id, tekst: `Goed gevonden! ${vraag.explanation}` }}>
-                <h3 className="text-xl font-extrabold text-succes">{stap.metHulp ? "Goed gevonden! Je hebt de hulp goed gebruikt." : "Goed gevonden!"}</h3>
-                <p className="mt-2 text-lg">
-                  <TekstMetBreuken tekst={vraag.explanation} />
-                </p>
-                {interactief && (
+        const inhoud = (() => {
+          switch (stap.soort) {
+            case "vraag":
+              return (
+                <VraagKaart
+                  key={id}
+                  id={id}
+                  vraag={vraag}
+                  sessie={sessie}
+                  opties={vraag.soort === "europa" ? (vraag.opties ?? slot.opties ?? []) : []}
+                  nummer={nummer}
+                  herhaling={Boolean(slot.herhalingVan)}
+                  stap={stap}
+                  interactief={interactief && stap.status === "open" && i === laatsteVraag}
+                  seconden={sessie.soort === "tafels" && sessie.instellingen?.metTijd ? (sessie.instellingen.secondenPerVraag ?? null) : null}
+                  onControleer={(antwoord, actieveDuurMs) => bewaar((d) => registreerAntwoord(d, sessie.id, antwoord, { actieveDuurMs })?.data ?? d)}
+                  onHint={() => bewaar((d) => vraagHulp(d, sessie.id))}
+                  hintLabel={slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien"}
+                />
+              );
+            case "fout":
+              return (
+                <Kaart key={id} toon="fout" voorlees={{ id, tekst: `Nog niet helemaal. Jij koos ${antwoordWoorden(vraag, stap.antwoord)}. ${hulpTekstVoorlezen(vraag, stap.hulp)}` }}>
+                  <h3 className="text-xl font-extrabold text-probeer-opnieuw">Nog niet helemaal</h3>
+                  <p className="mt-2 rounded-[12px] bg-[#fdebc8] px-4 py-2.5 font-bold text-probeer-opnieuw">
+                    Jij koos {antwoordWoorden(vraag, stap.antwoord)}. Dat is nog niet het goede antwoord.
+                  </p>
+                  {stap.hulp ? <HulpInhoud vraag={vraag} hulp={stap.hulp} /> : <p className="mt-3 text-lg">Kijk nog eens rustig naar de vraag. Probeer het hieronder opnieuw.</p>}
+                </Kaart>
+              );
+            case "hulpVraag":
+              return (
+                <div key={id} data-stap={id} className="ml-auto max-w-[85%] rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
+                  <span className="sr-only">Jij: </span>
+                  {stap.hulp.soort === "uitleg" ? "Laat de uitleg zien." : stap.hulp.niveau === 1 ? "Geef me een hint." : "Mag ik nog een hint?"}
+                </div>
+              );
+            case "hulp":
+              return (
+                <Kaart key={id} toon="hulp" voorlees={{ id, tekst: hulpTekstVoorlezen(vraag, stap.hulp) }}>
+                  <HulpInhoud vraag={vraag} hulp={stap.hulp} />
+                </Kaart>
+              );
+            case "goed":
+              return (
+                <Kaart key={id} toon="goed" voorlees={{ id, tekst: `Goed gevonden! ${vraag.explanation}` }}>
+                  <h3 className="text-xl font-extrabold text-succes">{stap.metHulp ? "Goed gevonden! Je hebt de hulp goed gebruikt." : "Goed gevonden!"}</h3>
+                  <p className="mt-2 text-lg">
+                    <TekstMetBreuken tekst={vraag.explanation} />
+                  </p>
+                  {interactief && (
+                    <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
+                      {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Volgende vraag"}
+                      <Icoon naam="pijl-rechts" className="size-6" />
+                    </button>
+                  )}
+                </Kaart>
+              );
+            case "verder":
+              return interactief ? (
+                <div key={id} data-stap={id} className="w-full tablet:max-w-[92%]">
+                  {vraag.soort === "europa" && <EuropaUitlegKaart vraag={vraag} sessie={sessie} />}
                   <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
-                    {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Volgende vraag"}
+                    {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Verder"}
                     <Icoon naam="pijl-rechts" className="size-6" />
                   </button>
-                )}
-              </Kaart>
-            );
-          case "verder":
-            return interactief ? (
-              <div key={id} data-stap={id} className="w-full tablet:max-w-[92%]">
-                {vraag.soort === "europa" && <EuropaUitlegKaart vraag={vraag} sessie={sessie} />}
-                <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
-                  {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Verder"}
-                  <Icoon naam="pijl-rechts" className="size-6" />
-                </button>
-              </div>
-            ) : null;
-        }
+                </div>
+              ) : null;
+          }
+        })();
+        if (!inhoud) return null;
+        // Reactie van Mees (feedback, hint): eerst puntjes. Een nieuwe of herhaalde vraag komt daarna.
+        const reactie = stap.soort === "fout" || stap.soort === "goed" || stap.soort === "hulp";
+        const vervolg = (stap.soort === "vraag" && stap.status === "open") || stap.soort === "verder";
+        if (!reactie && !vervolg) return inhoud;
+        return (
+          <NaActie key={id} id={id} ms={reactie || i === 0 ? REACTIE_MS : REACTIE_MS + DAARNA_MS} puntjes={reactie || i === 0}>
+            {inhoud}
+          </NaActie>
+        );
       })}
     </>
   );
