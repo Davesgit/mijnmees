@@ -84,7 +84,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
       </a>
 
       {/* Telefoon: bovenbalk met menuknop. */}
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-[#e1f1fe] bg-wit/95 px-2 pt-[env(safe-area-inset-top)] backdrop-blur tablet:hidden">
+      <header data-sticky-boven className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-[#e1f1fe] bg-wit/95 px-2 pt-[env(safe-area-inset-top)] backdrop-blur tablet:hidden">
         <button
           type="button"
           onClick={() => setMobielOpen(true)}

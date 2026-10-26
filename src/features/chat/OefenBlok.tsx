@@ -143,7 +143,7 @@ function SlotVerloop({
             );
           case "verder":
             return interactief ? (
-              <div key={id} className="w-full tablet:max-w-[92%]">
+              <div key={id} data-stap={id} className="w-full tablet:max-w-[92%]">
                 {vraag.soort === "europa" && <EuropaUitlegKaart vraag={vraag} sessie={sessie} />}
                 <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
                   {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Verder"}
@@ -168,7 +168,7 @@ function Kaart({ toon, voorlees, children }: { toon: "normaal" | "fout" | "hulp"
     goed: "border-2 border-[#86d3a6] bg-succes-zacht",
   }[toon];
   return (
-    <div className={`mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${stijl}`}>
+    <div data-stap={voorlees.id} className={`mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${stijl}`}>
       <MeesAfzender />
       <div className="mt-2">{children}</div>
       <div className="mt-2">
@@ -249,7 +249,7 @@ function VraagKaart({
   const getoond = interactief ? gekozen : (stap.antwoord ?? "");
 
   return (
-    <div className={`w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${interactief ? "" : "opacity-90"}`}>
+    <div data-stap={id} className={`w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${interactief ? "" : "opacity-90"}`}>
       <MeesAfzender />
       <p className="mt-2 font-semibold text-actie-blauw">{titel}</p>
       <h3 className="mt-1 text-xl font-extrabold tablet:text-2xl">{vraag.prompt}</h3>
@@ -384,6 +384,11 @@ function BreukOpgave({ vraag, gekozen, onKies, vergrendeld, groep }: { vraag: Br
 }
 
 function TafelOpgave({ vraag, waarde, onWijzig, vergrendeld, id }: { vraag: TafelVraag; waarde: string; onWijzig: (w: string) => void; vergrendeld: boolean; id: string }) {
+  const veld = useRef<HTMLInputElement>(null);
+  // Meteen klaar om te typen, maar zonder het gesprek te laten verspringen (de chat bepaalt zelf wat in beeld komt).
+  useEffect(() => {
+    if (!vergrendeld && !matchMedia("(pointer: coarse)").matches) veld.current?.focus({ preventScroll: true });
+  }, [vergrendeld]);
   return (
     <div className="mt-4 flex items-center justify-center gap-3 text-[2.5rem] font-bold text-inkt tablet:text-[3rem]">
       <span aria-hidden>
@@ -401,7 +406,7 @@ function TafelOpgave({ vraag, waarde, onWijzig, vergrendeld, id }: { vraag: Tafe
         maxLength={4}
         value={waarde}
         readOnly={vergrendeld}
-        autoFocus={!vergrendeld}
+        ref={veld}
         onChange={(e) => onWijzig(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))}
         className="h-16 w-28 rounded-[14px] border-2 border-rand-interactief bg-wit text-center focus:border-actie-blauw tablet:h-20 tablet:w-36"
       />
@@ -424,7 +429,7 @@ function Terugblik({ sessie, opslag, onNogEenRondje, onIetsAnders }: { sessie: S
       : `Klaar! Je hebt ${aantal} vragen gedaan: ${zelfstandig} helemaal zelf en ${metHulp} met hulp. Zo leer je erbij.`;
   const tekst = opTijd === null ? basis : `${basis} ${opTijd} van de ${sessie.slots.length} goed binnen de tijd.`;
   return (
-    <div className="mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border-2 border-[#86d3a6] bg-wit px-5 py-5 shadow-[0_8px_24px_#92c5eb17] tablet:px-6">
+    <div data-stap={`terugblik-${sessie.id}`} className="mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border-2 border-[#86d3a6] bg-wit px-5 py-5 shadow-[0_8px_24px_#92c5eb17] tablet:px-6">
       <MeesAfzender />
       <h3 className="mt-2 text-2xl font-extrabold">Goed gewerkt! 🎉</h3>
       <p className="mt-1 font-semibold text-tekst-zacht">{sessieNaam(sessie)}</p>

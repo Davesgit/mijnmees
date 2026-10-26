@@ -186,7 +186,7 @@ export function PuzzelBlok({ sessie, interactief, bewaar }: { sessie: Sessie; in
   const hints = slot?.hulp.hints ?? 0;
 
   return (
-    <div className="w-full rounded-[20px] border border-[#e9f5ff] bg-wit px-4 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-5">
+    <div data-stap={`puzzel-${sessie.id}`} className="w-full rounded-[20px] border border-[#e9f5ff] bg-wit px-4 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-5">
       <MeesAfzender />
       <h3 className="mt-2 text-xl font-extrabold">Leg de landen op hun plek</h3>
       <p className="text-[#5b6fae]">Tik een land aan en tik daarna op de kaart.</p>

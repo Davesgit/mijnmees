@@ -28,6 +28,21 @@ const naTerugkomst: Keuze[] = [
   { label: "Mijn voortgang", soort: "ga", href: "/kind/voortgang" },
 ];
 
+/**
+ * Brengt nieuw verschenen inhoud rustig in beeld: het begin ervan net onder de vaste balken bovenin.
+ * Past alles al in beeld, dan blijft het scherm staan.
+ */
+function toonNieuw(eerste: HTMLElement, laatste: HTMLElement, vloeiend: boolean) {
+  const boven = Math.max(0, ...[...document.querySelectorAll<HTMLElement>("[data-sticky-boven]")].map((e) => e.getBoundingClientRect().bottom)) + 12;
+  const onderBalk = document.querySelector<HTMLElement>("[data-sticky-onder]");
+  const onder = (onderBalk ? onderBalk.getBoundingClientRect().top : window.innerHeight) - 12;
+  const begin = eerste.getBoundingClientRect().top;
+  const eind = laatste.getBoundingClientRect().bottom;
+  if (begin >= boven && eind <= onder) return;
+  const rustig = !vloeiend || document.documentElement.dataset.rustigeOvergangen === "true" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: window.scrollY + begin - boven, behavior: rustig ? "auto" : "smooth" });
+}
+
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
 export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   const router = useRouter();
@@ -38,7 +53,6 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   const [navigeert, startNavigatie] = useTransition();
   const voorlezen = useVoorlezen();
   const [leestId, setLeestId] = useState<string | null>(null);
-  const eindeRef = useRef<HTMLDivElement>(null);
 
   const gesprek = chats?.actief ? (chats.gesprekken.find((g) => g.id === chats.actief) ?? null) : null;
   const laatste = gesprek?.berichten.at(-1);
@@ -47,8 +61,19 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   // Verandert bij elke stap in de oefening: dan het nieuwste deel in beeld brengen.
   const stand = `${gesprek?.id}-${gesprek?.berichten.length}-${actieveOefening?.versie}-${actieveOefening?.status}-${opslag?.pogingen.length}`;
 
+  // Na elke stap het begin van het nieuwe deel in beeld brengen (niet de onderkant: dan valt de vraag weg).
+  const gezien = useRef<{ gesprek: string; stappen: Set<string> } | null>(null);
   useEffect(() => {
-    if (gesprek) eindeRef.current?.scrollIntoView({ block: "end" });
+    if (!gesprek) {
+      gezien.current = null;
+      return;
+    }
+    const stappen = [...document.querySelectorAll<HTMLElement>("[role=log] [data-stap]")];
+    const vorige = gezien.current?.gesprek === gesprek.id ? gezien.current.stappen : null;
+    gezien.current = { gesprek: gesprek.id, stappen: new Set(stappen.map((e) => e.dataset.stap!)) };
+    // Gesprek (opnieuw) geopend: het laatste bericht. Anders: het eerste nieuwe bericht of de eerste nieuwe stap.
+    const doel = vorige ? stappen.find((e) => !vorige.has(e.dataset.stap!)) : stappen.at(-1);
+    if (doel) toonNieuw(doel, stappen.at(-1)!, Boolean(vorige));
   }, [stand]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Voorlezen stopt bij een andere chat.
@@ -269,7 +294,7 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     <ChatVoorleesContext value={voorleesWaarde}>
       <div className="chat-achtergrond flex flex-1 flex-col">
         {teller && actieveOefening && (
-          <div className="sticky top-14 z-20 border-b border-[#e1f1fe] bg-[#f5fbff]/95 backdrop-blur tablet:top-0">
+          <div data-sticky-boven className="sticky top-14 z-20 border-b border-[#e1f1fe] bg-[#f5fbff]/95 backdrop-blur tablet:top-0">
             <div className="mx-auto flex max-w-[860px] items-center gap-4 px-4 py-2.5 tablet:px-8">
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold">
@@ -300,13 +325,13 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
               if (b.oefening) return <OefenBlok key={b.id} verwijzing={b.oefening} actief={isLaatste} onNogEenRondje={nogEenRondje} onIetsAnders={ietsAnders} />;
               if (b.van === "kind")
                 return (
-                  <div key={b.id} className="ml-auto max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
+                  <div key={b.id} data-stap={b.id} className="ml-auto max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
                     <span className="sr-only">Jij: </span>
                     {b.tekst}
                   </div>
                 );
               return (
-                <div key={b.id} className="w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17]">
+                <div key={b.id} data-stap={b.id} className="w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17]">
                   <MeesAfzender />
                   <p className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">{b.tekst}</p>
                   {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
@@ -335,13 +360,12 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
                 </div>
               );
             })}
-            <div ref={eindeRef} className="scroll-mb-32 tablet:scroll-mb-40" />
           </div>
         </div>
 
         {/* Tijdens het oefenen staat de bediening in de vraag zelf; daarna komt het invoerveld terug. */}
         {!oefentBezig && (
-          <div className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
+          <div data-sticky-onder className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
             <div className="mx-auto max-w-[860px]">{invoerVeld}</div>
           </div>
         )}
