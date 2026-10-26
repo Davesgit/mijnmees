@@ -39,7 +39,14 @@ export type Bericht = {
 
 export type Antwoord = Pick<Bericht, "tekst" | "keuzes" | "kaart">;
 
-export type Gesprek = { id: string; titel: string; berichten: Bericht[]; bijgewerkt: number };
+export type Gesprek = {
+  id: string;
+  titel: string;
+  berichten: Bericht[];
+  bijgewerkt: number;
+  /** Gearchiveerd: niet in Recente chats, wel terug te vinden bij Eerdere chats. */
+  gearchiveerd?: boolean;
+};
 
 /** Waar een gesprek over kan gaan (vaste lijst; ook de uitkomst van het herkennen van getypte tekst). */
 export type Onderwerp = "leren" | "oefenen" | "vraag" | "rekenen" | "tafels" | "europa" | "weetjes" | "werkblad" | "voortgang" | "groet" | "onbekend";

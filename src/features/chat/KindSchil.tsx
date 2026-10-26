@@ -7,6 +7,7 @@ import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { isOefenRoute, ProfielMenu } from "@/components/mees/MeesHeader";
 import { Logo } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
+import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { antwoord } from "./gesprek";
 import { maakBericht, nieuweChat, openChat, useChats, voegToeAanActief } from "./opslag";
 
@@ -148,6 +149,8 @@ function MenuInhoud({
   const router = useRouter();
   const chats = useChats();
   const { ouderIngelogd } = useProfiel();
+  const [hernoemId, setHernoemId] = useState<string | null>(null);
+  const recent = chats?.gesprekken.filter((g) => !g.gearchiveerd).slice(0, 5) ?? [];
   const opStart = pad === START;
 
   function nieuw() {
@@ -240,28 +243,36 @@ function MenuInhoud({
         )}
       </nav>
 
-      {chats && chats.gesprekken.length > 0 && (
+      {recent.length > 0 && (
         <section aria-labelledby="recent-kop" className="mt-5 border-t border-[#e1f1fe] pt-5">
           <h2 id="recent-kop" className="px-3 tekst-klein font-semibold text-[#6574ac]">
             Recente chats
           </h2>
           <ul className="mt-2 flex flex-col gap-0.5">
-            {chats.gesprekken.slice(0, 5).map((g) => {
-              const actief = opStart && chats.actief === g.id;
+            {recent.map((g) => {
+              const actief = opStart && chats?.actief === g.id;
               return (
-                <li key={g.id}>
-                  <button
-                    type="button"
-                    onClick={() => open(g.id)}
-                    aria-current={actief ? "page" : undefined}
-                    className={`flex w-full items-start gap-3 rounded-[12px] px-3 py-2.5 text-left hover:bg-[#f1f9ff] ${actief ? "bg-[#e4f4ff]" : ""}`}
-                  >
-                    <Icoon naam="chat" className="mt-0.5 size-5 shrink-0 text-[#6574ac]" />
-                    <span className="min-w-0">
-                      <span className="block truncate font-semibold">{g.titel}</span>
-                      <span className="block tekst-klein text-[#6574ac]">{wanneer(g.bijgewerkt)}</span>
-                    </span>
-                  </button>
+                <li key={g.id} className={`group flex items-center gap-1 rounded-[12px] pr-1 hover:bg-[#f1f9ff] ${actief ? "bg-[#e4f4ff]" : ""}`}>
+                  {hernoemId === g.id ? (
+                    <div className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2">
+                      <Icoon naam="chat" className="size-5 shrink-0 text-[#6574ac]" />
+                      <NaamVeld gesprek={g} onKlaar={() => setHernoemId(null)} className="w-full" />
+                    </div>
+                  ) : (
+                    <button type="button" onClick={() => open(g.id)} aria-current={actief ? "page" : undefined} className="flex min-w-0 flex-1 items-start gap-3 rounded-[12px] px-3 py-2.5 text-left">
+                      <Icoon naam="chat" className="mt-0.5 size-5 shrink-0 text-[#6574ac]" />
+                      <span className="min-w-0">
+                        <span className="block truncate font-semibold">{g.titel}</span>
+                        <span className="block tekst-klein text-[#6574ac]">{wanneer(g.bijgewerkt)}</span>
+                      </span>
+                    </button>
+                  )}
+                  {/* Met een muis verschijnen de puntjes bij aanwijzen (zoals in AI-chats); op een aanraakscherm altijd. */}
+                  <ChatMenu
+                    gesprek={g}
+                    onHernoem={() => setHernoemId(g.id)}
+                    className={`${actief ? "" : "[@media(hover:hover)]:opacity-0"} group-hover:opacity-100 focus-visible:opacity-100 aria-expanded:opacity-100`}
+                  />
                 </li>
               );
             })}

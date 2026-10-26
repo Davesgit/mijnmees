@@ -14,6 +14,7 @@ import { weetjeVoorleesTekst } from "@/features/voorlezen/teksten";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { Invoer } from "./ChatInvoer";
 import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, WeetjeKaart, WeetjesKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
+import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { markeerNieuw, NaTypen, TypTekst } from "./ChatTypen";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
 import { antwoord, reageer, startkaarten, type Antwoord, type Bericht, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
@@ -57,6 +58,7 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   const [navigeert, startNavigatie] = useTransition();
   const voorlezen = useVoorlezen();
   const [leestId, setLeestId] = useState<string | null>(null);
+  const [hernoemen, setHernoemen] = useState(false);
 
   const gesprek = chats?.actief ? (chats.gesprekken.find((g) => g.id === chats.actief) ?? null) : null;
   const laatste = gesprek?.berichten.at(-1);
@@ -384,7 +386,19 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
         )}
 
         <div className="mx-auto flex w-full max-w-[860px] flex-1 flex-col px-4 pt-6 tablet:px-8 tablet:pt-10">
-          <h1 className="truncate text-xl font-extrabold tablet:text-2xl">{gesprek.titel}</h1>
+          <div className="flex items-center gap-1">
+            {hernoemen ? (
+              <NaamVeld gesprek={gesprek} onKlaar={() => setHernoemen(false)} className="w-full text-xl tablet:text-2xl" />
+            ) : (
+              <h1 className="min-w-0">
+                <button type="button" onClick={() => setHernoemen(true)} title="Naam wijzigen" className="block max-w-full truncate rounded-[10px] px-1 text-left text-xl font-extrabold hover:bg-blauw-zacht tablet:text-2xl">
+                  {gesprek.titel}
+                  <span className="sr-only"> (tik om de naam te wijzigen)</span>
+                </button>
+              </h1>
+            )}
+            <ChatMenu gesprek={gesprek} onHernoem={() => setHernoemen(true)} />
+          </div>
           <div ref={log} role="log" aria-live="polite" aria-label="Gesprek met Mees" className="mt-4 flex flex-col gap-3 pb-6">
             {gesprek.berichten.map((b) => {
               const isLaatste = b.id === laatste?.id;

@@ -82,6 +82,21 @@ export function openChat(id: string) {
   wijzigChats((d) => ({ ...d, actief: id }));
 }
 
+/** Nieuwe naam voor een gesprek. Leeg laat de oude naam staan. */
+export function hernoemChat(id: string, titel: string) {
+  const schoon = maakTitel(titel);
+  if (!titel.trim()) return;
+  wijzigChats((d) => ({ ...d, gesprekken: d.gesprekken.map((g) => (g.id === id ? { ...g, titel: schoon } : g)) }));
+}
+
+/** Archiveren of terugzetten. Een gearchiveerd gesprek dat openstaat, wordt gesloten. */
+export function archiveerChat(id: string, gearchiveerd: boolean) {
+  wijzigChats((d) => ({
+    gesprekken: d.gesprekken.map((g) => (g.id === id ? { ...g, gearchiveerd } : g)),
+    actief: gearchiveerd && d.actief === id ? null : d.actief,
+  }));
+}
+
 export function verwijderChat(id: string) {
   wijzigChats((d) => ({ gesprekken: d.gesprekken.filter((g) => g.id !== id), actief: d.actief === id ? null : d.actief }));
 }
