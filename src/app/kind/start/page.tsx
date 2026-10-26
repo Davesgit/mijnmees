@@ -7,19 +7,21 @@ import { formatLesDatum, formatLesTijd, kanMeedoen } from "@/features/live/regel
 import { lessenVoorKind } from "@/features/live/server";
 import { haalHulpVanGezin } from "@/features/tutorhulp/server";
 import { haalActiefKind } from "@/lib/server/dal";
-import { StartScherm } from "./StartScherm";
+import { ChatScherm } from "@/features/chat/ChatScherm";
 
-export const metadata: Metadata = { title: "Start" };
+export const metadata: Metadata = { title: "Praat met Mees" };
 
 export default function Page() {
   return (
-    <>
-      <Suspense fallback={null}>
-        <LesMelding />
-        <HulpMelding />
-      </Suspense>
-      <StartScherm />
-    </>
+    // De chat is de hoofdingang. Het oude startscherm (StartScherm.tsx) wordt niet meer getoond.
+    <ChatScherm
+      meldingen={
+        <Suspense fallback={null}>
+          <LesMelding />
+          <HulpMelding />
+        </Suspense>
+      }
+    />
   );
 }
 
@@ -32,7 +34,7 @@ async function LesMelding() {
   const les = live ?? lessen.find((l) => l.uitnodiging.kindAanmelding !== "nee");
   if (!les) return null;
   return (
-    <div className="mees-content pt-4 tablet:max-w-[1100px] tablet:pt-6">
+    <div>
       <Link
         href={live ? `/kind/lessen/${les.id}/live` : `/kind/lessen/${les.id}`}
         className={`flex items-center gap-4 rounded-[16px] p-4 hover:bg-blauw-zacht tablet:p-5 ${live ? "border-2 border-fout bg-wit" : "border-2 border-actie-blauw bg-wit"}`}
@@ -62,7 +64,7 @@ async function HulpMelding() {
   const h = klaar ?? loopt;
   if (!h) return null;
   return (
-    <div className="mees-content pt-4 tablet:max-w-[1100px] tablet:pt-6">
+    <div>
       <Link
         href={klaar ? `/kind/uitleg/${klaar.uitlegId}` : `/kind/hulpvragen/${h.id}`}
         className={`flex items-center gap-4 rounded-[16px] p-4 hover:bg-blauw-zacht tablet:p-5 ${klaar ? "border-2 border-actie-blauw bg-wit" : "border border-rand-zacht bg-wit"}`}

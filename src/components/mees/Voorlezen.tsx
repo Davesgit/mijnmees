@@ -41,8 +41,9 @@ export function useVoorlezen() {
     synth.speak(uiting);
   }
 
-  async function lees(tekst: string) {
-    if (status !== "uit") return stop();
+  /** Altijd (opnieuw) beginnen: stopt wat er nu speelt. */
+  async function start(tekst: string) {
+    stop();
     const mijn = ++poging.current;
     setStatus("laden");
     // Audio-element meteen bij de klik maken: dan mag de browser hem straks afspelen.
@@ -77,7 +78,12 @@ export function useVoorlezen() {
     }
   }
 
-  return { status, bezig: status !== "uit", lees };
+  function lees(tekst: string) {
+    if (status !== "uit") return stop();
+    return start(tekst);
+  }
+
+  return { status, bezig: status !== "uit", lees, start, stop };
 }
 
 export function VoorleesKnop({ tekst, className = "", compact = false, rond, label: eigenLabel }: { tekst: string; className?: string; compact?: boolean; rond?: boolean; label?: string }) {

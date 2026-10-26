@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import { Laden } from "@/components/mees/Bouwstenen";
 import { LeesinstellingenToepasser } from "@/components/mees/Leesopties";
-import { KindOnderNavigatie, MeesHeader } from "@/components/mees/MeesHeader";
+import { KindSchil } from "@/features/chat/KindSchil";
 import { ProfielProvider } from "@/components/mees/Profiel";
 import { haalActiefKind, haalOuder } from "@/lib/server/dal";
 
@@ -10,12 +10,9 @@ export default function KindLayout({ children }: LayoutProps<"/kind">) {
   return (
     <Suspense
       fallback={
-        <>
-          <MeesHeader />
-          <main id="inhoud" className="flex flex-1 flex-col">
-            <Laden />
-          </main>
-        </>
+        <main id="inhoud" className="flex flex-1 flex-col">
+          <Laden />
+        </main>
       }
     >
       <MetProfiel>{children}</MetProfiel>
@@ -31,11 +28,7 @@ async function MetProfiel({ children }: { children: ReactNode }) {
   return (
     <ProfielProvider kind={kind} ouderIngelogd={Boolean(ouder)}>
       <LeesinstellingenToepasser />
-      <MeesHeader />
-      <main id="inhoud" className="flex flex-1 flex-col">
-        {children}
-      </main>
-      <KindOnderNavigatie />
+      <KindSchil>{children}</KindSchil>
     </ProfielProvider>
   );
 }

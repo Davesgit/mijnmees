@@ -53,6 +53,10 @@
   html:not([data-app="true"]) .alleen-app {
     display: none !important;
   }
+  /* Chat met Mees: lichte wolkenlucht (ontwerp versie 6). */
+  .chat-achtergrond {
+    background: #f5fbff url("/assets/chat/wolken.svg") center top / cover no-repeat;
+  }
   html[data-grote-tekst="true"] {
     font-size: 112.5%;
   }

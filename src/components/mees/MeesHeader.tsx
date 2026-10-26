@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect, useId, useRef, useState } from "react";
+import { wisGastChats } from "@/features/chat/opslag";
 import { wisGastgegevens } from "@/lib/opslag/lokaal";
 import { Icoon, type AlleIcoonNamen } from "./Icoon";
 import { Logo } from "./Mees";
@@ -114,7 +115,8 @@ function NavLijst({ pad }: { pad: string }) {
   );
 }
 
-function ProfielMenu() {
+/** Profielknop met menu. In het zijmenu (omhoog) klapt het naar boven open en toont de knop ook de groep. */
+export function ProfielMenu({ omhoog = false }: { omhoog?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [wisVragen, setWisVragen] = useState(false);
@@ -158,7 +160,7 @@ function ProfielMenu() {
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((o) => !o)}
-        className="flex min-h-12 items-center gap-2 rounded-full py-1 pl-1 pr-2 hover:bg-blauw-zacht"
+        className={omhoog ? "flex min-h-14 w-full items-center gap-3 rounded-[16px] p-2 text-left hover:bg-blauw-zacht" : "flex min-h-12 items-center gap-2 rounded-full py-1 pl-1 pr-2 hover:bg-blauw-zacht"}
       >
         {kind ? (
           <Avatar id={kind.avatar} />
@@ -168,14 +170,21 @@ function ProfielMenu() {
             <img src="/assets/merk/mees-vogel.svg" alt="" className="h-6 w-auto" />
           </span>
         )}
-        <span className="max-w-32 truncate font-bold">{kind?.voornaam ?? "Gast"}</span>
-        <Icoon naam="chevron-omlaag" className={`size-5 transition-transform ${open ? "rotate-180" : ""}`} />
+        {omhoog ? (
+          <span className="min-w-0 flex-1 leading-tight">
+            <span className="block truncate font-bold">{kind?.voornaam ?? "Gast"}</span>
+            <span className="block tekst-klein text-tekst-zacht">{kind ? `Groep ${kind.groep}` : "Je oefent als gast"}</span>
+          </span>
+        ) : (
+          <span className="max-w-32 truncate font-bold">{kind?.voornaam ?? "Gast"}</span>
+        )}
+        <Icoon naam="chevron-omlaag" className={`size-5 shrink-0 transition-transform ${open === !omhoog ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
         <div
           id={menuId}
-          className="mees-verschijn absolute right-0 top-full z-40 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-[20px] border border-rand-zacht bg-wit p-5 shadow-zwevend"
+          className={`mees-verschijn absolute z-40 w-[min(20rem,calc(100vw-2rem))] rounded-[20px] ${omhoog ? "bottom-full left-0 mb-2" : "right-0 top-full mt-2"} border border-rand-zacht bg-wit p-5 shadow-zwevend`}
         >
           {kind ? (
             <>
@@ -226,6 +235,7 @@ function ProfielMenu() {
           <PrimaireKnop
             onClick={() => {
               wisGastgegevens();
+              wisGastChats();
               setWisVragen(false);
               router.push("/kind/start");
             }}

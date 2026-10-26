@@ -23,6 +23,15 @@ const extra = {
   download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
   delen: '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M8 10H6v10h12V10h-2"/>',
   prullenbak: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  // Chat (ontwerp versie 6)
+  pen: '<path d="m4 16 12-12 4 4L8 20l-5 1 1-5Zm10-10 4 4M14 21h7"/>',
+  klok: '<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 3"/>',
+  chat: '<path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.4-.2-3.4-.7L4 20l1.3-3.7A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5Z"/><path d="M9 11.5h6"/>',
+  boek: '<path d="M12 6C9.5 4 6 3.5 3 4.5v14c3-1 6.5-.5 9 1.5 2.5-2 6-2.5 9-1.5v-14C18 3.5 14.5 4 12 6Zm0 0v14"/>',
+  herhaal: '<path d="M4 10a8 8 0 0 1 14-4l2 2M20 4v4h-4M20 14a8 8 0 0 1-14 4l-2-2M4 20v-4h4"/>',
+  microfoon: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/>',
+  verstuur: '<path d="m3 11 18-8-8 18-2-8-8-2Zm8 2 10-10"/>',
+  "paneel-in": '<path d="m14 6-6 6 6 6"/>',
 } as const;
 
 export type AlleIcoonNamen = IcoonNaam | keyof typeof extra;
