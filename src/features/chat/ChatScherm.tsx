@@ -373,7 +373,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     if (vraag.soort === "europa" && vraag.type === "map-click" && kaartKeuze?.slotId === slot.id)
       opties.push({ label: `Controleer: ${namen[kaartKeuze.id] ?? "deze plek"}`, primair: true, doe: { soort: "antwoord", waarde: kaartKeuze.id } });
     for (const o of antwoordOpties(vraag, slot)) opties.push({ label: o.label, doe: { soort: "antwoord", waarde: o.waarde } });
-    opties.push({ label: slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien", icoon: "hint", doe: { soort: "hint" } });
+    // Om hulp vragen gaat door "hint" te typen (een knop hier leidt af); de tip staat in het invoerveld.
   } else if (sessie && fase) {
     const laatsteVraag = sessie.index + 1 >= sessie.slots.length;
     opties.push({ label: laatsteVraag ? "Rond af" : fase === "goed" ? "Volgende vraag" : "Verder", primair: true, doe: { soort: "verder" } });
@@ -395,9 +395,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   const plaatshouder = !gesprek
     ? "Praat met Mees of typ je vraag…"
     : fase === "antwoorden"
-      ? vraag?.soort === "tafel"
-        ? "Typ je antwoord…"
-        : "Typ je antwoord of een vraag…"
+      ? "Typ je antwoord, of typ hint voor hulp…"
       : "Typ een bericht aan Mees…";
 
   const invoerVeld = (
@@ -407,7 +405,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
       onStuur={() => stuur(invoer)}
       onLuisteren={stopVoorlezen}
       plaatshouder={plaatshouder}
-      kortePlaatshouder={!gesprek ? "Typ je vraag…" : fase === "antwoorden" ? "Typ je antwoord…" : "Typ een bericht…"}
+      kortePlaatshouder={!gesprek ? "Typ je vraag…" : fase === "antwoorden" ? "Antwoord of hint…" : "Typ een bericht…"}
       opties={opties}
       onOptie={(o) => voerUit(o.doe)}
       optiesWachten={meesBezig || navigeert}
