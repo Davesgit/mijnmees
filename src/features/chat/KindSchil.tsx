@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Suspense, useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { isOefenRoute, ProfielMenu } from "@/components/mees/MeesHeader";
 import { Logo } from "@/components/mees/Mees";
@@ -52,12 +52,29 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
   const oefenen = pad !== "" && isOefenRoute(pad);
   const ingeklapt = useSyncExternalStore(abonneerIngeklapt, leesIngeklapt, () => false);
   const [mobielOpen, setMobielOpen] = useState(false);
+  // Muis op het smalle menu: het volledige menu klapt (over de inhoud heen) uit, en weer in als de muis weggaat.
+  const [zwevend, setZwevend] = useState(false);
+  const zweefTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const smalMenu = useRef<HTMLDivElement>(null);
+  function muisErop(e: PointerEvent) {
+    if (e.pointerType !== "mouse" || !smalMenu.current?.offsetWidth) return;
+    clearTimeout(zweefTimer.current);
+    zweefTimer.current = setTimeout(() => setZwevend(true), 120);
+  }
+  function muisEraf(e: PointerEvent) {
+    if (e.pointerType !== "mouse") return;
+    clearTimeout(zweefTimer.current);
+    // Een venster vanuit het menu (bijv. chat verwijderen) houdt het menu open.
+    if (document.querySelector("dialog[open]")) return;
+    zweefTimer.current = setTimeout(() => setZwevend(false), 220);
+  }
 
   // Na navigeren het mobiele menu sluiten.
   const [vorigPad, setVorigPad] = useState(pad);
   if (pad !== vorigPad) {
     setVorigPad(pad);
     setMobielOpen(false);
+    setZwevend(false);
   }
 
   useEffect(() => {
@@ -113,14 +130,29 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
       {/* Tablet en groter: vast zijmenu; op tablet compact, op desktop naar keuze uit- of ingeklapt. */}
       <aside
         aria-label="Navigatie"
-        className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-[#e1f1fe] bg-gradient-to-br from-[#fbfdff] to-[#f5fbff] tablet:flex ${ingeklapt ? "w-[84px]" : "w-[84px] desktop:w-[265px]"}`}
+        onPointerEnter={muisErop}
+        onPointerLeave={muisEraf}
+        className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-[#e1f1fe] bg-gradient-to-br from-[#fbfdff] to-[#f5fbff] tablet:flex ${ingeklapt ? "w-[84px]" : "w-[84px] desktop:w-[265px]"}`}
       >
         <div className={`h-full flex-col ${ingeklapt ? "hidden" : "hidden desktop:flex"}`}>
           <MenuInhoud pad={pad} compact={false} onInklappen={() => zetIngeklapt(true)} />
         </div>
-        <div className={`h-full flex-col ${ingeklapt ? "flex" : "flex desktop:hidden"}`}>
+        <div ref={smalMenu} className={`h-full flex-col ${ingeklapt ? "flex" : "flex desktop:hidden"}`}>
           <MenuInhoud pad={pad} compact onUitklappen={() => zetIngeklapt(false)} onMenu={() => setMobielOpen(true)} />
         </div>
+        {zwevend && (
+          <div className="mees-verschijn absolute inset-y-0 left-0 flex w-[265px] flex-col border-r border-[#e1f1fe] bg-[#fbfdff] shadow-zwevend">
+            <MenuInhoud
+              pad={pad}
+              compact={false}
+              onKlaar={() => setZwevend(false)}
+              onVastzetten={() => {
+                zetIngeklapt(false);
+                setZwevend(false);
+              }}
+            />
+          </div>
+        )}
       </aside>
 
       <main id="inhoud" className="flex min-w-0 flex-1 flex-col">
@@ -137,16 +169,27 @@ function MenuInhoud({
   onInklappen,
   onUitklappen,
   onMenu,
+  onKlaar,
+  onVastzetten,
 }: {
   pad: string;
   compact: boolean;
+  /** Sluitknop tonen (mobiel menu); wordt ook na een keuze aangeroepen. */
   onSluit?: () => void;
+  /** Na een keuze aanroepen, zonder sluitknop (uitgeklapt menu bij aanwijzen met de muis). */
+  onKlaar?: () => void;
+  /** Computer: het uitgeklapte menu blijvend openzetten. */
+  onVastzetten?: () => void;
   onInklappen?: () => void;
   onUitklappen?: () => void;
   /** Tablet: het volledige menu (met profiel en Voor ouders) als laag openen. */
   onMenu?: () => void;
 }) {
   const router = useRouter();
+  const naKeuze = () => {
+    onSluit?.();
+    onKlaar?.();
+  };
   const chats = useChats();
   const { ouderIngelogd } = useProfiel();
   const [hernoemId, setHernoemId] = useState<string | null>(null);
@@ -155,19 +198,19 @@ function MenuInhoud({
 
   function nieuw() {
     nieuweChat();
-    onSluit?.();
+    naKeuze();
     if (!opStart) router.push(START);
   }
   /** Voortgang verschijnt in het gesprek: in de open chat, of in een nieuwe chat. */
   function voortgang() {
     const r = antwoord("voortgang", { open: null, voorstel: "", voorstelId: "", aantal: 0 });
     voegToeAanActief([maakBericht("kind", "Hoe gaat het met mijn oefenen?"), maakBericht("mees", r.tekst, { kaart: r.kaart })], { titel: "Mijn voortgang" });
-    onSluit?.();
+    naKeuze();
     if (!opStart) router.push(START);
   }
   function open(id: string) {
     openChat(id);
-    onSluit?.();
+    naKeuze();
     if (!opStart) router.push(START);
   }
 
@@ -212,12 +255,17 @@ function MenuInhoud({
   return (
     <div className="flex h-full flex-col overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
       <div className="flex items-center justify-between gap-2">
-        <Link href={START} onClick={onSluit} className="rounded-[12px] p-1" aria-label="Mees, naar start">
+        <Link href={START} onClick={naKeuze} className="rounded-[12px] p-1" aria-label="Mees, naar start">
           <Logo className="h-12!" />
         </Link>
         {onSluit && (
           <button type="button" onClick={onSluit} aria-label="Menu sluiten" className="grid size-12 place-items-center rounded-full hover:bg-blauw-zacht">
             <Icoon naam="sluiten" />
+          </button>
+        )}
+        {onVastzetten && (
+          <button type="button" onClick={onVastzetten} aria-label="Menu vastzetten" title="Menu vastzetten" className="hidden size-10 place-items-center rounded-full text-tekst-zacht hover:bg-blauw-zacht desktop:grid">
+            <Icoon naam="paneel-in" className="size-6 rotate-180" />
           </button>
         )}
         {onInklappen && (
@@ -230,7 +278,7 @@ function MenuInhoud({
       <nav aria-label="Hoofdmenu" className="mt-5 flex flex-col gap-1.5">
         {items.map((i) =>
           i.href ? (
-            <Link key={i.label} href={i.href} onClick={onSluit} aria-current={i.actief ? "page" : undefined} className={itemKlasse(i.actief)}>
+            <Link key={i.label} href={i.href} onClick={naKeuze} aria-current={i.actief ? "page" : undefined} className={itemKlasse(i.actief)}>
               <Icoon naam={i.icoon} className={`size-6 ${i.actief ? "" : "text-[#6574ac]"}`} />
               {i.label}
             </Link>
@@ -283,7 +331,7 @@ function MenuInhoud({
       <div className="mt-auto flex flex-col gap-2 pt-6">
         <Link
           href={ouderIngelogd ? "/ouder" : "/ouder/inloggen"}
-          onClick={onSluit}
+          onClick={naKeuze}
           className="flex min-h-12 items-center gap-3 rounded-[12px] px-3 tekst-klein font-semibold text-tekst-zacht hover:bg-blauw-zacht hover:text-actie-blauw"
         >
           <Icoon naam="slot" className="size-5" />
