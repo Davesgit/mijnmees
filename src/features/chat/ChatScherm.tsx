@@ -2,22 +2,23 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
-import { vindOnderdeel, vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
+import { vindOnderdeel } from "@/content/onderwerpen";
+import { vindWeetje } from "@/content/weetjes";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useVoorlezen } from "@/components/mees/Voorlezen";
 import { gastLimietBereikt, maakSessie, maakTafelSessie, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
 import type { OpslagData } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
+import { weetjeVoorleesTekst } from "@/features/voorlezen/teksten";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { Invoer } from "./ChatInvoer";
+import { TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, WeetjeKaart, WeetjesKaart, type TafelInstelling } from "./ChatKaarten";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
-import { antwoord, maakTitel, reageer, startkaarten, type Bericht, type Context, type Gesprek, type Keuze, type Onderwerp } from "./gesprek";
+import { antwoord, reageer, startkaarten, type Antwoord, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
 import { OefenBlok } from "./OefenBlok";
-import { AANTAL_KEUZES, kanInChat, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
-import { bewaar, useChats } from "./opslag";
-
-const STANDAARD_DOEL = "breuken-vergelijken";
+import { kanInChat, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
+import { maakBericht as bericht, useChats, voegToeAanActief } from "./opslag";
 const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNamen> = { leren: "boek", oefenen: "herhaal", vraag: "chat" };
 
 /** Keuzes onder "Veel plezier!": handig als het kind na het oefenen terugkomt in het gesprek. */
@@ -26,33 +27,6 @@ const naTerugkomst: Keuze[] = [
   { label: "Iets leren", soort: "vervolg", onderwerp: "leren" },
   { label: "Mijn voortgang", soort: "ga", href: "/kind/voortgang" },
 ];
-
-const nieuwId = () => crypto.randomUUID();
-const bericht = (van: Bericht["van"], tekst: string, extra: Partial<Pick<Bericht, "keuzes" | "voorstel" | "oefening">> = {}): Bericht => ({
-  id: nieuwId(),
-  van,
-  tekst,
-  ...extra,
-  t: Date.now(),
-});
-
-/** Voegt berichten toe aan het actieve gesprek (of begint een nieuw gesprek). `sluit` maakt eerdere oefenblokken van die sessie af. */
-function voegToeAan(gesprek: Gesprek | null, nieuw: Bericht[], opties: { titel?: string; sluitSessie?: { id: string; tot: number } } = {}) {
-  const basis: Gesprek = gesprek ?? { id: nieuwId(), titel: maakTitel(opties.titel ?? nieuw[0]?.tekst ?? ""), berichten: [], bijgewerkt: Date.now() };
-  const s = opties.sluitSessie;
-  const berichten = s ? basis.berichten.map((b) => (b.oefening?.sessieId === s.id && b.oefening.tot === undefined ? { ...b, oefening: { ...b.oefening, tot: s.tot } } : b)) : basis.berichten;
-  bewaar({ ...basis, berichten: [...berichten, ...nieuw], bijgewerkt: Date.now() });
-}
-
-/** Onderwerpen voor het oefenvoorstel in het gesprek. */
-function voorstelOpties(data: OpslagData) {
-  const doel = vindOnderdeelBijLeerdoel(data.reviews[0]?.leerdoelId ?? STANDAARD_DOEL) ?? vindOnderdeelBijLeerdoel(STANDAARD_DOEL)!;
-  return [
-    { id: `doel:${doel.onderdeel.id}`, naam: doel.onderdeel.naam, uitleg: doel.onderdeel.omschrijving },
-    { id: "tafels-1-5", naam: "Tafels van 1 tot en met 5", uitleg: "Keersommen door elkaar" },
-    { id: "tafels-6-10", naam: "Tafels van 6 tot en met 10", uitleg: "Keersommen door elkaar" },
-  ];
-}
 
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
 export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
@@ -84,17 +58,19 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   function context(): Context {
     const data = haalOpslag();
     const open = openSessie(data);
-    return { open: open ? sessieNaam(open) : null, voorstel: voorstelOpties(data)[0]!.naam, aantal: STANDAARD_AANTAL };
+    const v = voorstelOpties(data)[0]!;
+    return { open: open ? sessieNaam(open) : null, voorstel: v.naam, voorstelId: v.id, aantal: STANDAARD_AANTAL };
   }
 
-  const voegToe = (nieuw: Bericht[], opties?: Parameters<typeof voegToeAan>[2]) => voegToeAan(gesprek, nieuw, opties);
+  const voegToe = voegToeAanActief;
+  const meesZegt = (r: Antwoord) => bericht("mees", r.tekst, { keuzes: r.keuzes, kaart: r.kaart });
 
   function stuur(tekst: string, onderwerp?: Onderwerp, titel?: string) {
     const schoon = tekst.trim().slice(0, 500);
     if (!schoon) return;
     stopVoorlezen();
     const reactie = onderwerp ? antwoord(onderwerp, context()) : reageer(schoon, context());
-    voegToe([bericht("kind", schoon), bericht("mees", reactie.tekst, { keuzes: reactie.keuzes })], { titel });
+    voegToe([bericht("kind", schoon), meesZegt(reactie)], { titel });
     setInvoer("");
   }
 
@@ -102,11 +78,15 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     stopVoorlezen();
     if (k.soort === "vervolg") {
       const reactie = antwoord(k.onderwerp, context());
-      voegToe([bericht("kind", k.label), bericht("mees", reactie.tekst, { keuzes: reactie.keuzes })]);
+      voegToe([bericht("kind", k.label), meesZegt(reactie)]);
+      return;
+    }
+    if (k.soort === "kaart") {
+      voegToe([bericht("kind", k.label), bericht("mees", k.tekst, { kaart: k.kaart })]);
       return;
     }
     if (k.soort === "voorstel") {
-      voegToe([bericht("kind", k.label), bericht("mees", "Zullen we een klein rondje oefenen? Kies wat je wilt doen en hoeveel vragen.", { voorstel: { standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
+      voegToe([bericht("kind", k.label), bericht("mees", "Zullen we een klein rondje oefenen? Kies wat je wilt doen en hoeveel vragen.", { kaart: { soort: "voorstel", standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
       return;
     }
     if (k.soort === "hervat") {
@@ -135,8 +115,8 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     startNavigatie(() => router.push(href));
   }
 
-  /** Start een rondje in het gesprek. */
-  function startRondje(keuze: string, aantal: number, label: string) {
+  /** Start een rondje in het gesprek: rekenen (voorstel) of tafels. */
+  function startRondje(maak: (d: OpslagData) => { data: OpslagData; sessie: { id: string } } | null, label: string) {
     stopVoorlezen();
     const data = haalOpslag();
     if (!kind && gastLimietBereikt(data)) {
@@ -151,15 +131,8 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     let sessieId = "";
     const gelukt = wijzigOpslag((d) => {
       try {
-        const tafels = keuze === "tafels-1-5" ? [1, 2, 3, 4, 5] : keuze === "tafels-6-10" ? [6, 7, 8, 9, 10] : null;
-        if (tafels) {
-          const r = maakTafelSessie(d, { tafels, bewerkingen: ["x"], aantal, metTijd: false, bron: "voorstel" });
-          sessieId = r.sessie.id;
-          return r.data;
-        }
-        const o = vindOnderdeel(keuze.replace(/^doel:/, ""));
-        if (!o?.onderdeel.leerdoelId) return d;
-        const r = maakSessie(d, { leerdoelId: o.onderdeel.leerdoelId, onderdeelId: o.onderdeel.id, onderwerpId: o.onderwerp.id, niveau: "past-bij-mij", aantal, bron: "voorstel" });
+        const r = maak(d);
+        if (!r) return d;
         sessieId = r.sessie.id;
         return r.data;
       } catch {
@@ -177,6 +150,18 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     ]);
   }
 
+  function startVoorstel(keuze: string, aantal: number, label: string) {
+    startRondje((d) => {
+      const o = vindOnderdeel(keuze.replace(/^doel:/, ""));
+      if (!o?.onderdeel.leerdoelId) return null;
+      return maakSessie(d, { leerdoelId: o.onderdeel.leerdoelId, onderdeelId: o.onderdeel.id, onderwerpId: o.onderwerp.id, niveau: "past-bij-mij", aantal, bron: "voorstel" });
+    }, label);
+  }
+
+  function startTafels(i: TafelInstelling, label: string) {
+    startRondje((d) => maakTafelSessie(d, { tafels: i.tafels, bewerkingen: i.bewerkingen, aantal: i.aantal, metTijd: i.metTijd, secondenPerVraag: i.seconden, bron: "zelf" }), label);
+  }
+
   function pauze() {
     if (!actieveOefening || !laatste?.oefening) return;
     stopVoorlezen();
@@ -192,12 +177,14 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   }
 
   function nogEenRondje() {
-    voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Kies wat je wilt doen en hoeveel vragen.", { voorstel: { standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
+    const sessie = actieveOefening ?? (laatste?.oefening ? haalOpslag().sessies[laatste.oefening.sessieId] : undefined);
+    if (sessie?.soort === "tafels")
+      voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Welke tafels wil je nu doen?", { kaart: { soort: "tafels", tafels: sessie.instellingen?.tafels ?? [] } })]);
+    else voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Kies wat je wilt doen en hoeveel vragen.", { kaart: { soort: "voorstel", standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
   }
 
   function ietsAnders() {
-    const r = antwoord("leren", context());
-    voegToe([bericht("kind", "Iets anders doen."), bericht("mees", r.tekst, { keuzes: r.keuzes })]);
+    voegToe([bericht("kind", "Iets anders doen."), meesZegt(antwoord("leren", context()))]);
   }
 
   function lees(id: string, tekst: string) {
@@ -316,7 +303,9 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
                 <div key={b.id} className="w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17]">
                   <MeesAfzender />
                   <p className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">{b.tekst}</p>
-                  {b.voorstel && <VoorstelKaart standaard={b.voorstel.standaard} actief={isLaatste} onStart={startRondje} />}
+                  {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
+                    <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} />
+                  )}
                   {b.id === laatsteMees && isLaatste && b.keuzes && b.keuzes.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {b.keuzes.map((k) => (
@@ -335,7 +324,7 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
                     </div>
                   )}
                   <div className="mt-3">
-                    <VoorleesLink id={b.id} tekst={b.tekst} />
+                    <VoorleesLink id={b.id} tekst={b.kaart?.soort === "weetje" && vindWeetje(b.kaart.id) ? weetjeVoorleesTekst(vindWeetje(b.kaart.id)!) : b.tekst} />
                   </div>
                 </div>
               );
@@ -355,46 +344,29 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   );
 }
 
-/** Oefenvoorstel: onderwerp en aantal vragen kiezen. Alleen het nieuwste voorstel is te bedienen. */
-function VoorstelKaart({ standaard, actief, onStart }: { standaard: string; actief: boolean; onStart: (keuze: string, aantal: number, label: string) => void }) {
-  const opslag = useOpslag();
-  const opties = opslag ? voorstelOpties(opslag) : [];
-  const [keuze, setKeuze] = useState(standaard);
-  const [aantal, setAantal] = useState<number>(STANDAARD_AANTAL);
-  const knop = (gekozen: boolean) =>
-    `rounded-[14px] border p-3 text-left ${gekozen ? "border-2 border-actie-blauw bg-blauw-zacht" : "border-[#d8e9f8] bg-[#f6fbff]"} ${actief ? "hover:border-actie-blauw" : "cursor-default opacity-70"}`;
-
-  return (
-    <fieldset disabled={!actief} className="mt-4">
-      <legend className="font-bold">Wat wil je oefenen?</legend>
-      <div className="mt-2 grid gap-2 tablet:grid-cols-3">
-        {opties.map((o) => (
-          <button key={o.id} type="button" aria-pressed={keuze === o.id} onClick={() => setKeuze(o.id)} className={knop(keuze === o.id)}>
-            <span className="block font-bold">{o.naam}</span>
-            <span className="mt-0.5 block tekst-klein text-tekst-zacht">{o.uitleg}</span>
-          </button>
-        ))}
-      </div>
-      <p className="mt-4 font-bold">Hoeveel vragen wil je doen?</p>
-      <div className="mt-2 grid grid-cols-3 gap-2">
-        {AANTAL_KEUZES.map((n) => (
-          <button key={n} type="button" aria-pressed={aantal === n} onClick={() => setAantal(n)} className={`${knop(aantal === n)} text-center`}>
-            <span className="block text-2xl font-extrabold">{n}</span>
-            <span className="block tekst-klein text-tekst-zacht">{n === 4 ? "Even proberen" : n === 6 ? "Een kort rondje" : "Wat langer oefenen"}</span>
-          </button>
-        ))}
-      </div>
-      <p className="mt-3 tekst-klein text-tekst-zacht">Geen haast. Je kunt altijd een hint vragen of even pauze nemen.</p>
-      {actief && (
-        <button
-          type="button"
-          onClick={() => onStart(keuze, aantal, `Start mijn ${aantal} vragen`)}
-          className="mt-4 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-[14px] bg-actie-blauw px-6 text-lg font-bold text-wit hover:bg-actie-hover"
-        >
-          Start mijn {aantal} vragen
-          <Icoon naam="pijl-rechts" className="size-6" />
-        </button>
-      )}
-    </fieldset>
-  );
+function KaartWeergave({
+  kaart,
+  actief,
+  onKies,
+  onStartVoorstel,
+  onStartTafels,
+}: {
+  kaart: Kaart;
+  actief: boolean;
+  onKies: (k: Keuze) => void;
+  onStartVoorstel: (keuze: string, aantal: number, label: string) => void;
+  onStartTafels: (i: TafelInstelling, label: string) => void;
+}) {
+  switch (kaart.soort) {
+    case "voorstel":
+      return <VoorstelKaart standaard={kaart.standaard} actief={actief} onStart={onStartVoorstel} />;
+    case "tafels":
+      return <TafelKaart tafels={kaart.tafels} bewerking={kaart.bewerking} actief={actief} onStart={onStartTafels} />;
+    case "voortgang":
+      return <VoortgangKaart actief={actief} onKies={onKies} />;
+    case "weetjes":
+      return <WeetjesKaart actief={actief} onKies={onKies} />;
+    case "weetje":
+      return <WeetjeKaart id={kaart.id} />;
+  }
 }

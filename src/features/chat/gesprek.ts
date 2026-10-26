@@ -1,14 +1,25 @@
-// Gesprek met Mees (chat als hoofdingang voor kinderen). Nog zonder AI: Mees antwoordt met vaste teksten en keuzes
-// die naar de bestaande oefeningen leiden. Pure functies, zodat dit later achter een AI-route kan blijven werken:
-// een AI mag teksten schrijven, maar keuzes/acties blijven uit deze vaste lijst komen.
+// Gesprek met Mees: de chat is de enige plek waar een kind werkt. Nog zonder AI: Mees antwoordt met vaste teksten,
+// keuzes en kaarten (tafels kiezen, oefenen, voortgang, weetjes) die in het gesprek zelf werken. Pure functies, zodat
+// dit later achter een AI-route kan blijven werken: een AI mag teksten schrijven, maar acties komen uit deze vaste lijst.
+
+/** Een kaart in een bericht van Mees: iets om te kiezen of te bekijken, binnen het gesprek. */
+export type Kaart =
+  | { soort: "voorstel"; standaard: string }
+  | { soort: "tafels"; tafels: number[]; bewerking?: "x" | ":" | "beide" }
+  | { soort: "voortgang" }
+  | { soort: "weetjes" }
+  | { soort: "weetje"; id: string };
 
 export type Keuze =
+  /** Alleen nog voor Europa (komt later in de chat) en het bewaren van gastvoortgang. */
   | { label: string; soort: "ga"; href: string }
   | { label: string; soort: "voorstel" }
   | { label: string; soort: "hervat" }
-  | { label: string; soort: "vervolg"; onderwerp: Onderwerp };
+  | { label: string; soort: "vervolg"; onderwerp: Onderwerp }
+  /** Mees antwoordt met deze tekst en kaart. */
+  | { label: string; soort: "kaart"; tekst: string; kaart: Kaart };
 
-/** Oefenvoorstel in het gesprek: onderwerp en aantal kiezen, dan starten. `standaard` is de voorgestelde keuze. */
+/** Oud formaat van het oefenvoorstel (bewaarde gesprekken); nieuw is `kaart`. */
 export type Voorstel = { standaard: string };
 
 /** Oefenen in het gesprek: toont de vraagplaatsen [vanaf, tot) van een sessie. Zonder tot is dit het actieve blok. */
@@ -19,10 +30,13 @@ export type Bericht = {
   van: "kind" | "mees";
   tekst: string;
   keuzes?: Keuze[];
+  kaart?: Kaart;
   voorstel?: Voorstel;
   oefening?: OefenVerwijzing;
   t: number;
 };
+
+export type Antwoord = Pick<Bericht, "tekst" | "keuzes" | "kaart">;
 
 export type Gesprek = { id: string; titel: string; berichten: Bericht[]; bijgewerkt: number };
 
@@ -33,8 +47,9 @@ export type Onderwerp = "leren" | "oefenen" | "vraag" | "rekenen" | "tafels" | "
 export type Context = {
   /** Naam van een oefening die nog openstaat. */
   open: string | null;
-  /** Naam van het voorgestelde onderdeel. */
+  /** Naam en keuze-id van het voorgestelde onderdeel. */
   voorstel: string;
+  voorstelId: string;
   aantal: number;
 };
 
@@ -47,66 +62,74 @@ export const startkaarten = [
   { onderwerp: "vraag", titel: "Stel een vraag", tekst: "Krijg duidelijke uitleg", kindTekst: "Ik wil een vraag stellen." },
 ] as const satisfies readonly { onderwerp: Onderwerp; titel: string; tekst: string; kindTekst: string }[];
 
-const ga = {
-  rekenen: { label: "Rekenen", soort: "ga", href: "/kind/rekenen" },
-  tafels: { label: "Tafeltrainer", soort: "ga", href: "/kind/tafeltrainer" },
+const keuze = {
+  rekenen: { label: "Rekenen", soort: "vervolg", onderwerp: "rekenen" },
+  tafels: { label: "Tafels", soort: "vervolg", onderwerp: "tafels" },
+  // Europa met de kaart komt in een volgende stap in de chat; tot die tijd nog op een eigen scherm.
   europa: { label: "Topo Europa", soort: "ga", href: "/kind/aardrijkskunde/europa" },
-  weetjes: { label: "Weetjesboek", soort: "ga", href: "/kind/weetjesboek" },
-  niveau: { label: "Wat past bij mij?", soort: "ga", href: "/kind/niveaubepaling" },
-  werkblad: { label: "Werkblad maken", soort: "ga", href: "/werkbladen/samenstellen" },
-  voortgang: { label: "Mijn voortgang", soort: "ga", href: "/kind/voortgang" },
+  weetjes: { label: "Mijn weetjes", soort: "vervolg", onderwerp: "weetjes" },
+  voortgang: { label: "Mijn voortgang", soort: "vervolg", onderwerp: "voortgang" },
 } as const satisfies Record<string, Keuze>;
 
-const onderwerpKeuzes: Keuze[] = [ga.rekenen, ga.tafels, ga.europa, ga.weetjes];
+const onderwerpKeuzes: Keuze[] = [keuze.rekenen, keuze.tafels, keuze.europa, keuze.weetjes];
 
 /** Herkent waar een getypte of ingesproken tekst over gaat. Eenvoudige woordherkenning; geen AI. */
 export function herken(tekst: string): Onderwerp {
-  const t = ` ${tekst.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")} `;
+  const t = ` ${tekst.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")} `;
   const heeft = (...woorden: string[]) => woorden.some((w) => t.includes(w));
   if (heeft("tafel", " keer ", "maal", "vermenigvuldig", " x ")) return "tafels";
   if (heeft("europa", "land", "hoofdstad", "topo", "kaart", "aardrijkskunde", "rivier", "gebergte")) return "europa";
   if (heeft("breuk", "procent", "kommagetal", "decimaal", "rekenen", " som ", "sommen", "plus", "min ", "delen", "gedeeld", "meten", "geld", "tijd", "klok")) return "rekenen";
   if (heeft("weetje", "weetjes", "wist je")) return "weetjes";
   if (heeft("werkblad", "printen", "papier")) return "werkblad";
-  if (heeft("voortgang", "hoe goed", "wat heb ik")) return "voortgang";
-  if (heeft("oefen")) return "oefenen";
+  if (heeft("voortgang", "hoe goed", "wat heb ik", "hoe gaat het met mijn")) return "voortgang";
+  if (heeft("oefen", "trainen", "train ")) return "oefenen";
   if (heeft("leren", "leer ", "uitleg", "snap", "begrijp")) return "leren";
   if (/^\s*(hoi|hallo|hey|hee|goedemorgen|goedemiddag|dag|hai)\b/.test(t)) return "groet";
   return "onbekend";
 }
 
+/** Tafels die in de tekst genoemd worden ("de tafel van 7 en 8" → [7, 8]). */
+export function tafelsUit(tekst: string): number[] {
+  const getallen = [...tekst.matchAll(/\b(1[0-2]|[1-9])\b/g)].map((m) => Number(m[1]));
+  return [...new Set(getallen)].sort((a, b) => a - b);
+}
+
 /** Het antwoord van Mees op een onderwerp. */
-export function antwoord(onderwerp: Onderwerp, ctx: Context): Pick<Bericht, "tekst" | "keuzes"> {
+export function antwoord(onderwerp: Onderwerp, ctx: Context, tafels: number[] = []): Antwoord {
   switch (onderwerp) {
     case "leren":
       return {
         tekst: "Leuk! Wat wil je leren? Kies hieronder een onderwerp, of typ wat je wilt weten. Bij elke oefening krijg je hints en uitleg als je die nodig hebt.",
-        keuzes: [...onderwerpKeuzes, ga.niveau],
+        keuzes: onderwerpKeuzes,
       };
     case "oefenen":
       if (ctx.open)
         return {
           tekst: `Je was bezig met ${ctx.open}. Wil je daar verder mee? Je mag ook iets anders kiezen.`,
-          keuzes: [{ label: "Verder waar ik was", soort: "hervat" }, ...onderwerpKeuzes, ga.werkblad],
+          keuzes: [{ label: "Verder waar ik was", soort: "hervat" }, ...onderwerpKeuzes],
         };
       return {
-        tekst: `Mijn voorstel: ${ctx.voorstel}. Zullen we hier samen een rondje oefenen? Je mag ook zelf iets kiezen.`,
-        keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, ...onderwerpKeuzes, ga.werkblad],
+        tekst: `Mijn voorstel: ${ctx.voorstel}. Zullen we samen een rondje oefenen? Je mag ook zelf iets kiezen.`,
+        keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, ...onderwerpKeuzes],
       };
     case "vraag":
       return { tekst: "Stel je vraag maar! Typ hem hieronder of tik op de microfoon om te praten. Ik kan nog niet alles beantwoorden, maar ik help je graag op weg." };
     case "rekenen":
-      return { tekst: "Rekenen! Kies zelf wat je wilt oefenen: breuken, procenten, kommagetallen en meer.", keuzes: [ga.rekenen, ga.tafels, ga.niveau] };
+      return { tekst: "Rekenen! Kies wat je wilt oefenen en hoeveel vragen.", kaart: { soort: "voorstel", standaard: ctx.voorstelId } };
     case "tafels":
-      return { tekst: "Tafels oefenen gaat het best met de tafeltrainer. Kies welke tafels je wilt doen.", keuzes: [ga.tafels] };
+      return {
+        tekst: tafels.length ? `De tafel${tafels.length > 1 ? "s" : ""} van ${tafels.join(", ")}. Kies nog hoe je wilt oefenen.` : "Welke tafels wil je trainen? Kies er één of meer.",
+        kaart: { soort: "tafels", tafels },
+      };
     case "europa":
-      return { tekst: "Op de kaart van Europa oefen je landen, hoofdsteden, rivieren en gebergten.", keuzes: [ga.europa] };
+      return { tekst: "Op de kaart van Europa oefen je landen, hoofdsteden, rivieren en gebergten. Dit doen we nog even op een eigen scherm.", keuzes: [keuze.europa] };
     case "weetjes":
-      return { tekst: "In je weetjesboek staan alle weetjes die je al hebt verzameld.", keuzes: [ga.weetjes] };
+      return { tekst: "Dit zijn de weetjes die je al hebt verzameld. Tik op een weetje om het te lezen.", kaart: { soort: "weetjes" } };
     case "werkblad":
-      return { tekst: "Je kunt een werkblad maken om op papier te oefenen.", keuzes: [ga.werkblad] };
+      return { tekst: "Werkbladen maken kan nog niet in de chat. Zullen we samen oefenen?", keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, keuze.tafels] };
     case "voortgang":
-      return { tekst: "Bij je voortgang zie je wat je al goed kunt en wat je nog oefent.", keuzes: [ga.voortgang] };
+      return { tekst: "Dit heb je al geoefend. Mees kijkt naar meerdere oefenmomenten.", kaart: { soort: "voortgang" } };
     case "groet":
       return { tekst: "Hoi! Fijn dat je er bent. Wat wil je doen: iets leren, oefenen of een vraag stellen?", keuzes: [{ label: "Iets leren", soort: "vervolg", onderwerp: "leren" }, { label: "Oefenen", soort: "vervolg", onderwerp: "oefenen" }] };
     case "onbekend":
@@ -120,11 +143,11 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context): Pick<Bericht, "tek
 const VRAAGWOORDEN = /^\s*(wat|wie|waar|waarom|wanneer|hoe|hoeveel|welke?|kun|kan|mag|is|zijn|weet)\b/i;
 
 /** Antwoord op getypte of ingesproken tekst. Een echte vraag kan Mees nog niet zelf beantwoorden: dat zegt hij eerlijk. */
-export function reageer(tekst: string, ctx: Context): Pick<Bericht, "tekst" | "keuzes"> {
+export function reageer(tekst: string, ctx: Context): Antwoord {
   const onderwerp = herken(tekst);
-  const r = antwoord(onderwerp, ctx);
+  const r = antwoord(onderwerp, ctx, onderwerp === "tafels" ? tafelsUit(tekst) : []);
   const isVraag = tekst.includes("?") || VRAAGWOORDEN.test(tekst);
-  if (!isVraag || onderwerp === "onbekend" || onderwerp === "groet" || onderwerp === "oefenen" || onderwerp === "leren") return r;
+  if (!isVraag || ["onbekend", "groet", "oefenen", "leren", "voortgang", "weetjes"].includes(onderwerp)) return r;
   return { ...r, tekst: `Op die vraag kan ik nog geen eigen antwoord geven. Maar ik kan je wel helpen oefenen! ${r.tekst}` };
 }
 

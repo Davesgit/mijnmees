@@ -66,10 +66,10 @@ export function verloopVanSlot(slot: Slot, pogingen: Poging[]): Stap[] {
   return stappen;
 }
 
-/** Kan deze oefening in het gesprek? Europa (kaart) en tafels met tijd blijven op hun eigen scherm. */
+/** Kan deze oefening in het gesprek? Europa (kaart) volgt nog. */
 export function kanInChat(sessie: Sessie) {
   const soort = sessie.soort ?? "oefening";
-  return soort === "oefening" || (soort === "tafels" && !sessie.instellingen?.metTijd);
+  return soort === "oefening" || soort === "tafels";
 }
 
 /** Teller voor de voortgangsbalk: afgeronde vraagplaatsen en wat er nog komt. */

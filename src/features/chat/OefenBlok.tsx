@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
 import { vindWeetje } from "@/content/weetjes";
@@ -92,9 +92,8 @@ function SlotVerloop({
                 herhaling={Boolean(slot.herhalingVan)}
                 stap={stap}
                 interactief={interactief && stap.status === "open" && i === laatsteVraag}
-                onControleer={(antwoord) =>
-                  bewaar((d) => registreerAntwoord(d, sessie.id, antwoord)?.data ?? d)
-                }
+                seconden={sessie.soort === "tafels" && sessie.instellingen?.metTijd ? (sessie.instellingen.secondenPerVraag ?? null) : null}
+                onControleer={(antwoord, actieveDuurMs) => bewaar((d) => registreerAntwoord(d, sessie.id, antwoord, { actieveDuurMs })?.data ?? d)}
                 onHint={() => bewaar((d) => vraagHulp(d, sessie.id))}
                 hintLabel={slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien"}
               />
@@ -209,6 +208,7 @@ function VraagKaart({
   herhaling,
   stap,
   interactief,
+  seconden,
   onControleer,
   onHint,
   hintLabel,
@@ -219,11 +219,14 @@ function VraagKaart({
   herhaling: boolean;
   stap: Extract<Stap, { soort: "vraag" }>;
   interactief: boolean;
-  onControleer: (antwoord: string) => void;
+  /** Tafels op tijd: seconden per vraag (afteller). */
+  seconden?: number | null;
+  onControleer: (antwoord: string, actieveDuurMs?: number) => void;
   onHint: () => void;
   hintLabel: string;
 }) {
   const [gekozen, setGekozen] = useState<string>("");
+  const tijd = useActieveTijd(interactief && Boolean(seconden));
   const titel = stap.opnieuw ? "Probeer het nog eens." : herhaling ? "Nog een soortgelijke vraag." : `Vraag ${nummer}`;
   const getoond = interactief ? gekozen : (stap.antwoord ?? "");
 
@@ -233,11 +236,12 @@ function VraagKaart({
       <p className="mt-2 font-semibold text-actie-blauw">{titel}</p>
       <h3 className="mt-1 text-xl font-extrabold tablet:text-2xl">{vraag.prompt}</h3>
       {vraag.soort === "breuk" && <p className="mt-1 text-[#5b6fae]">{vraag.instructie}</p>}
+      {interactief && seconden ? <Afteller resterendMs={Math.max(0, seconden * 1000 - tijd.nu)} totaalMs={seconden * 1000} /> : null}
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (interactief && gekozen.trim()) onControleer(gekozen.trim());
+          if (interactief && gekozen.trim()) onControleer(gekozen.trim(), vraag.soort === "tafel" ? tijd.ms() : undefined);
         }}
       >
         {vraag.soort === "breuk" ? (
@@ -264,6 +268,53 @@ function VraagKaart({
       <div className="mt-2">
         <VoorleesLink id={id} tekst={vraagVoorleesTekst(vraag)} />
       </div>
+    </div>
+  );
+}
+
+/** Actieve antwoordtijd: telt niet door als het tabblad verborgen is. `nu` ververst tien keer per seconde. */
+function useActieveTijd(loopt: boolean) {
+  const opgeteld = useRef(0);
+  const start = useRef<number | null>(null);
+  const [nu, setNu] = useState(0);
+  useEffect(() => {
+    if (!loopt) return;
+    start.current = document.hidden ? null : performance.now();
+    const meet = () => opgeteld.current + (start.current === null ? 0 : performance.now() - start.current);
+    const zicht = () => {
+      if (document.hidden && start.current !== null) {
+        opgeteld.current += performance.now() - start.current;
+        start.current = null;
+      } else if (!document.hidden && start.current === null) start.current = performance.now();
+    };
+    const tik = setInterval(() => setNu(meet()), 100);
+    document.addEventListener("visibilitychange", zicht);
+    return () => {
+      opgeteld.current = meet();
+      start.current = null;
+      clearInterval(tik);
+      document.removeEventListener("visibilitychange", zicht);
+    };
+  }, [loopt]);
+  return { nu, ms: () => opgeteld.current + (start.current === null ? 0 : performance.now() - start.current) };
+}
+
+/** Afteller per vraag: de balk loopt leeg en wordt oranje in de laatste seconden. Na de tijd mag het antwoord nog. */
+function Afteller({ resterendMs, totaalMs }: { resterendMs: number; totaalMs: number }) {
+  const om = resterendMs <= 0;
+  const bijnaOm = !om && resterendMs <= 3000;
+  return (
+    <div className="mt-3">
+      <p className={`flex items-center gap-1.5 tekst-klein font-bold ${bijnaOm ? "text-probeer-opnieuw" : om ? "text-tekst-zacht" : ""}`} aria-hidden>
+        <Icoon naam="tijd" className="size-5" />
+        {om ? "De tijd is om. Je mag het antwoord nog invullen." : `Nog ${Math.ceil(resterendMs / 1000)} seconden`}
+      </p>
+      <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-uitgeschakeld-vlak" aria-hidden>
+        <div className={`h-full rounded-full ${bijnaOm ? "animate-pulse bg-[#ea580c]" : "bg-actie-blauw"}`} style={{ width: `${(resterendMs / totaalMs) * 100}%` }} />
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {om ? "De tijd is om. Je mag het antwoord nog invullen." : bijnaOm ? "Nog 3 seconden." : ""}
+      </p>
     </div>
   );
 }
@@ -342,10 +393,15 @@ function Terugblik({ sessie, opslag, onNogEenRondje, onIetsAnders }: { sessie: S
   const metHulp = aantal - zelfstandig;
   const ontdekt = opslag.weetjes.find((w) => w.sessieId === sessie.id);
   const weetje = ontdekt ? vindWeetje(ontdekt.weetjeId) : null;
-  const tekst =
+  const limietMs = sessie.soort === "tafels" && sessie.instellingen?.metTijd && sessie.instellingen.secondenPerVraag ? sessie.instellingen.secondenPerVraag * 1000 : null;
+  const opTijd = limietMs
+    ? sessie.slots.filter((sl) => opslag.pogingen.some((p) => p.sessieId === sessie.id && p.slotId === sl.id && p.resultaat === "goed" && (p.actieveDuurMs ?? Infinity) <= limietMs)).length
+    : null;
+  const basis =
     metHulp === 0
       ? `Klaar! Je hebt alle ${aantal} vragen zelf goed gedaan. Knap!`
       : `Klaar! Je hebt ${aantal} vragen gedaan: ${zelfstandig} helemaal zelf en ${metHulp} met hulp. Zo leer je erbij.`;
+  const tekst = opTijd === null ? basis : `${basis} ${opTijd} van de ${sessie.slots.length} goed binnen de tijd.`;
   return (
     <div className="mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border-2 border-[#86d3a6] bg-wit px-5 py-5 shadow-[0_8px_24px_#92c5eb17] tablet:px-6">
       <MeesAfzender />

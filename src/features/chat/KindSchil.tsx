@@ -7,7 +7,8 @@ import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { isOefenRoute, ProfielMenu } from "@/components/mees/MeesHeader";
 import { Logo } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
-import { nieuweChat, openChat, useChats } from "./opslag";
+import { antwoord } from "./gesprek";
+import { maakBericht, nieuweChat, openChat, useChats, voegToeAanActief } from "./opslag";
 
 // Schil van het kindergedeelte (ontwerp versie 6): vast zijmenu naast de inhoud. Op de telefoon een smalle
 // bovenbalk met een menu dat als laag over het scherm opent. Tijdens het oefenen geen menu (rust en ruimte).
@@ -154,6 +155,13 @@ function MenuInhoud({
     onSluit?.();
     if (!opStart) router.push(START);
   }
+  /** Voortgang verschijnt in het gesprek: in de open chat, of in een nieuwe chat. */
+  function voortgang() {
+    const r = antwoord("voortgang", { open: null, voorstel: "", voorstelId: "", aantal: 0 });
+    voegToeAanActief([maakBericht("kind", "Hoe gaat het met mijn oefenen?"), maakBericht("mees", r.tekst, { kaart: r.kaart })], { titel: "Mijn voortgang" });
+    onSluit?.();
+    if (!opStart) router.push(START);
+  }
   function open(id: string) {
     openChat(id);
     onSluit?.();
@@ -163,8 +171,7 @@ function MenuInhoud({
   const items: { label: string; icoon: AlleIcoonNamen; actief: boolean; href?: string; onClick?: () => void }[] = [
     { label: "Nieuwe chat", icoon: "pen", actief: opStart && chats?.actief === null, onClick: nieuw },
     { label: "Eerdere chats", icoon: "klok", actief: pad.startsWith("/kind/chats"), href: "/kind/chats" },
-    { label: "Mijn voortgang", icoon: "voortgang", actief: pad.startsWith("/kind/voortgang"), href: "/kind/voortgang" },
-    { label: "Weetjesboek", icoon: "weetjesboek", actief: pad.startsWith("/kind/weetjes"), href: "/kind/weetjesboek" },
+    { label: "Mijn voortgang", icoon: "voortgang", actief: false, onClick: voortgang },
   ];
 
   if (compact) {

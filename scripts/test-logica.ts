@@ -23,7 +23,7 @@ import { bordInStukjes, decodeer } from "@/features/live/bordkanaal";
 import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/features/tutorhulp/criteria";
 import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
 import type { Poging } from "@/features/oefenen/types";
-import { antwoord, bewaarGesprek, herken, reageer, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
+import { antwoord, bewaarGesprek, herken, reageer, tafelsUit, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
 import { kanInChat, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
 import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
@@ -321,11 +321,16 @@ test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {
   assert.equal(herken("hoe werken breuken"), "rekenen");
   assert.equal(herken("Soms ben ik moe"), "onbekend");
   assert.equal(herken("Hoi Mees"), "groet");
-  const ctx = { open: null, voorstel: "Breuken vergelijken", aantal: 6 };
+  const ctx = { open: null, voorstel: "Breuken vergelijken", voorstelId: "doel:breuken-vergelijken", aantal: 6 };
   assert.equal(antwoord("oefenen", ctx).keuzes?.[0]?.soort, "voorstel");
   assert.equal(antwoord("oefenen", { ...ctx, open: "Tafels" }).keuzes?.[0]?.soort, "hervat");
+  // Alles blijft in de chat: alleen Europa gaat (tijdelijk) nog naar een eigen scherm.
   for (const o of ["leren", "oefenen", "rekenen", "tafels", "europa", "weetjes", "werkblad", "voortgang", "groet", "onbekend"] as const)
-    for (const k of antwoord(o, ctx).keuzes ?? []) if (k.soort === "ga") assert.match(k.href, /^\/(kind|werkbladen)\//, k.href);
+    for (const k of antwoord(o, ctx).keuzes ?? []) if (k.soort === "ga") assert.equal(k.href, "/kind/aardrijkskunde/europa", `${o}: ${k.href}`);
+  assert.deepEqual(tafelsUit("ik wil de tafel van 7 en 12 trainen"), [7, 12]);
+  assert.deepEqual(reageer("ik wil tafels trainen", ctx).kaart, { soort: "tafels", tafels: [] });
+  assert.deepEqual(reageer("tafel van 8", ctx).kaart, { soort: "tafels", tafels: [8] });
+  assert.equal(reageer("wat heb ik al geoefend", ctx).kaart?.soort, "voortgang");
   assert.match(reageer("Wat is de hoofdstad van Frankrijk?", ctx).tekst, /nog geen eigen antwoord/);
   assert.doesNotMatch(reageer("Ik wil Europa oefenen", ctx).tekst, /nog geen eigen antwoord/);
   assert.equal(maakTitel("  a  b "), "a b");
@@ -356,7 +361,7 @@ test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
   assert.equal(oefenTeller(data.sessies[id]!).klaar, 1);
   assert.equal(kanInChat(data.sessies[id]!), true);
   assert.equal(kanInChat({ ...data.sessies[id]!, soort: "europa" }), false);
-  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "tafels", instellingen: { metTijd: true } }), false);
+  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "tafels", instellingen: { metTijd: true } }), true);
 });
 
 test("chat-oefenen: vier fouten geven de uitleg en daarna Verder", () => {

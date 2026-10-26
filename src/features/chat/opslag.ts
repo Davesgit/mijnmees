@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { abonneerOpslag, actiefProfiel } from "@/lib/opslag/lokaal";
-import { bewaarGesprek, type Gesprek } from "./gesprek";
+import { bewaarGesprek, maakTitel, type Bericht, type Gesprek } from "./gesprek";
 
 // Gesprekken met Mees blijven op dit apparaat, per profiel (gast of kind). De sleutel van een kind begint met
 // "mees:kind:", zodat uitloggen op een gedeeld apparaat (wisKindprofielenOpApparaat) ze ook wist.
@@ -51,6 +51,27 @@ export function wijzigChats(wijziging: (d: ChatOpslag) => ChatOpslag) {
 export function bewaar(gesprek: Gesprek, actief = true) {
   wijzigChats((d) => ({ gesprekken: bewaarGesprek(d.gesprekken, gesprek), actief: actief ? gesprek.id : d.actief }));
 }
+
+/**
+ * Voegt berichten toe aan het actieve gesprek, of begint een nieuw gesprek. `sluitSessie` maakt eerdere oefenblokken
+ * van die sessie af (die tonen dan alleen de vraagplaatsen tot `tot`).
+ */
+export function voegToeAanActief(nieuw: Bericht[], opties: { titel?: string; sluitSessie?: { id: string; tot: number } } = {}) {
+  const d = lees();
+  const huidig = d.actief ? d.gesprekken.find((g) => g.id === d.actief) : undefined;
+  const basis: Gesprek = huidig ?? { id: crypto.randomUUID(), titel: maakTitel(opties.titel ?? nieuw[0]?.tekst ?? ""), berichten: [], bijgewerkt: Date.now() };
+  const s = opties.sluitSessie;
+  const berichten = s ? basis.berichten.map((b) => (b.oefening?.sessieId === s.id && b.oefening.tot === undefined ? { ...b, oefening: { ...b.oefening, tot: s.tot } } : b)) : basis.berichten;
+  bewaar({ ...basis, berichten: [...berichten, ...nieuw], bijgewerkt: Date.now() });
+}
+
+export const maakBericht = (van: Bericht["van"], tekst: string, extra: Partial<Pick<Bericht, "keuzes" | "kaart" | "oefening">> = {}): Bericht => ({
+  id: crypto.randomUUID(),
+  van,
+  tekst,
+  ...extra,
+  t: Date.now(),
+});
 
 /** Nieuwe chat: het lege startscherm. Eerdere gesprekken blijven staan. */
 export function nieuweChat() {
