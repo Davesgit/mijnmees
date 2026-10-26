@@ -118,7 +118,7 @@ test("Europa: hulp voegt één herhaling in, totaal telt unieke onderdelen", () 
   assert.equal(s.status, "afgerond");
   assert.ok(s.slots.length > 7 && s.slots.length <= 9, `herhalingen ingevoegd (${s.slots.length})`);
   assert.equal(sessieStatistiek(s).aantal, 7, "herhalingen tellen niet mee in het totaal");
-  assert.equal(klaar.weetjes.length, 1, "weetje bij afronden");
+  assert.equal(klaar.weetjes.length, 0, "geen weetjes meer als beloning");
 });
 test("Heel Europa met alle onderwerpen werkt", () => {
   const landen = landenVanGebieden(["heel"]);
@@ -325,7 +325,7 @@ test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {
   assert.equal(antwoord("oefenen", ctx).keuzes?.[0]?.soort, "voorstel");
   assert.equal(antwoord("oefenen", { ...ctx, open: "Tafels" }).keuzes?.[0]?.soort, "hervat");
   // Alles blijft in de chat: geen enkele keuze stuurt naar een andere pagina.
-  for (const o of ["leren", "oefenen", "rekenen", "tafels", "europa", "weetjes", "werkblad", "voortgang", "groet", "onbekend"] as const)
+  for (const o of ["leren", "oefenen", "rekenen", "tafels", "europa", "werkblad", "voortgang", "groet", "onbekend"] as const)
     for (const k of antwoord(o, ctx).keuzes ?? []) assert.notEqual(k.soort, "ga", `${o}: ${k.label}`);
   assert.equal(reageer("Wat is de hoofdstad van Italië?", ctx).kaart?.soort, "europa");
   assert.equal(reageer("ik wil een landenpuzzel", ctx).kaart?.soort, "europa");
@@ -344,7 +344,9 @@ test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {
 });
 
 test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
-  let { data, sessie } = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const start = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const sessie = start.sessie;
+  let data = start.data;
   const id = sessie.id;
   const slot = () => data.sessies[id]!.slots[data.sessies[id]!.index]!;
   const verloop = () => verloopVanSlot(slot(), data.pogingen.filter((p) => p.slotId === slot().id)).map((s) => s.soort + (s.soort === "fout" ? `:${s.hulp?.soort ?? "-"}` : s.soort === "vraag" ? `:${s.status}` : ""));
@@ -369,7 +371,9 @@ test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
 });
 
 test("chat-oefenen: vier fouten geven de uitleg en daarna Verder", () => {
-  let { data, sessie } = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const start = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const sessie = start.sessie;
+  let data = start.data;
   const id = sessie.id;
   const fout = ["<", "=", ">"].find((t) => t !== goedAntwoord(data.sessies[id]!))!;
   for (let i = 0; i < 4; i++) data = registreerAntwoord(data, id, fout)!.data;

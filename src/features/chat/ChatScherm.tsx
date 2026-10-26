@@ -3,17 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { vindOnderdeel } from "@/content/onderwerpen";
-import { vindWeetje } from "@/content/weetjes";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useVoorlezen } from "@/components/mees/Voorlezen";
 import { gastLimietBereikt, maakEuropaSessie, maakSessie, maakTafelSessie, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
 import type { OpslagData } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
-import { weetjeVoorleesTekst } from "@/features/voorlezen/teksten";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { Invoer } from "./ChatInvoer";
-import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, WeetjeKaart, WeetjesKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
+import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { markeerNieuw, NaTypen, TypTekst } from "./ChatTypen";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
@@ -407,7 +405,12 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
               if (b.oefening)
                 return (
                   <NaTypen key={b.id} id={b.id}>
-                    <OefenBlok verwijzing={b.oefening} actief={isLaatste} onNogEenRondje={nogEenRondje} onIetsAnders={ietsAnders} />
+                    <OefenBlok
+                      verwijzing={b.oefening}
+                      actief={isLaatste}
+                      onNogEenRondje={nogEenRondje}
+                      onIetsAnders={ietsAnders}
+                    />
                   </NaTypen>
                 );
               if (b.van === "kind")
@@ -442,7 +445,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
                       </div>
                     )}
                     <div className="mt-3">
-                      <VoorleesLink id={b.id} tekst={b.kaart?.soort === "weetje" && vindWeetje(b.kaart.id) ? weetjeVoorleesTekst(vindWeetje(b.kaart.id)!) : b.tekst} />
+                      <VoorleesLink id={b.id} tekst={b.tekst} />
                     </div>
                   </TypTekst>
                 </div>
@@ -488,8 +491,7 @@ function KaartWeergave({
     case "voortgang":
       return <VoortgangKaart actief={actief} onKies={onKies} />;
     case "weetjes":
-      return <WeetjesKaart actief={actief} onKies={onKies} />;
     case "weetje":
-      return <WeetjeKaart id={kaart.id} />;
+      return null;
   }
 }

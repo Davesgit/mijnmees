@@ -57,7 +57,7 @@ export function KindFormulier() {
         <div className="rounded-[16px] bg-blauw-zacht p-4">
           <Vinkje naam="meenemen" defaultChecked>
             <span className="font-bold">Neem de oefeningen van dit apparaat mee</span>
-            <span className="block tekst-klein text-tekst-zacht">Er is al geoefend zonder account. Die voortgang en weetjes komen bij dit profiel.</span>
+            <span className="block tekst-klein text-tekst-zacht">Er is al geoefend zonder account. Die voortgang komt bij dit profiel.</span>
           </Vinkje>
         </div>
       )}

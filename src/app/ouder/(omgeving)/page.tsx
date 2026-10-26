@@ -145,12 +145,8 @@ async function Overzicht({ searchParams }: { searchParams: PageProps<"/ouder">["
           <p className="mt-3 tekst-klein text-tekst-zacht">Bekeken uitleg is geen bewijs van beheersing.</p>
         </Kaart>
 
-        <Kaart titel="Weetjes en meer">
-          <p>
-            <span className="text-3xl font-extrabold">{voortgang?.weetjes.length ?? 0}</span>{" "}
-            <span className="text-tekst-zacht">weetjes ontdekt</span>
-          </p>
-          <p className="mt-4 tekst-klein text-tekst-zacht">Tutorhulp zet je per kind aan of uit bij Instellingen.</p>
+        <Kaart titel="Tutorhulp">
+          <p className="tekst-klein text-tekst-zacht">Tutorhulp zet je per kind aan of uit bij Instellingen.</p>
         </Kaart>
       </div>
 

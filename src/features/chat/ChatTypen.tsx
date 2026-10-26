@@ -35,7 +35,7 @@ const rustig = () => document.documentElement.dataset.rustigeOvergangen === "tru
 // Rustig genoeg om te zien dat Mees antwoordt: eerst even nadenken, dan ongeveer 13 woorden per seconde.
 const DENKEN_MS = 900;
 const WOORDEN_PER_TIK = 1;
-const TIK_MS = 75;
+export const TIK_MS = 75;
 
 /** Tekst van Mees die verschijnt alsof hij typt; `children` (keuzes, kaart, voorlezen) komen daarna. */
 export function TypTekst({ id, tekst, className, children }: { id: string; tekst: string; className?: string; children?: ReactNode }) {

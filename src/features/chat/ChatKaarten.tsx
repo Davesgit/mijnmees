@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState } from "react";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
-import { vindWeetje, weetjesPlekken } from "@/content/weetjes";
 import { alleEuropaVragen } from "@/features/oefenen/europa-vragen";
 import { MICROSTATEN, europaMeta, europaOnderwerpen, landenVanGebieden, telEuropaOnderdelen, type EuropaOnderwerp } from "@/features/oefenen/europa-sessie";
 import { openSessie, tijdKeuzes } from "@/features/oefenen/sessie";
@@ -388,50 +386,6 @@ export function VoortgangKaart({ actief, onKies }: { actief: boolean; onKies: (k
           );
         })
       )}
-    </div>
-  );
-}
-
-/** Verzamelde weetjes; een tik opent het weetje in het gesprek. */
-export function WeetjesKaart({ actief, onKies }: { actief: boolean; onKies: (k: Keuze) => void }) {
-  const opslag = useOpslag();
-  if (!opslag) return null;
-  const ontdekt = [...new Set(opslag.weetjes.map((w) => w.weetjeId))].map(vindWeetje).filter((w) => w !== null);
-  const nog = Math.max(0, weetjesPlekken - ontdekt.length);
-  if (ontdekt.length === 0) return <p className="mt-4 rounded-[14px] bg-[#f6fbff] p-4">Je eerste weetje verdien je na een oefenrondje. Zullen we oefenen?</p>;
-  return (
-    <div className="mt-4">
-      <ul className="grid grid-cols-2 gap-2 tablet:grid-cols-3">
-        {ontdekt.map((w) => (
-          <li key={w.id}>
-            <button
-              type="button"
-              disabled={!actief}
-              onClick={() => onKies({ label: w.titel, soort: "kaart", tekst: w.kort, kaart: { soort: "weetje", id: w.id } })}
-              className="block w-full overflow-hidden rounded-[14px] border border-[#d8e9f8] bg-wit text-left hover:border-actie-blauw disabled:cursor-default"
-            >
-              <Image src={w.foto} alt="" width={1536} height={1024} sizes="(min-width: 768px) 220px, 45vw" className="aspect-[16/10] w-full object-cover" />
-              <span className="block p-2.5 font-bold leading-snug">{w.titel}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      {nog > 0 && <p className="mt-2 tekst-klein text-tekst-zacht">Nog {nog} weetjes te ontdekken. Na elk oefenrondje verdien je er één.</p>}
-    </div>
-  );
-}
-
-/** Eén weetje: foto, korte tekst en het verhaal. */
-export function WeetjeKaart({ id }: { id: string }): ReactNode {
-  const w = vindWeetje(id);
-  if (!w) return null;
-  return (
-    <div className="mt-3">
-      <Image src={w.foto} alt={w.alt} width={1536} height={1024} sizes="(min-width: 768px) 640px, 90vw" className="aspect-[3/2] w-full rounded-[14px] object-cover" />
-      <p className="mt-3 tekst-klein font-semibold text-actie-blauw">{w.categorie}</p>
-      <h4 className="text-xl font-extrabold">{w.titel}</h4>
-      <p className="mt-2 text-lg leading-relaxed">{w.tekst}</p>
-      {!w.bronGecontroleerd && <p className="mt-2 tekst-klein text-tekst-zacht">De bron van dit weetje wordt nog gecontroleerd.</p>}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <ul className="flex list-disc flex-col gap-2 pl-6 text-lg">
           <li>Van een ouder: het e-mailadres, om in te loggen.</li>
           <li>Van een kind: alleen een voornaam, de groep en een gekozen dier. Geen achternaam, geboortedatum of foto.</li>
-          <li>Oefeningen, antwoorden, gebruikte hints en ontdekte weetjes, zodat Mees passende oefeningen kan voorstellen.</li>
+          <li>Oefeningen, antwoorden en gebruikte hints, zodat Mees passende oefeningen kan voorstellen.</li>
           <li>Zonder account blijft alles alleen in de browser van het apparaat.</li>
         </ul>
       </section>

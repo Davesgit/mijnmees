@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, use, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
-import { vindWeetje } from "@/content/weetjes";
 import { gaVerder, registreerAntwoord, sessieStatistiek, vraagHulp } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie, Slot } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
@@ -13,7 +11,7 @@ import { antwoordTekst, goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, 
 import { hintVoorleesTekst, uitlegVoorleesTekst, vraagVoorleesTekst } from "@/features/voorlezen/teksten";
 import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
-import { Puntjes } from "./ChatTypen";
+import { Puntjes, TIK_MS } from "./ChatTypen";
 
 // De kaart van Europa is groot (alle landvormen): pas laden als er echt Europa geoefend wordt.
 const kaartRuimte = () => <div className="mt-3 h-[clamp(260px,52dvh,560px)] animate-pulse rounded-[16px] bg-blauw-zacht tablet:h-[clamp(320px,58dvh,640px)]" aria-hidden />;
@@ -34,15 +32,109 @@ function markeerActie() {
 const REACTIE_MS = 900;
 const DAARNA_MS = 500;
 
+/** Hoeveel kaarten Mees op dit moment typt; wat erna komt (de vraag opnieuw) wacht daarop. */
+let aanHetTypen = 0;
+const typLuisteraars = new Set<() => void>();
+const meldTypen = (n: number) => {
+  aanHetTypen = Math.max(0, aanHetTypen + n);
+  typLuisteraars.forEach((l) => l());
+};
+const abonneerTypen = (l: () => void) => {
+  typLuisteraars.add(l);
+  return () => typLuisteraars.delete(l);
+};
+
+/** True als de kaart net als reactie verschijnt: dan typt Mees de inhoud. */
+const NieuweReactie = createContext(false);
+
+/**
+ * Bouwt een kaart van Mees op zoals in een AI-chat: blok voor blok, met de tekst woord voor woord.
+ * Werkt op de getekende inhoud, zodat ook breuken en opmaak gewoon meelopen. Knoppen komen als laatste.
+ */
+function TypOnthul({ className = "", children }: { className?: string; children: ReactNode }) {
+  const typen = use(NieuweReactie);
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const root = ref.current;
+    if (!typen || !root) return;
+    const blokken = [...root.children] as HTMLElement[];
+    const plan = blokken.map((blok) => {
+      const teksten: { node: Text; volledig: string; delen: string[] }[] = [];
+      const w = document.createTreeWalker(blok, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) {
+        const node = w.currentNode as Text;
+        teksten.push({ node, volledig: node.data, delen: node.data.split(/(\s+)/) });
+        node.data = "";
+      }
+      blok.style.visibility = "hidden";
+      return { blok, teksten };
+    });
+    let bezig = true;
+    meldTypen(1);
+    const klaar = () => {
+      if (!bezig) return;
+      bezig = false;
+      clearInterval(iv);
+      meldTypen(-1);
+    };
+    let b = 0;
+    let t = 0;
+    let d = 0;
+    const iv = setInterval(() => {
+      // Twee delen per tik: een woord en de spatie erna.
+      for (let stap = 0; stap < 2; stap++) {
+        const blok = plan[b];
+        if (!blok) return klaar();
+        blok.blok.style.visibility = "";
+        const tekst = blok.teksten[t];
+        if (!tekst) {
+          b++;
+          t = 0;
+          d = 0;
+          continue;
+        }
+        const deel = tekst.delen[d];
+        if (deel === undefined) {
+          t++;
+          d = 0;
+          continue;
+        }
+        tekst.node.data += deel;
+        d++;
+      }
+    }, TIK_MS);
+    return () => {
+      klaar();
+      for (const p of plan) {
+        p.blok.style.visibility = "";
+        for (const x of p.teksten) x.node.data = x.volledig;
+      }
+    };
+  }, [typen]);
+  return (
+    <div ref={ref} className={className}>
+      {children}
+    </div>
+  );
+}
+
 /** Toont een nieuwe stap pas na een korte pauze; met puntjes van Mees als die stap een reactie van Mees is. */
 function NaActie({ id, ms, puntjes, children }: { id: string; ms: number; puntjes: boolean; children: ReactNode }) {
   const [wacht, setWacht] = useState(() => netGehandeld && document.documentElement.dataset.rustigeOvergangen !== "true" && !matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // Onthouden dat er gewacht is: dan is dit een nieuwe reactie en typt Mees de inhoud.
+  const [gewacht] = useState(wacht);
+  // Een vervolg (de vraag opnieuw) wacht ook tot Mees klaar is met het typen van zijn reactie.
+  const typt = useSyncExternalStore(abonneerTypen, () => aanHetTypen > 0, () => false);
   useEffect(() => {
     if (!wacht) return;
     const t = setTimeout(() => setWacht(false), ms);
     return () => clearTimeout(t);
   }, [wacht, ms]);
-  if (!wacht) return <>{children}</>;
+  // Eenmaal getoond blijft het staan (ook als Mees later weer iets typt).
+  const [getoond, setGetoond] = useState(false);
+  const toon = getoond || (!wacht && !(gewacht && !puntjes && typt));
+  if (toon && !getoond) setGetoond(true);
+  if (toon) return <NieuweReactie value={gewacht}>{children}</NieuweReactie>;
   if (!puntjes) return null;
   return (
     <div data-stap={id} className="w-full rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:max-w-[92%]">
@@ -60,7 +152,17 @@ type BreukOfTafel = Vraag;
  * Een oefening in het gesprek. Alle pogingen blijven staan; alleen de nieuwste vraag is interactief.
  * Antwoordcontrole, hulp en voortgang komen uit de oefenmotor (sessie.ts) en de lokale opslag.
  */
-export function OefenBlok({ verwijzing, actief, onNogEenRondje, onIetsAnders }: { verwijzing: OefenVerwijzing; actief: boolean; onNogEenRondje: () => void; onIetsAnders: () => void }) {
+export function OefenBlok({
+  verwijzing,
+  actief,
+  onNogEenRondje,
+  onIetsAnders,
+}: {
+  verwijzing: OefenVerwijzing;
+  actief: boolean;
+  onNogEenRondje: () => void;
+  onIetsAnders: () => void;
+}) {
   const opslag = useOpslag();
   const sessie = opslag?.sessies[verwijzing.sessieId];
   const [bewaarFout, setBewaarFout] = useState(false);
@@ -78,7 +180,11 @@ export function OefenBlok({ verwijzing, actief, onNogEenRondje, onIetsAnders }: 
       <>
         {(sessie.status === "bezig" || verwijzing.tot !== undefined) && <PuzzelBlok sessie={sessie} interactief={interactief} bewaar={bewaar} />}
         {bewaarFout && <p className="rounded-[16px] bg-fout-zacht p-4 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
-        {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />}
+        {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && (
+          <NaActie id={`terugblik-${sessie.id}`} ms={REACTIE_MS} puntjes>
+            <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />
+          </NaActie>
+        )}
       </>
     );
 
@@ -102,7 +208,11 @@ export function OefenBlok({ verwijzing, actief, onNogEenRondje, onIetsAnders }: 
         );
       })}
       {bewaarFout && <p className="rounded-[16px] bg-fout-zacht p-4 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
-      {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />}
+      {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && (
+          <NaActie id={`terugblik-${sessie.id}`} ms={REACTIE_MS} puntjes>
+            <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />
+          </NaActie>
+        )}
     </>
   );
 }
@@ -230,10 +340,12 @@ function Kaart({ toon, voorlees, children }: { toon: "normaal" | "fout" | "hulp"
   return (
     <div data-stap={voorlees.id} className={`mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${stijl}`}>
       <MeesAfzender />
-      <div className="mt-2">{children}</div>
-      <div className="mt-2">
-        <VoorleesLink id={voorlees.id} tekst={voorlees.tekst} />
-      </div>
+      <TypOnthul className="mt-2">
+        {children}
+        <div className="mt-2">
+          <VoorleesLink id={voorlees.id} tekst={voorlees.tekst} />
+        </div>
+      </TypOnthul>
     </div>
   );
 }
@@ -474,11 +586,19 @@ function TafelOpgave({ vraag, waarde, onWijzig, vergrendeld, id }: { vraag: Tafe
   );
 }
 
-function Terugblik({ sessie, opslag, onNogEenRondje, onIetsAnders }: { sessie: Sessie; opslag: OpslagData; onNogEenRondje: () => void; onIetsAnders: () => void }) {
+function Terugblik({
+  sessie,
+  opslag,
+  onNogEenRondje,
+  onIetsAnders,
+}: {
+  sessie: Sessie;
+  opslag: OpslagData;
+  onNogEenRondje: () => void;
+  onIetsAnders: () => void;
+}) {
   const { zelfstandig, aantal } = sessieStatistiek(sessie);
   const metHulp = aantal - zelfstandig;
-  const ontdekt = opslag.weetjes.find((w) => w.sessieId === sessie.id);
-  const weetje = ontdekt ? vindWeetje(ontdekt.weetjeId) : null;
   const limietMs = sessie.soort === "tafels" && sessie.instellingen?.metTijd && sessie.instellingen.secondenPerVraag ? sessie.instellingen.secondenPerVraag * 1000 : null;
   const opTijd = limietMs
     ? sessie.slots.filter((sl) => opslag.pogingen.some((p) => p.sessieId === sessie.id && p.slotId === sl.id && p.resultaat === "goed" && (p.actieveDuurMs ?? Infinity) <= limietMs)).length
@@ -491,28 +611,22 @@ function Terugblik({ sessie, opslag, onNogEenRondje, onIetsAnders }: { sessie: S
   return (
     <div data-stap={`terugblik-${sessie.id}`} className="mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border-2 border-[#86d3a6] bg-wit px-5 py-5 shadow-[0_8px_24px_#92c5eb17] tablet:px-6">
       <MeesAfzender />
-      <h3 className="mt-2 text-2xl font-extrabold">Goed gewerkt! 🎉</h3>
-      <p className="mt-1 font-semibold text-tekst-zacht">{sessieNaam(sessie)}</p>
-      <p className="mt-2 text-lg">{tekst}</p>
-      {weetje && (
-        <Link href={`/kind/weetjes/${weetje.id}`} className="mt-4 flex items-center gap-3 rounded-[14px] bg-blauw-zacht p-3 font-semibold hover:bg-[#d9ecfd]">
-          <Icoon naam="weetjesboek" className="size-7 shrink-0 text-actie-blauw" />
-          <span>
-            Je hebt een nieuw weetje verdiend: <span className="font-bold">{weetje.titel}</span>
-          </span>
-        </Link>
-      )}
-      <div className="mt-4 flex flex-wrap gap-3">
-        <button type="button" onClick={onNogEenRondje} className={hoofdKnop}>
-          Nog een rondje
-        </button>
-        <button type="button" onClick={onIetsAnders} className="inline-flex min-h-14 items-center rounded-[14px] border border-[#cfe6fb] bg-[#f3f9ff] px-5 font-bold hover:bg-blauw-zacht">
-          Iets anders doen
-        </button>
-      </div>
-      <div className="mt-2">
-        <VoorleesLink id={`terugblik-${sessie.id}`} tekst={`Goed gewerkt! ${tekst}`} />
-      </div>
+      <TypOnthul>
+        <h3 className="mt-2 text-2xl font-extrabold">Goed gewerkt! 🎉</h3>
+        <p className="mt-1 font-semibold text-tekst-zacht">{sessieNaam(sessie)}</p>
+        <p className="mt-2 text-lg">{tekst}</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button type="button" onClick={onNogEenRondje} className={hoofdKnop}>
+            Nog een rondje
+          </button>
+          <button type="button" onClick={onIetsAnders} className="inline-flex min-h-14 items-center rounded-[14px] border border-[#cfe6fb] bg-[#f3f9ff] px-5 font-bold hover:bg-blauw-zacht">
+            Iets anders doen
+          </button>
+        </div>
+        <div className="mt-2">
+          <VoorleesLink id={`terugblik-${sessie.id}`} tekst={`Goed gewerkt! ${tekst}`} />
+        </div>
+      </TypOnthul>
     </div>
   );
 }

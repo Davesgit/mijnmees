@@ -8,6 +8,7 @@ export type Kaart =
   | { soort: "tafels"; tafels: number[]; bewerking?: "x" | ":" | "beide" }
   | { soort: "europa"; vorm?: "afwisselend" | "puzzel"; onderwerpen?: string[] }
   | { soort: "voortgang" }
+  /** Vervallen (weetjes bestaan niet meer); alleen nog in oude gesprekken, wordt niet getoond. */
   | { soort: "weetjes" }
   | { soort: "weetje"; id: string };
 
@@ -49,7 +50,7 @@ export type Gesprek = {
 };
 
 /** Waar een gesprek over kan gaan (vaste lijst; ook de uitkomst van het herkennen van getypte tekst). */
-export type Onderwerp = "leren" | "oefenen" | "vraag" | "rekenen" | "tafels" | "europa" | "weetjes" | "werkblad" | "voortgang" | "groet" | "onbekend";
+export type Onderwerp = "leren" | "oefenen" | "vraag" | "rekenen" | "tafels" | "europa" | "werkblad" | "voortgang" | "groet" | "onbekend";
 
 /** Wat Mees weet over het kind om een voorstel te doen (uit de lokale oefenopslag). */
 export type Context = {
@@ -80,11 +81,10 @@ const keuze = {
   rekenen: { label: "Rekenen", soort: "vervolg", onderwerp: "rekenen" },
   tafels: { label: "Tafels", soort: "vervolg", onderwerp: "tafels" },
   europa: { label: "Topo Europa", soort: "vervolg", onderwerp: "europa" },
-  weetjes: { label: "Mijn weetjes", soort: "vervolg", onderwerp: "weetjes" },
   voortgang: { label: "Mijn voortgang", soort: "vervolg", onderwerp: "voortgang" },
 } as const satisfies Record<string, Keuze>;
 
-const onderwerpKeuzes: Keuze[] = [keuze.rekenen, keuze.tafels, keuze.europa, keuze.weetjes];
+const onderwerpKeuzes: Keuze[] = [keuze.rekenen, keuze.tafels, keuze.europa];
 
 /** Herkent waar een getypte of ingesproken tekst over gaat. Eenvoudige woordherkenning; geen AI. */
 export function herken(tekst: string): Onderwerp {
@@ -94,7 +94,6 @@ export function herken(tekst: string): Onderwerp {
   if (heeft("puzzel")) return "europa";
   if (heeft("europa", "land", "hoofdstad", "topo", "kaart", "aardrijkskunde", "rivier", "gebergte")) return "europa";
   if (heeft("breuk", "procent", "kommagetal", "decimaal", "rekenen", " som ", "sommen", "plus", "min ", "delen", "gedeeld", "meten", "geld", "tijd", "klok")) return "rekenen";
-  if (heeft("weetje", "weetjes", "wist je")) return "weetjes";
   if (heeft("werkblad", "printen", "papier")) return "werkblad";
   if (heeft("voortgang", "hoe goed", "wat heb ik", "hoe gaat het met mijn")) return "voortgang";
   if (heeft("oefen", "trainen", "train ")) return "oefenen";
@@ -138,8 +137,6 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context, tafels: number[] = 
       };
     case "europa":
       return { tekst: "Op de kaart van Europa! Kies welk gebied, wat je wilt oefenen, en of je vragen wilt of een puzzel.", kaart: { soort: "europa" } };
-    case "weetjes":
-      return { tekst: "Dit zijn de weetjes die je al hebt verzameld. Tik op een weetje om het te lezen.", kaart: { soort: "weetjes" } };
     case "werkblad":
       return { tekst: "Werkbladen maken kan nog niet in de chat. Zullen we samen oefenen?", keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, keuze.tafels] };
     case "voortgang":
@@ -161,7 +158,7 @@ export function reageer(tekst: string, ctx: Context): Antwoord {
   const onderwerp = herken(tekst);
   const r = antwoord(onderwerp, ctx, onderwerp === "tafels" ? tafelsUit(tekst) : []);
   const isVraag = tekst.includes("?") || VRAAGWOORDEN.test(tekst);
-  if (!isVraag || ["onbekend", "groet", "oefenen", "leren", "voortgang", "weetjes"].includes(onderwerp)) return r;
+  if (!isVraag || ["onbekend", "groet", "oefenen", "leren", "voortgang"].includes(onderwerp)) return r;
   return { ...r, tekst: `Op die vraag kan ik nog geen eigen antwoord geven. Maar ik kan je wel helpen oefenen! ${r.tekst}` };
 }
 

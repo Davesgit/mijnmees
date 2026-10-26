@@ -1,5 +1,3 @@
-import { weetjes } from "@/content/weetjes";
-import { dagInAmsterdam } from "@/lib/datum";
 import { europaHerhaling, maakEuropaSlots, maakPuzzelSlots, type EuropaOnderwerp } from "./europa-sessie";
 import { tafelVraag } from "./tafel-vragen";
 import type { OpslagData, Sessie, SessieInstellingen, Slot } from "./types";
@@ -363,8 +361,7 @@ export function vraagHulp(data: OpslagData, sessieId: string, slotId?: string): 
 
 function rondAf(data: OpslagData, sessie: Sessie): OpslagData {
   const afgerond: Sessie = { ...sessie, index: sessie.slots.length, status: "afgerond", afgerondOp: new Date().toISOString(), versie: sessie.versie + 1 };
-  // De niveaubepaling is geen oefening: geen weetje.
-  return sessie.soort === "niveau" ? metSessie(data, afgerond) : ontdekWeetje(metSessie(data, afgerond), afgerond.id);
+  return metSessie(data, afgerond);
 }
 
 /**
@@ -407,18 +404,6 @@ export function werkPuzzelBij(data: OpslagData, sessieId: string): OpslagData {
   const gelegd = sessie.slots.filter((s) => s.uitkomst).length;
   if (gelegd === sessie.slots.length) return rondAf(data, sessie);
   return gelegd === sessie.index ? data : metSessie(data, { ...sessie, index: gelegd, versie: sessie.versie + 1 });
-}
-
-/** Maximaal één nieuw weetje per kalenderdag waarop een oefening is afgerond; idempotent per sessie. */
-function ontdekWeetje(data: OpslagData, sessieId: string): OpslagData {
-  if (data.weetjes.some((w) => w.sessieId === sessieId)) return data;
-  const nu = new Date();
-  const dag = dagInAmsterdam(nu);
-  if (data.weetjes.some((w) => w.dag === dag)) return data;
-  const ontdekt = new Set(data.weetjes.map((w) => w.weetjeId));
-  const volgende = weetjes.find((w) => !ontdekt.has(w.id));
-  if (!volgende) return data;
-  return { ...data, weetjes: [...data.weetjes, { weetjeId: volgende.id, sessieId, dag, op: nu.toISOString() }] };
 }
 
 /** Stoppen tijdens de automatische overgang na een goed antwoord: hervat bij de volgende vraag. */
