@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Icoon } from "@/components/mees/Icoon";
@@ -8,13 +9,25 @@ import { lessenVoorKind } from "@/features/live/server";
 import { haalHulpVanGezin } from "@/features/tutorhulp/server";
 import { haalActiefKind } from "@/lib/server/dal";
 import { ChatScherm } from "@/features/chat/ChatScherm";
+import { GESPREK_OPEN_COOKIE } from "@/features/chat/gesprek";
 
 export const metadata: Metadata = { title: "Praat met Mees" };
 
 export default function Page() {
   return (
     // De chat is de hoofdingang. Het oude startscherm (StartScherm.tsx) wordt niet meer getoond.
+    <Suspense fallback={<div className="chat-achtergrond flex-1" aria-hidden />}>
+      <Chat />
+    </Suspense>
+  );
+}
+
+/** Staat er geen gesprek open, dan staat het welkomstscherm meteen in de HTML (niet pas na het laden van de scripts). */
+async function Chat() {
+  const gesprekOpen = (await cookies()).get(GESPREK_OPEN_COOKIE)?.value === "1";
+  return (
     <ChatScherm
+      gesprekOpen={gesprekOpen}
       meldingen={
         <Suspense fallback={null}>
           <LesMelding />

@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { abonneerOpslag, actiefProfiel } from "@/lib/opslag/lokaal";
-import { bewaarGesprek, maakTitel, type Bericht, type Gesprek } from "./gesprek";
+import { bewaarGesprek, GESPREK_OPEN_COOKIE, maakTitel, type Bericht, type Gesprek } from "./gesprek";
 
 // Gesprekken met Mees blijven op dit apparaat, per profiel (gast of kind). De sleutel van een kind begint met
 // "mees:kind:", zodat uitloggen op een gedeeld apparaat (wisKindprofielenOpApparaat) ze ook wist.
@@ -41,6 +41,7 @@ function schrijf(data: ChatOpslag) {
   try {
     window.localStorage.setItem(cache.sleutel, JSON.stringify(data));
   } catch {}
+  document.cookie = `${GESPREK_OPEN_COOKIE}=${data.actief ? 1 : 0}; path=/; max-age=31536000; samesite=lax`;
   meld();
 }
 

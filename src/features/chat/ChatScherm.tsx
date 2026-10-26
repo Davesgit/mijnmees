@@ -49,7 +49,7 @@ function toonNieuw(eerste: HTMLElement, laatste: HTMLElement) {
 }
 
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
-export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
+export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: ReactNode; /** Volgens het cookie staat er een gesprek open (dan geen welkomstscherm vooraf). */ gesprekOpen?: boolean }) {
   const router = useRouter();
   const { kind } = useProfiel();
   const opslag = useOpslag();
@@ -307,7 +307,9 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   );
 
   // Eerste weergave: nog onbekend of er een gesprek openstaat.
-  if (chats === null || opslag === null) return <div className="flex-1 bg-[#f5fbff]" aria-hidden />;
+  // Nog niet bekend wat er op dit apparaat staat: het welkomstscherm kan al meteen (ook vanaf de server),
+  // behalve als er volgens het cookie een gesprek openstaat.
+  if ((chats === null || opslag === null) && gesprekOpen) return <div className="chat-achtergrond flex-1" aria-hidden />;
 
   const voorleesWaarde = { leestId, bezig: voorlezen.bezig, laadt: voorlezen.status === "laden", lees };
 

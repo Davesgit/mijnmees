@@ -62,6 +62,12 @@ export type Context = {
 };
 
 export const MAX_GESPREKKEN = 20;
+
+/**
+ * Cookie dat alleen onthoudt óf er een gesprek openstaat (geen inhoud). Zo kan de server meteen het welkomstscherm
+ * meesturen, zonder eerst het welkomstscherm te tonen als er een gesprek openstaat.
+ */
+export const GESPREK_OPEN_COOKIE = "mees_chat_open";
 const MAX_TITEL = 40;
 
 export const startkaarten = [
