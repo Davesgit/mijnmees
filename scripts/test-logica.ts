@@ -353,12 +353,13 @@ test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
   data = registreerAntwoord(data, id, fout)!.data;
   assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:open"]);
   data = vraagHulp(data, id);
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "hulp", "vraag:open"]);
+  // Hulp gevraagd: de vraag blijft staan, daaronder het verzoek, de hint en dezelfde vraag opnieuw.
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:hulp", "hulpVraag", "hulp", "vraag:open"]);
   data = registreerAntwoord(data, id, fout)!.data;
   // Hint 1 had het kind al gevraagd: na de tweede fout geen dubbele hint.
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "hulp", "vraag:fout", "fout:-", "vraag:open"]);
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:hulp", "hulpVraag", "hulp", "vraag:fout", "fout:-", "vraag:open"]);
   data = registreerAntwoord(data, id, goedAntwoord(data.sessies[id]!))!.data;
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "hulp", "vraag:fout", "fout:-", "vraag:goed", "goed"]);
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:hulp", "hulpVraag", "hulp", "vraag:fout", "fout:-", "vraag:goed", "goed"]);
   // Goed antwoord telt meteen; een fout of hint telt niet als afgeronde vraag.
   assert.equal(oefenTeller(data.sessies[id]!).klaar, 1);
   assert.equal(kanInChat(data.sessies[id]!), true);

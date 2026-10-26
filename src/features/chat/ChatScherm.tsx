@@ -122,8 +122,15 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     if (!l) return;
     const ro = new ResizeObserver(() => pasRuimteAan());
     ro.observe(l);
+    // Wat later verschijnt (bijv. een oefening na het typen) telt ook als gezien; anders lijkt het bij de volgende
+    // stap "nieuw" en springt het scherm terug.
+    const mo = new MutationObserver(() => {
+      if (gezien.current) gezien.current.stappen = new Set([...l.querySelectorAll<HTMLElement>("[data-stap]")].map((e) => e.dataset.stap!));
+    });
+    mo.observe(l, { childList: true, subtree: true });
     window.addEventListener("resize", pasRuimteAan);
     return () => {
+      mo.disconnect();
       ro.disconnect();
       window.removeEventListener("resize", pasRuimteAan);
     };

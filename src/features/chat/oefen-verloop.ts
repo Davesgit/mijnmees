@@ -7,8 +7,10 @@ import type { Poging, Sessie, Slot } from "@/features/oefenen/types";
 export type Hulp = { soort: "hint"; niveau: 1 | 2 } | { soort: "uitleg" };
 
 export type Stap =
-  /** Een poging op de vraag (bevroren) of de vraag die nu openstaat (open). */
-  | { soort: "vraag"; poging: number; antwoord?: string; status: "fout" | "goed" | "open"; opnieuw: boolean }
+  /** Een poging op de vraag (bevroren), de vraag waarbij om hulp werd gevraagd, of de vraag die nu openstaat (open). */
+  | { soort: "vraag"; poging: number; antwoord?: string; status: "fout" | "goed" | "hulp" | "open"; opnieuw: boolean }
+  /** Het kind vraagt om hulp (verschijnt als eigen chatbericht). */
+  | { soort: "hulpVraag"; hulp: Hulp }
   /** Fout antwoord: "Nog niet helemaal", het gekozen antwoord en eventueel nieuwe hulp. */
   | { soort: "fout"; antwoord: string; hulp: Hulp | null }
   /** Hulp waar het kind zelf om vroeg (neutraal, niet oranje). */
@@ -31,14 +33,23 @@ export function verloopVanSlot(slot: Slot, pogingen: Poging[]): Stap[] {
   let uitleg = false;
   let fouten = 0;
 
+  let getoond = 0;
+  /** Gevraagde hulp, zoals in een chat: de vraag, dan het verzoek van het kind, dan de hulp van Mees eronder. */
+  const vraagHulpOm = (hulp: Hulp) => {
+    stappen.push({ soort: "vraag", poging: ++getoond, status: "hulp", opnieuw: getoond > 1 || hints > 0 });
+    stappen.push({ soort: "hulpVraag", hulp });
+    stappen.push({ soort: "hulp", hulp });
+  };
   const vraagHints = (tot: number) => {
-    for (let h = hints + 1; h <= Math.min(tot, 2); h++) stappen.push({ soort: "hulp", hulp: { soort: "hint", niveau: h as 1 | 2 } });
-    hints = Math.max(hints, Math.min(tot, 2));
+    for (let h = hints + 1; h <= Math.min(tot, 2); h++) {
+      vraagHulpOm({ soort: "hint", niveau: h as 1 | 2 });
+      hints = h;
+    }
   };
 
-  pogingen.forEach((p, i) => {
+  pogingen.forEach((p) => {
     vraagHints(p.hulpVooraf.hints);
-    stappen.push({ soort: "vraag", poging: i + 1, antwoord: p.antwoord, status: p.resultaat, opnieuw: i > 0 || hints > 0 });
+    stappen.push({ soort: "vraag", poging: ++getoond, antwoord: p.antwoord, status: p.resultaat, opnieuw: getoond > 1 });
     if (p.resultaat === "goed") {
       stappen.push({ soort: "goed", metHulp: fouten > 0 || hints > 0 });
       return;
@@ -56,13 +67,13 @@ export function verloopVanSlot(slot: Slot, pogingen: Poging[]): Stap[] {
 
   // Hulp die na de laatste poging is gevraagd.
   vraagHints(slot.hulp.hints);
-  if (slot.hulp.uitleg && !uitleg) stappen.push({ soort: "hulp", hulp: { soort: "uitleg" } });
+  if (slot.hulp.uitleg && !uitleg) vraagHulpOm({ soort: "uitleg" });
 
   if (slot.hulp.uitleg) {
     if (!slot.uitkomst) stappen.push({ soort: "verder" });
     return stappen;
   }
-  stappen.push({ soort: "vraag", poging: pogingen.length + 1, status: "open", opnieuw: pogingen.length > 0 || hints > 0 });
+  stappen.push({ soort: "vraag", poging: ++getoond, status: "open", opnieuw: getoond > 1 });
   return stappen;
 }
 

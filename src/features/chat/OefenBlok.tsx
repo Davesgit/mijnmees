@@ -120,6 +120,13 @@ function SlotVerloop({
                 {stap.hulp ? <HulpInhoud vraag={vraag} hulp={stap.hulp} /> : <p className="mt-3 text-lg">Kijk nog eens rustig naar de vraag. Probeer het hieronder opnieuw.</p>}
               </Kaart>
             );
+          case "hulpVraag":
+            return (
+              <div key={id} data-stap={id} className="ml-auto max-w-[85%] rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
+                <span className="sr-only">Jij: </span>
+                {stap.hulp.soort === "uitleg" ? "Laat de uitleg zien." : stap.hulp.niveau === 1 ? "Geef me een hint." : "Mag ik nog een hint?"}
+              </div>
+            );
           case "hulp":
             return (
               <Kaart key={id} toon="hulp" voorlees={{ id, tekst: hulpTekstVoorlezen(vraag, stap.hulp) }}>
