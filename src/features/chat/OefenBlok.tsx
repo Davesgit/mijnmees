@@ -1,0 +1,376 @@
+"use client";
+
+import Link from "next/link";
+import { useState, type ReactNode } from "react";
+import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
+import { Icoon } from "@/components/mees/Icoon";
+import { vindWeetje } from "@/content/weetjes";
+import { gaVerder, registreerAntwoord, sessieStatistiek, vraagHulp } from "@/features/oefenen/sessie";
+import type { OpslagData, Sessie, Slot } from "@/features/oefenen/types";
+import { sessieNaam } from "@/features/oefenen/weergave";
+import { goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, type TafelVraag } from "@/features/oefenen/vragen";
+import { hintVoorleesTekst, uitlegVoorleesTekst, vraagVoorleesTekst } from "@/features/voorlezen/teksten";
+import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
+import { MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
+import type { OefenVerwijzing } from "./gesprek";
+import { verloopVanSlot, type Hulp, type Stap } from "./oefen-verloop";
+
+type BreukOfTafel = BreukVergelijkVraag | TafelVraag;
+
+/**
+ * Een oefening in het gesprek. Alle pogingen blijven staan; alleen de nieuwste vraag is interactief.
+ * Antwoordcontrole, hulp en voortgang komen uit de oefenmotor (sessie.ts) en de lokale opslag.
+ */
+export function OefenBlok({ verwijzing, actief, onNogEenRondje, onIetsAnders }: { verwijzing: OefenVerwijzing; actief: boolean; onNogEenRondje: () => void; onIetsAnders: () => void }) {
+  const opslag = useOpslag();
+  const sessie = opslag?.sessies[verwijzing.sessieId];
+  const [bewaarFout, setBewaarFout] = useState(false);
+  if (!opslag || !sessie) return null;
+
+  const eind = verwijzing.tot ?? Math.min(sessie.index + 1, sessie.slots.length);
+  const interactief = actief && verwijzing.tot === undefined && sessie.status === "bezig";
+  const bewaar = (w: (d: OpslagData) => OpslagData) => setBewaarFout(!wijzigOpslag(w));
+
+  return (
+    <>
+      {sessie.slots.slice(verwijzing.vanaf, eind).map((slot, i) => {
+        const index = verwijzing.vanaf + i;
+        const vraag = vindVraag(slot.vraagId);
+        if (!vraag || vraag.soort === "europa") return null;
+        return (
+          <SlotVerloop
+            key={slot.id}
+            sessie={sessie}
+            slot={slot}
+            vraag={vraag}
+            nummer={index + 1}
+            pogingen={opslag.pogingen.filter((p) => p.sessieId === sessie.id && p.slotId === slot.id)}
+            interactief={interactief && index === sessie.index}
+            bewaar={bewaar}
+          />
+        );
+      })}
+      {bewaarFout && <p className="rounded-[16px] bg-fout-zacht p-4 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
+      {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />}
+    </>
+  );
+}
+
+function SlotVerloop({
+  sessie,
+  slot,
+  vraag,
+  nummer,
+  pogingen,
+  interactief,
+  bewaar,
+}: {
+  sessie: Sessie;
+  slot: Slot;
+  vraag: BreukOfTafel;
+  nummer: number;
+  pogingen: Parameters<typeof verloopVanSlot>[1];
+  interactief: boolean;
+  bewaar: (w: (d: OpslagData) => OpslagData) => void;
+}) {
+  const stappen = verloopVanSlot(slot, pogingen);
+  const laatsteVraag = stappen.findLastIndex((s) => s.soort === "vraag");
+  const sleutel = (s: Stap, i: number) => `${slot.id}-${i}-${s.soort}`;
+
+  return (
+    <>
+      {stappen.map((stap, i) => {
+        const id = sleutel(stap, i);
+        switch (stap.soort) {
+          case "vraag":
+            return (
+              <VraagKaart
+                key={id}
+                id={id}
+                vraag={vraag}
+                nummer={nummer}
+                herhaling={Boolean(slot.herhalingVan)}
+                stap={stap}
+                interactief={interactief && stap.status === "open" && i === laatsteVraag}
+                onControleer={(antwoord) =>
+                  bewaar((d) => registreerAntwoord(d, sessie.id, antwoord)?.data ?? d)
+                }
+                onHint={() => bewaar((d) => vraagHulp(d, sessie.id))}
+                hintLabel={slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien"}
+              />
+            );
+          case "fout":
+            return (
+              <Kaart key={id} toon="fout" voorlees={{ id, tekst: `Nog niet helemaal. Jij koos ${antwoordWoorden(vraag, stap.antwoord)}. ${hulpTekstVoorlezen(vraag, stap.hulp)}` }}>
+                <h3 className="text-xl font-extrabold text-probeer-opnieuw">Nog niet helemaal</h3>
+                <p className="mt-2 rounded-[12px] bg-[#fdebc8] px-4 py-2.5 font-bold text-probeer-opnieuw">
+                  Jij koos {antwoordWoorden(vraag, stap.antwoord)}. Dat is nog niet het goede antwoord.
+                </p>
+                {stap.hulp ? <HulpInhoud vraag={vraag} hulp={stap.hulp} /> : <p className="mt-3 text-lg">Kijk nog eens rustig naar de vraag. Probeer het hieronder opnieuw.</p>}
+              </Kaart>
+            );
+          case "hulp":
+            return (
+              <Kaart key={id} toon="hulp" voorlees={{ id, tekst: hulpTekstVoorlezen(vraag, stap.hulp) }}>
+                <HulpInhoud vraag={vraag} hulp={stap.hulp} />
+              </Kaart>
+            );
+          case "goed":
+            return (
+              <Kaart key={id} toon="goed" voorlees={{ id, tekst: `Goed gevonden! ${vraag.explanation}` }}>
+                <h3 className="text-xl font-extrabold text-succes">{stap.metHulp ? "Goed gevonden! Je hebt de hulp goed gebruikt." : "Goed gevonden!"}</h3>
+                <p className="mt-2 text-lg">
+                  <TekstMetBreuken tekst={vraag.explanation} />
+                </p>
+                {interactief && (
+                  <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
+                    {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Volgende vraag"}
+                    <Icoon naam="pijl-rechts" className="size-6" />
+                  </button>
+                )}
+              </Kaart>
+            );
+          case "verder":
+            return interactief ? (
+              <div key={id} className="pl-1">
+                <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
+                  {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Verder"}
+                  <Icoon naam="pijl-rechts" className="size-6" />
+                </button>
+              </div>
+            ) : null;
+        }
+      })}
+    </>
+  );
+}
+
+const hoofdKnop =
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-[14px] bg-actie-blauw px-6 text-lg font-bold text-wit hover:bg-actie-hover active:bg-actie-ingedrukt disabled:bg-uitgeschakeld-vlak disabled:text-uitgeschakeld-tekst";
+
+function Kaart({ toon, voorlees, children }: { toon: "normaal" | "fout" | "hulp" | "goed"; voorlees: { id: string; tekst: string }; children: ReactNode }) {
+  const stijl = {
+    normaal: "border-[#e9f5ff] bg-wit",
+    fout: "border-2 border-[#e2a23b] bg-probeer-opnieuw-zacht",
+    hulp: "border-[#cfe6fb] bg-blauw-zacht",
+    goed: "border-2 border-[#86d3a6] bg-succes-zacht",
+  }[toon];
+  return (
+    <div className={`mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${stijl}`}>
+      <MeesAfzender />
+      <div className="mt-2">{children}</div>
+      <div className="mt-2">
+        <VoorleesLink id={voorlees.id} tekst={voorlees.tekst} />
+      </div>
+    </div>
+  );
+}
+
+function HulpInhoud({ vraag, hulp }: { vraag: BreukOfTafel; hulp: Hulp }) {
+  if (hulp.soort === "uitleg")
+    return (
+      <div className="mt-3">
+        <h4 className="font-bold text-actie-blauw">Uitleg</h4>
+        <p className="mt-1 text-lg">
+          <TekstMetBreuken tekst={vraag.explanation} />
+        </p>
+        <p className="mt-2 font-bold">
+          Het goede antwoord is <span className="text-xl">{goedAntwoordTekst(vraag)}</span>.
+        </p>
+      </div>
+    );
+  return (
+    <div className="mt-3 flex items-start gap-3">
+      <Icoon naam="hint" className="mt-0.5 size-7 shrink-0 text-actie-blauw" />
+      <div>
+        <h4 className="font-bold text-actie-blauw">Hint {hulp.niveau} van 2</h4>
+        <p className="mt-1 text-lg">
+          <TekstMetBreuken tekst={vraag.hints[hulp.niveau - 1]} />
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function hulpTekstVoorlezen(vraag: BreukOfTafel, hulp: Hulp | null) {
+  if (!hulp) return "Kijk nog eens rustig naar de vraag.";
+  return hulp.soort === "uitleg" ? uitlegVoorleesTekst(vraag) : hintVoorleesTekst(vraag, hulp.niveau - 1);
+}
+
+function antwoordWoorden(vraag: BreukOfTafel, antwoord: string) {
+  if (vraag.soort === "breuk") return antwoord === "<" ? "< (is kleiner dan)" : antwoord === ">" ? "> (is groter dan)" : "= (is gelijk aan)";
+  return antwoord;
+}
+
+function VraagKaart({
+  id,
+  vraag,
+  nummer,
+  herhaling,
+  stap,
+  interactief,
+  onControleer,
+  onHint,
+  hintLabel,
+}: {
+  id: string;
+  vraag: BreukOfTafel;
+  nummer: number;
+  herhaling: boolean;
+  stap: Extract<Stap, { soort: "vraag" }>;
+  interactief: boolean;
+  onControleer: (antwoord: string) => void;
+  onHint: () => void;
+  hintLabel: string;
+}) {
+  const [gekozen, setGekozen] = useState<string>("");
+  const titel = stap.opnieuw ? "Probeer het nog eens." : herhaling ? "Nog een soortgelijke vraag." : `Vraag ${nummer}`;
+  const getoond = interactief ? gekozen : (stap.antwoord ?? "");
+
+  return (
+    <div className={`w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${interactief ? "" : "opacity-90"}`}>
+      <MeesAfzender />
+      <p className="mt-2 font-semibold text-actie-blauw">{titel}</p>
+      <h3 className="mt-1 text-xl font-extrabold tablet:text-2xl">{vraag.prompt}</h3>
+      {vraag.soort === "breuk" && <p className="mt-1 text-[#5b6fae]">{vraag.instructie}</p>}
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (interactief && gekozen.trim()) onControleer(gekozen.trim());
+        }}
+      >
+        {vraag.soort === "breuk" ? (
+          <BreukOpgave vraag={vraag} gekozen={getoond} onKies={setGekozen} vergrendeld={!interactief} groep={id} />
+        ) : (
+          <TafelOpgave vraag={vraag} waarde={getoond} onWijzig={setGekozen} vergrendeld={!interactief} id={id} />
+        )}
+
+        {interactief ? (
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <button type="submit" disabled={!gekozen.trim()} className={hoofdKnop}>
+              Kijk samen met Mees
+              <Icoon naam="pijl-rechts" className="size-6" />
+            </button>
+            <button type="button" onClick={onHint} className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-semibold text-actie-blauw hover:bg-blauw-zacht">
+              <Icoon naam="hint" className="size-6" />
+              {hintLabel}
+            </button>
+          </div>
+        ) : (
+          stap.antwoord && <p className="mt-3 tekst-klein text-tekst-zacht">Jouw antwoord: {antwoordWoorden(vraag, stap.antwoord)}</p>
+        )}
+      </form>
+      <div className="mt-2">
+        <VoorleesLink id={id} tekst={vraagVoorleesTekst(vraag)} />
+      </div>
+    </div>
+  );
+}
+
+function BreukOpgave({ vraag, gekozen, onKies, vergrendeld, groep }: { vraag: BreukVergelijkVraag; gekozen: string; onKies: (w: string) => void; vergrendeld: boolean; groep: string }) {
+  const [l1, l2] = vraag.visual.links;
+  const [r1, r2] = vraag.visual.rechts;
+  return (
+    <>
+      <div className="mt-4 flex items-center justify-center gap-5 text-[2.75rem] font-bold text-inkt tablet:gap-8 tablet:text-[3.25rem]" role="group" aria-label={`Breuk ${l1}/${l2} en breuk ${r1}/${r2}`}>
+        <Breuk teller={l1} noemer={l2} />
+        <span className={`grid size-16 place-items-center rounded-[12px] border-2 text-[0.75em] tablet:size-20 ${gekozen ? "border-actie-blauw bg-blauw-zacht" : "border-rand-interactief text-[#6c7fbf]"}`} aria-hidden>
+          {gekozen || "?"}
+        </span>
+        <Breuk teller={r1} noemer={r2} />
+      </div>
+      <fieldset className="mt-4" disabled={vergrendeld}>
+        <legend className="sr-only">{vraag.instructie}</legend>
+        <div className="mx-auto grid max-w-xs grid-cols-3 gap-3">
+          {vraag.options.map((optie) => {
+            const isGekozen = gekozen === optie;
+            return (
+              <label
+                key={optie}
+                className={`grid min-h-16 place-items-center rounded-[14px] border text-4xl font-bold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus ${
+                  isGekozen ? "border-2 border-actie-blauw bg-blauw-zacht" : "border-rand-interactief bg-[#f5faff]"
+                } ${vergrendeld ? "cursor-default" : "cursor-pointer [@media(hover:hover)]:hover:bg-blauw-zacht"}`}
+              >
+                <input
+                  type="radio"
+                  name={`antwoord-${groep}`}
+                  value={optie}
+                  checked={isGekozen}
+                  onChange={() => onKies(optie)}
+                  className="sr-only"
+                  aria-label={optie === "<" ? "kleiner dan" : optie === ">" ? "groter dan" : "is gelijk aan"}
+                />
+                <span aria-hidden>{optie}</span>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+    </>
+  );
+}
+
+function TafelOpgave({ vraag, waarde, onWijzig, vergrendeld, id }: { vraag: TafelVraag; waarde: string; onWijzig: (w: string) => void; vergrendeld: boolean; id: string }) {
+  return (
+    <div className="mt-4 flex items-center justify-center gap-3 text-[2.5rem] font-bold text-inkt tablet:text-[3rem]">
+      <span aria-hidden>
+        {vraag.links} {vraag.bewerking === "x" ? "×" : ":"} {vraag.rechts} =
+      </span>
+      <label htmlFor={`tafel-${id}`} className="sr-only">
+        Antwoord op {vraag.links} {vraag.bewerking === "x" ? "keer" : "gedeeld door"} {vraag.rechts}
+      </label>
+      <input
+        id={`tafel-${id}`}
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        autoComplete="off"
+        maxLength={4}
+        value={waarde}
+        readOnly={vergrendeld}
+        autoFocus={!vergrendeld}
+        onChange={(e) => onWijzig(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))}
+        className="h-16 w-28 rounded-[14px] border-2 border-rand-interactief bg-wit text-center focus:border-actie-blauw tablet:h-20 tablet:w-36"
+      />
+    </div>
+  );
+}
+
+function Terugblik({ sessie, opslag, onNogEenRondje, onIetsAnders }: { sessie: Sessie; opslag: OpslagData; onNogEenRondje: () => void; onIetsAnders: () => void }) {
+  const { zelfstandig, aantal } = sessieStatistiek(sessie);
+  const metHulp = aantal - zelfstandig;
+  const ontdekt = opslag.weetjes.find((w) => w.sessieId === sessie.id);
+  const weetje = ontdekt ? vindWeetje(ontdekt.weetjeId) : null;
+  const tekst =
+    metHulp === 0
+      ? `Klaar! Je hebt alle ${aantal} vragen zelf goed gedaan. Knap!`
+      : `Klaar! Je hebt ${aantal} vragen gedaan: ${zelfstandig} helemaal zelf en ${metHulp} met hulp. Zo leer je erbij.`;
+  return (
+    <div className="mees-verschijn w-full tablet:max-w-[92%] rounded-[20px] border-2 border-[#86d3a6] bg-wit px-5 py-5 shadow-[0_8px_24px_#92c5eb17] tablet:px-6">
+      <MeesAfzender />
+      <h3 className="mt-2 text-2xl font-extrabold">Goed gewerkt! 🎉</h3>
+      <p className="mt-1 font-semibold text-tekst-zacht">{sessieNaam(sessie)}</p>
+      <p className="mt-2 text-lg">{tekst}</p>
+      {weetje && (
+        <Link href={`/kind/weetjes/${weetje.id}`} className="mt-4 flex items-center gap-3 rounded-[14px] bg-blauw-zacht p-3 font-semibold hover:bg-[#d9ecfd]">
+          <Icoon naam="weetjesboek" className="size-7 shrink-0 text-actie-blauw" />
+          <span>
+            Je hebt een nieuw weetje verdiend: <span className="font-bold">{weetje.titel}</span>
+          </span>
+        </Link>
+      )}
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button type="button" onClick={onNogEenRondje} className={hoofdKnop}>
+          Nog een rondje
+        </button>
+        <button type="button" onClick={onIetsAnders} className="inline-flex min-h-14 items-center rounded-[14px] border border-[#cfe6fb] bg-[#f3f9ff] px-5 font-bold hover:bg-blauw-zacht">
+          Iets anders doen
+        </button>
+      </div>
+      <div className="mt-2">
+        <VoorleesLink id={`terugblik-${sessie.id}`} tekst={`Goed gewerkt! ${tekst}`} />
+      </div>
+    </div>
+  );
+}

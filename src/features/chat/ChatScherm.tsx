@@ -1,15 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
-import { vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
+import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { vindOnderdeel, vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useVoorlezen } from "@/components/mees/Voorlezen";
-import { gastLimietBereikt, maakSessie, oefenConfig, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
+import { gastLimietBereikt, maakSessie, maakTafelSessie, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
+import type { OpslagData } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
+import { Invoer } from "./ChatInvoer";
+import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
 import { antwoord, maakTitel, reageer, startkaarten, type Bericht, type Context, type Gesprek, type Keuze, type Onderwerp } from "./gesprek";
+import { OefenBlok } from "./OefenBlok";
+import { AANTAL_KEUZES, kanInChat, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
 import { bewaar, useChats } from "./opslag";
 
 const STANDAARD_DOEL = "breuken-vergelijken";
@@ -23,12 +28,30 @@ const naTerugkomst: Keuze[] = [
 ];
 
 const nieuwId = () => crypto.randomUUID();
-const bericht = (van: Bericht["van"], tekst: string, keuzes?: Keuze[]): Bericht => ({ id: nieuwId(), van, tekst, keuzes, t: Date.now() });
+const bericht = (van: Bericht["van"], tekst: string, extra: Partial<Pick<Bericht, "keuzes" | "voorstel" | "oefening">> = {}): Bericht => ({
+  id: nieuwId(),
+  van,
+  tekst,
+  ...extra,
+  t: Date.now(),
+});
 
-/** Voegt berichten toe aan het actieve gesprek (of begint een nieuw gesprek). */
-function voegToeAan(gesprek: Gesprek | null, nieuw: Bericht[], titelBron?: string) {
-  const basis: Gesprek = gesprek ?? { id: nieuwId(), titel: maakTitel(titelBron ?? nieuw[0]?.tekst ?? ""), berichten: [], bijgewerkt: Date.now() };
-  bewaar({ ...basis, berichten: [...basis.berichten, ...nieuw], bijgewerkt: Date.now() });
+/** Voegt berichten toe aan het actieve gesprek (of begint een nieuw gesprek). `sluit` maakt eerdere oefenblokken van die sessie af. */
+function voegToeAan(gesprek: Gesprek | null, nieuw: Bericht[], opties: { titel?: string; sluitSessie?: { id: string; tot: number } } = {}) {
+  const basis: Gesprek = gesprek ?? { id: nieuwId(), titel: maakTitel(opties.titel ?? nieuw[0]?.tekst ?? ""), berichten: [], bijgewerkt: Date.now() };
+  const s = opties.sluitSessie;
+  const berichten = s ? basis.berichten.map((b) => (b.oefening?.sessieId === s.id && b.oefening.tot === undefined ? { ...b, oefening: { ...b.oefening, tot: s.tot } } : b)) : basis.berichten;
+  bewaar({ ...basis, berichten: [...berichten, ...nieuw], bijgewerkt: Date.now() });
+}
+
+/** Onderwerpen voor het oefenvoorstel in het gesprek. */
+function voorstelOpties(data: OpslagData) {
+  const doel = vindOnderdeelBijLeerdoel(data.reviews[0]?.leerdoelId ?? STANDAARD_DOEL) ?? vindOnderdeelBijLeerdoel(STANDAARD_DOEL)!;
+  return [
+    { id: `doel:${doel.onderdeel.id}`, naam: doel.onderdeel.naam, uitleg: doel.onderdeel.omschrijving },
+    { id: "tafels-1-5", naam: "Tafels van 1 tot en met 5", uitleg: "Keersommen door elkaar" },
+    { id: "tafels-6-10", naam: "Tafels van 6 tot en met 10", uitleg: "Keersommen door elkaar" },
+  ];
 }
 
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
@@ -44,12 +67,15 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   const eindeRef = useRef<HTMLDivElement>(null);
 
   const gesprek = chats?.actief ? (chats.gesprekken.find((g) => g.id === chats.actief) ?? null) : null;
-  const aantalBerichten = gesprek?.berichten.length ?? 0;
+  const laatste = gesprek?.berichten.at(-1);
+  const actieveOefening = laatste?.oefening && laatste.oefening.tot === undefined ? opslag?.sessies[laatste.oefening.sessieId] : undefined;
+  const oefentBezig = actieveOefening?.status === "bezig";
+  // Verandert bij elke stap in de oefening: dan het nieuwste deel in beeld brengen.
+  const stand = `${gesprek?.id}-${gesprek?.berichten.length}-${actieveOefening?.versie}-${actieveOefening?.status}-${opslag?.pogingen.length}`;
 
-  // Nieuwste bericht in beeld (ook bij terugkomen in een gesprek).
   useEffect(() => {
-    if (aantalBerichten > 0) eindeRef.current?.scrollIntoView({ block: "end" });
-  }, [aantalBerichten, gesprek?.id]);
+    if (gesprek) eindeRef.current?.scrollIntoView({ block: "end" });
+  }, [stand]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Voorlezen stopt bij een andere chat.
   const gesprekId = gesprek?.id;
@@ -58,18 +84,17 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   function context(): Context {
     const data = haalOpslag();
     const open = openSessie(data);
-    const voorstel = vindOnderdeelBijLeerdoel(data.reviews[0]?.leerdoelId ?? STANDAARD_DOEL) ?? vindOnderdeelBijLeerdoel(STANDAARD_DOEL)!;
-    return { open: open ? sessieNaam(open) : null, voorstel: voorstel.onderdeel.naam, aantal: oefenConfig.standaardAantal };
+    return { open: open ? sessieNaam(open) : null, voorstel: voorstelOpties(data)[0]!.naam, aantal: STANDAARD_AANTAL };
   }
 
-  const voegToe = (nieuw: Bericht[], titelBron?: string) => voegToeAan(gesprek, nieuw, titelBron);
+  const voegToe = (nieuw: Bericht[], opties?: Parameters<typeof voegToeAan>[2]) => voegToeAan(gesprek, nieuw, opties);
 
   function stuur(tekst: string, onderwerp?: Onderwerp, titel?: string) {
     const schoon = tekst.trim().slice(0, 500);
     if (!schoon) return;
     stopVoorlezen();
     const reactie = onderwerp ? antwoord(onderwerp, context()) : reageer(schoon, context());
-    voegToe([bericht("kind", schoon), bericht("mees", reactie.tekst, reactie.keuzes)], titel);
+    voegToe([bericht("kind", schoon), bericht("mees", reactie.tekst, { keuzes: reactie.keuzes })], { titel });
     setInvoer("");
   }
 
@@ -77,54 +102,108 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     stopVoorlezen();
     if (k.soort === "vervolg") {
       const reactie = antwoord(k.onderwerp, context());
-      voegToe([bericht("kind", k.label), bericht("mees", reactie.tekst, reactie.keuzes)]);
+      voegToe([bericht("kind", k.label), bericht("mees", reactie.tekst, { keuzes: reactie.keuzes })]);
       return;
     }
-    let doel: string | null = null;
-    if (k.soort === "ga") doel = k.href;
+    if (k.soort === "voorstel") {
+      voegToe([bericht("kind", k.label), bericht("mees", "Zullen we een klein rondje oefenen? Kies wat je wilt doen en hoeveel vragen.", { voorstel: { standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
+      return;
+    }
     if (k.soort === "hervat") {
       const open = openSessie(haalOpslag());
+      if (open && kanInChat(open)) {
+        wijzigOpslag((d) => rondOvergangAf(d, open.id));
+        const index = haalOpslag().sessies[open.id]?.index ?? open.index;
+        voegToe([bericht("kind", k.label), bericht("mees", `We gaan verder met ${sessieNaam(open)}.`), bericht("mees", "", { oefening: { sessieId: open.id, vanaf: index } })], {
+          sluitSessie: { id: open.id, tot: index },
+        });
+        return;
+      }
       if (open) {
         wijzigOpslag((d) => rondOvergangAf(d, open.id));
         const bijgewerkt = haalOpslag().sessies[open.id];
-        if (bijgewerkt) doel = sessieRoute(bijgewerkt);
+        if (bijgewerkt) return ga(k.label, sessieRoute(bijgewerkt));
       }
-    }
-    if (k.soort === "voorstel") doel = startVoorstel();
-    if (!doel) {
-      voegToe([bericht("kind", k.label), bericht("mees", "Dat lukt nu even niet. Probeer het nog eens, of kies iets anders.")]);
+      voegToe([bericht("kind", k.label), bericht("mees", "Er staat geen oefening meer open. Zullen we iets nieuws doen?", { keuzes: naTerugkomst })]);
       return;
     }
-    voegToe([bericht("kind", k.label), bericht("mees", "Veel plezier! Als je terugkomt, praten we hier verder.", naTerugkomst)]);
-    const href = doel;
+    ga(k.label, k.href);
+  }
+
+  function ga(label: string, href: string) {
+    voegToe([bericht("kind", label), bericht("mees", "Veel plezier! Als je terugkomt, praten we hier verder.", { keuzes: naTerugkomst })]);
     startNavigatie(() => router.push(href));
   }
 
-  /** Start het voorstel (zelfde logica als het oude startscherm). Geeft de route terug, of null. */
-  function startVoorstel(): string | null {
-    if (!kind && gastLimietBereikt(haalOpslag())) return "/voortgang-bewaren";
+  /** Start een rondje in het gesprek. */
+  function startRondje(keuze: string, aantal: number, label: string) {
+    stopVoorlezen();
     const data = haalOpslag();
-    const voorstel = vindOnderdeelBijLeerdoel(data.reviews[0]?.leerdoelId ?? STANDAARD_DOEL) ?? vindOnderdeelBijLeerdoel(STANDAARD_DOEL)!;
+    if (!kind && gastLimietBereikt(data)) {
+      voegToe([
+        bericht("kind", label),
+        bericht("mees", "Je hebt als gast al een paar rondjes gedaan. Vraag je ouder om een gratis account, dan bewaar je je voortgang en kun je verder oefenen.", {
+          keuzes: [{ label: "Voortgang bewaren", soort: "ga", href: "/voortgang-bewaren" }],
+        }),
+      ]);
+      return;
+    }
     let sessieId = "";
-    wijzigOpslag((d) => {
-      const r = maakSessie(d, {
-        leerdoelId: voorstel.onderdeel.leerdoelId!,
-        onderdeelId: voorstel.onderdeel.id,
-        onderwerpId: voorstel.onderwerp.id,
-        niveau: "past-bij-mij",
-        aantal: oefenConfig.standaardAantal,
-        bron: "voorstel",
-      });
-      sessieId = r.sessie.id;
-      return r.data;
+    const gelukt = wijzigOpslag((d) => {
+      try {
+        const tafels = keuze === "tafels-1-5" ? [1, 2, 3, 4, 5] : keuze === "tafels-6-10" ? [6, 7, 8, 9, 10] : null;
+        if (tafels) {
+          const r = maakTafelSessie(d, { tafels, bewerkingen: ["x"], aantal, metTijd: false, bron: "voorstel" });
+          sessieId = r.sessie.id;
+          return r.data;
+        }
+        const o = vindOnderdeel(keuze.replace(/^doel:/, ""));
+        if (!o?.onderdeel.leerdoelId) return d;
+        const r = maakSessie(d, { leerdoelId: o.onderdeel.leerdoelId, onderdeelId: o.onderdeel.id, onderwerpId: o.onderwerp.id, niveau: "past-bij-mij", aantal, bron: "voorstel" });
+        sessieId = r.sessie.id;
+        return r.data;
+      } catch {
+        return d;
+      }
     });
-    return sessieId ? `/kind/oefenen/${sessieId}` : null;
+    if (!sessieId) {
+      voegToe([bericht("kind", label), bericht("mees", "Dat lukt nu even niet. Probeer het nog eens, of kies iets anders.", { keuzes: naTerugkomst })]);
+      return;
+    }
+    voegToe([
+      bericht("kind", label),
+      bericht("mees", gelukt ? "Fijn! Neem rustig de tijd. Je kunt altijd een hint vragen." : "Fijn! Let op: bewaren lukt nu niet in deze browser."),
+      bericht("mees", "", { oefening: { sessieId, vanaf: 0 } }),
+    ]);
   }
 
-  function leesVoor(b: Bericht) {
-    if (leestId === b.id && voorlezen.bezig) return stopVoorlezen();
-    setLeestId(b.id);
-    void voorlezen.start(b.tekst);
+  function pauze() {
+    if (!actieveOefening || !laatste?.oefening) return;
+    stopVoorlezen();
+    voegToe(
+      [
+        bericht("kind", "Even pauze."),
+        bericht("mees", "Prima, we nemen even pauze. Je oefening blijft bewaard. Kom terug wanneer je wilt.", {
+          keuzes: [{ label: "Verder waar ik was", soort: "hervat" }, ...naTerugkomst.slice(1)],
+        }),
+      ],
+      { sluitSessie: { id: actieveOefening.id, tot: actieveOefening.index } },
+    );
+  }
+
+  function nogEenRondje() {
+    voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Kies wat je wilt doen en hoeveel vragen.", { voorstel: { standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
+  }
+
+  function ietsAnders() {
+    const r = antwoord("leren", context());
+    voegToe([bericht("kind", "Iets anders doen."), bericht("mees", r.tekst, { keuzes: r.keuzes })]);
+  }
+
+  function lees(id: string, tekst: string) {
+    if (leestId === id && voorlezen.bezig) return stopVoorlezen();
+    setLeestId(id);
+    void voorlezen.start(tekst);
   }
   function stopVoorlezen() {
     voorlezen.stop();
@@ -143,6 +222,8 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
 
   // Eerste weergave: nog onbekend of er een gesprek openstaat.
   if (chats === null || opslag === null) return <div className="flex-1 bg-[#f5fbff]" aria-hidden />;
+
+  const voorleesWaarde = { leestId, bezig: voorlezen.bezig, laadt: voorlezen.status === "laden", lees };
 
   if (!gesprek) {
     return (
@@ -188,203 +269,132 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     );
   }
 
-  const laatsteMees = [...gesprek.berichten].reverse().find((b) => b.van === "mees")?.id;
+  const laatsteMees = gesprek.berichten.findLast((b) => b.van === "mees" && !b.oefening)?.id;
+  const teller = actieveOefening && oefentBezig ? oefenTeller(actieveOefening) : null;
 
   return (
-    <div className="chat-achtergrond flex flex-1 flex-col">
-      <div className="mx-auto flex w-full max-w-[860px] flex-1 flex-col px-4 pt-6 tablet:px-8 tablet:pt-10">
-        <h1 className="truncate text-xl font-extrabold tablet:text-2xl">{gesprek.titel}</h1>
-        <div role="log" aria-live="polite" aria-label="Gesprek met Mees" className="mt-4 flex flex-col gap-3 pb-6">
-          {gesprek.berichten.map((b) =>
-            b.van === "kind" ? (
-              <div key={b.id} className="ml-auto max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
-                <span className="sr-only">Jij: </span>
-                {b.tekst}
+    <ChatVoorleesContext value={voorleesWaarde}>
+      <div className="chat-achtergrond flex flex-1 flex-col">
+        {teller && actieveOefening && (
+          <div className="sticky top-14 z-20 border-b border-[#e1f1fe] bg-[#f5fbff]/95 backdrop-blur tablet:top-0">
+            <div className="mx-auto flex max-w-[860px] items-center gap-4 px-4 py-2.5 tablet:px-8">
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-bold">
+                  Vraag {teller.nummer} van {teller.totaal} <span className="font-semibold text-tekst-zacht">· {sessieNaam(actieveOefening)}</span>
+                </p>
+                <p className="tekst-klein text-tekst-zacht">
+                  {teller.klaar} klaar · Nog {teller.nogTeDoen} te doen
+                </p>
+                <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#dcebf8]" role="progressbar" aria-label="Voortgang" aria-valuemin={0} aria-valuemax={teller.totaal} aria-valuenow={teller.klaar}>
+                  <div className="h-full rounded-full bg-merk-blauw transition-[width] duration-300" style={{ width: `${(teller.klaar / teller.totaal) * 100}%` }} />
+                </div>
               </div>
-            ) : (
-              <MeesBericht
-                key={b.id}
-                bericht={b}
-                actief={b.id === laatsteMees}
-                bezig={navigeert}
-                leest={leestId === b.id && voorlezen.bezig}
-                laadt={leestId === b.id && voorlezen.status === "laden"}
-                onLees={() => leesVoor(b)}
-                onKies={kies}
-              />
-            ),
-          )}
-          <div ref={eindeRef} className="scroll-mb-32 tablet:scroll-mb-40" />
-        </div>
-      </div>
-      <div className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
-        <div className="mx-auto max-w-[860px]">{invoerVeld}</div>
-      </div>
-    </div>
-  );
-}
-
-function MeesBericht({
-  bericht: b,
-  actief,
-  bezig,
-  leest,
-  laadt,
-  onLees,
-  onKies,
-}: {
-  bericht: Bericht;
-  actief: boolean;
-  bezig: boolean;
-  leest: boolean;
-  laadt: boolean;
-  onLees: () => void;
-  onKies: (k: Keuze) => void;
-}) {
-  return (
-    <div className="max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17]">
-      <div className="flex items-center gap-2">
-        <span className="grid size-9 place-items-center rounded-full bg-blauw-zacht" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/merk/mees-vogel.svg" alt="" className="h-5 w-auto" />
-        </span>
-        <strong className="tekst-klein">Mees</strong>
-      </div>
-      <p className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">{b.tekst}</p>
-      {actief && b.keuzes && b.keuzes.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {b.keuzes.map((k) => (
-            <button
-              key={k.label}
-              type="button"
-              disabled={bezig}
-              onClick={() => onKies(k)}
-              className={`min-h-12 rounded-[14px] border px-4 font-semibold disabled:opacity-60 ${
-                k.soort === "voorstel" || k.soort === "hervat" ? "border-actie-blauw bg-actie-blauw text-wit hover:bg-[#004fa8]" : "border-[#cfe6fb] bg-[#f3f9ff] text-inkt hover:border-actie-blauw hover:bg-blauw-zacht"
-              }`}
-            >
-              {k.label}
-            </button>
-          ))}
-        </div>
-      )}
-      <button
-        type="button"
-        onClick={onLees}
-        aria-pressed={leest}
-        className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-[10px] px-2 tekst-klein font-semibold text-actie-blauw hover:bg-blauw-zacht"
-      >
-        <Icoon naam={leest ? "stop" : "voorlezen"} className={`size-5 ${laadt ? "animate-pulse" : ""}`} />
-        {laadt ? "Even laden…" : leest ? "Stoppen" : "Voorlezen"}
-      </button>
-    </div>
-  );
-}
-
-// Inspreken via de spraakherkenning van de browser: alleen na een tik, tekst komt ter controle in het invoerveld.
-type Herkenning = {
-  lang: string;
-  interimResults: boolean;
-  continuous: boolean;
-  start: () => void;
-  stop: () => void;
-  abort: () => void;
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
-  onend: (() => void) | null;
-  onerror: ((e: { error: string }) => void) | null;
-  onstart: (() => void) | null;
-};
-type HerkenningKlasse = new () => Herkenning;
-const herkenningKlasse = () => {
-  const w = window as unknown as { SpeechRecognition?: HerkenningKlasse; webkitSpeechRecognition?: HerkenningKlasse };
-  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
-};
-const geenAbonnement = () => () => {};
-
-function Invoer({ waarde, onWijzig, onStuur, onLuisteren, plaatshouder }: { waarde: string; onWijzig: (t: string) => void; onStuur: () => void; onLuisteren: () => void; plaatshouder: string }) {
-  const kanPraten = useSyncExternalStore(geenAbonnement, () => herkenningKlasse() !== null, () => false);
-  const smal = useSyncExternalStore(geenAbonnement, () => matchMedia("(max-width: 767px)").matches, () => false);
-  const [luistert, setLuistert] = useState(false);
-  const [melding, setMelding] = useState("");
-  const herkenning = useRef<Herkenning | null>(null);
-  const veld = useRef<HTMLInputElement>(null);
-
-  useEffect(() => () => herkenning.current?.abort(), []);
-
-  function praat() {
-    if (luistert) {
-      herkenning.current?.stop();
-      return;
-    }
-    const Klasse = herkenningKlasse();
-    if (!Klasse) return;
-    onLuisteren();
-    setMelding("");
-    const h = new Klasse();
-    h.lang = "nl-NL";
-    h.interimResults = true;
-    h.continuous = false;
-    h.onstart = () => setLuistert(true);
-    h.onresult = (e) => {
-      const tekst = Array.from(e.results)
-        .map((r) => r[0]?.transcript ?? "")
-        .join("");
-      onWijzig(tekst);
-    };
-    h.onerror = (e) => setMelding(e.error === "not-allowed" || e.error === "service-not-allowed" ? "De microfoon mag niet gebruikt worden. Je kunt ook typen." : "Ik kon je niet goed horen. Probeer het nog eens of typ je vraag.");
-    h.onend = () => {
-      setLuistert(false);
-      veld.current?.focus();
-    };
-    herkenning.current = h;
-    try {
-      h.start();
-    } catch {
-      setMelding("Praten lukt nu niet. Je kunt ook typen.");
-    }
-  }
-
-  return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onStuur();
-        }}
-        className={`flex items-center gap-2 rounded-full bg-wit/95 p-2 shadow-[0_7px_28px_#69b5ec26] tablet:gap-3 tablet:p-3 ${luistert ? "ring-2 ring-actie-blauw" : ""}`}
-      >
-        {kanPraten && (
-          <button
-            type="button"
-            onClick={praat}
-            aria-pressed={luistert}
-            aria-label={luistert ? "Stop met luisteren" : "Vraag inspreken"}
-            className={`grid size-12 shrink-0 place-items-center rounded-full tablet:size-16 ${luistert ? "bg-actie-blauw text-wit" : "bg-[#e4f5ff] text-actie-blauw hover:bg-[#d4eeff]"}`}
-          >
-            <Icoon naam={luistert ? "stop" : "microfoon"} className="size-6 tablet:size-7" />
-          </button>
+              <button type="button" onClick={pauze} className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full border border-[#cfe6fb] bg-wit px-4 font-semibold capitalize hover:bg-blauw-zacht tablet:normal-case">
+                <Icoon naam="pauze" className="size-5" />
+                <span>
+                  <span className="max-tablet:hidden">Even </span>pauze
+                </span>
+              </button>
+            </div>
+          </div>
         )}
-        <label htmlFor="chat-invoer" className="sr-only">
-          Je vraag aan Mees
-        </label>
-        <input
-          ref={veld}
-          id="chat-invoer"
-          value={waarde}
-          onChange={(e) => onWijzig(e.target.value)}
-          maxLength={500}
-          autoComplete="off"
-          enterKeyHint="send"
-          placeholder={luistert ? "Mees luistert…" : smal ? "Typ je vraag…" : plaatshouder}
-          className="min-w-0 flex-1 rounded-full border border-[#edf7ff] bg-transparent px-4 py-3 text-lg placeholder:text-[#6f7db0] tablet:px-5 tablet:py-4 tablet:text-xl"
-        />
-        <button type="submit" aria-label="Verstuur je vraag" disabled={!waarde.trim()} className="grid size-12 shrink-0 place-items-center rounded-full bg-actie-blauw text-wit hover:bg-[#004fa8] disabled:opacity-50 tablet:size-16">
-          <Icoon naam="verstuur" className="size-6 tablet:size-7" />
+
+        <div className="mx-auto flex w-full max-w-[860px] flex-1 flex-col px-4 pt-6 tablet:px-8 tablet:pt-10">
+          <h1 className="truncate text-xl font-extrabold tablet:text-2xl">{gesprek.titel}</h1>
+          <div role="log" aria-live="polite" aria-label="Gesprek met Mees" className="mt-4 flex flex-col gap-3 pb-6">
+            {gesprek.berichten.map((b) => {
+              const isLaatste = b.id === laatste?.id;
+              if (b.oefening) return <OefenBlok key={b.id} verwijzing={b.oefening} actief={isLaatste} onNogEenRondje={nogEenRondje} onIetsAnders={ietsAnders} />;
+              if (b.van === "kind")
+                return (
+                  <div key={b.id} className="ml-auto max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
+                    <span className="sr-only">Jij: </span>
+                    {b.tekst}
+                  </div>
+                );
+              return (
+                <div key={b.id} className="w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17]">
+                  <MeesAfzender />
+                  <p className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">{b.tekst}</p>
+                  {b.voorstel && <VoorstelKaart standaard={b.voorstel.standaard} actief={isLaatste} onStart={startRondje} />}
+                  {b.id === laatsteMees && isLaatste && b.keuzes && b.keuzes.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {b.keuzes.map((k) => (
+                        <button
+                          key={k.label}
+                          type="button"
+                          disabled={navigeert}
+                          onClick={() => kies(k)}
+                          className={`min-h-12 rounded-[14px] border px-4 font-semibold disabled:opacity-60 ${
+                            k.soort === "voorstel" || k.soort === "hervat" ? "border-actie-blauw bg-actie-blauw text-wit hover:bg-actie-hover" : "border-[#cfe6fb] bg-[#f3f9ff] text-inkt hover:border-actie-blauw hover:bg-blauw-zacht"
+                          }`}
+                        >
+                          {k.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-3">
+                    <VoorleesLink id={b.id} tekst={b.tekst} />
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={eindeRef} className="scroll-mb-32 tablet:scroll-mb-40" />
+          </div>
+        </div>
+
+        {/* Tijdens het oefenen staat de bediening in de vraag zelf; daarna komt het invoerveld terug. */}
+        {!oefentBezig && (
+          <div className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
+            <div className="mx-auto max-w-[860px]">{invoerVeld}</div>
+          </div>
+        )}
+      </div>
+    </ChatVoorleesContext>
+  );
+}
+
+/** Oefenvoorstel: onderwerp en aantal vragen kiezen. Alleen het nieuwste voorstel is te bedienen. */
+function VoorstelKaart({ standaard, actief, onStart }: { standaard: string; actief: boolean; onStart: (keuze: string, aantal: number, label: string) => void }) {
+  const opslag = useOpslag();
+  const opties = opslag ? voorstelOpties(opslag) : [];
+  const [keuze, setKeuze] = useState(standaard);
+  const [aantal, setAantal] = useState<number>(STANDAARD_AANTAL);
+  const knop = (gekozen: boolean) =>
+    `rounded-[14px] border p-3 text-left ${gekozen ? "border-2 border-actie-blauw bg-blauw-zacht" : "border-[#d8e9f8] bg-[#f6fbff]"} ${actief ? "hover:border-actie-blauw" : "cursor-default opacity-70"}`;
+
+  return (
+    <fieldset disabled={!actief} className="mt-4">
+      <legend className="font-bold">Wat wil je oefenen?</legend>
+      <div className="mt-2 grid gap-2 tablet:grid-cols-3">
+        {opties.map((o) => (
+          <button key={o.id} type="button" aria-pressed={keuze === o.id} onClick={() => setKeuze(o.id)} className={knop(keuze === o.id)}>
+            <span className="block font-bold">{o.naam}</span>
+            <span className="mt-0.5 block tekst-klein text-tekst-zacht">{o.uitleg}</span>
+          </button>
+        ))}
+      </div>
+      <p className="mt-4 font-bold">Hoeveel vragen wil je doen?</p>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {AANTAL_KEUZES.map((n) => (
+          <button key={n} type="button" aria-pressed={aantal === n} onClick={() => setAantal(n)} className={`${knop(aantal === n)} text-center`}>
+            <span className="block text-2xl font-extrabold">{n}</span>
+            <span className="block tekst-klein text-tekst-zacht">{n === 4 ? "Even proberen" : n === 6 ? "Een kort rondje" : "Wat langer oefenen"}</span>
+          </button>
+        ))}
+      </div>
+      <p className="mt-3 tekst-klein text-tekst-zacht">Geen haast. Je kunt altijd een hint vragen of even pauze nemen.</p>
+      {actief && (
+        <button
+          type="button"
+          onClick={() => onStart(keuze, aantal, `Start mijn ${aantal} vragen`)}
+          className="mt-4 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-[14px] bg-actie-blauw px-6 text-lg font-bold text-wit hover:bg-actie-hover"
+        >
+          Start mijn {aantal} vragen
+          <Icoon naam="pijl-rechts" className="size-6" />
         </button>
-      </form>
-      <p role="status" className="mt-2 min-h-5 px-4 tekst-klein text-[#52649b]">
-        {luistert ? "Mees luistert… Tik op stop als je klaar bent." : melding}
-      </p>
-    </div>
+      )}
+    </fieldset>
   );
 }

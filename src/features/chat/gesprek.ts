@@ -8,7 +8,21 @@ export type Keuze =
   | { label: string; soort: "hervat" }
   | { label: string; soort: "vervolg"; onderwerp: Onderwerp };
 
-export type Bericht = { id: string; van: "kind" | "mees"; tekst: string; keuzes?: Keuze[]; t: number };
+/** Oefenvoorstel in het gesprek: onderwerp en aantal kiezen, dan starten. `standaard` is de voorgestelde keuze. */
+export type Voorstel = { standaard: string };
+
+/** Oefenen in het gesprek: toont de vraagplaatsen [vanaf, tot) van een sessie. Zonder tot is dit het actieve blok. */
+export type OefenVerwijzing = { sessieId: string; vanaf: number; tot?: number };
+
+export type Bericht = {
+  id: string;
+  van: "kind" | "mees";
+  tekst: string;
+  keuzes?: Keuze[];
+  voorstel?: Voorstel;
+  oefening?: OefenVerwijzing;
+  t: number;
+};
 
 export type Gesprek = { id: string; titel: string; berichten: Bericht[]; bijgewerkt: number };
 
@@ -76,8 +90,8 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context): Pick<Bericht, "tek
           keuzes: [{ label: "Verder waar ik was", soort: "hervat" }, ...onderwerpKeuzes, ga.werkblad],
         };
       return {
-        tekst: `Mijn voorstel: ${ctx.voorstel}, ${ctx.aantal} vragen. Je mag ook zelf iets kiezen.`,
-        keuzes: [{ label: "Start het voorstel", soort: "voorstel" }, ...onderwerpKeuzes, ga.werkblad],
+        tekst: `Mijn voorstel: ${ctx.voorstel}. Zullen we hier samen een rondje oefenen? Je mag ook zelf iets kiezen.`,
+        keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, ...onderwerpKeuzes, ga.werkblad],
       };
     case "vraag":
       return { tekst: "Stel je vraag maar! Typ hem hieronder of tik op de microfoon om te praten. Ik kan nog niet alles beantwoorden, maar ik help je graag op weg." };

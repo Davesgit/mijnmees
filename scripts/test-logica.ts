@@ -24,6 +24,7 @@ import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/featu
 import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
 import type { Poging } from "@/features/oefenen/types";
 import { antwoord, bewaarGesprek, herken, reageer, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
+import { kanInChat, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
 import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
@@ -333,6 +334,40 @@ test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {
   for (let i = 0; i < MAX_GESPREKKEN + 5; i++) lijst = bewaarGesprek(lijst, { id: String(i), titel: "", berichten: [], bijgewerkt: i });
   assert.equal(lijst.length, MAX_GESPREKKEN);
   assert.equal(lijst[0]?.id, String(MAX_GESPREKKEN + 4));
+});
+
+test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
+  let { data, sessie } = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const id = sessie.id;
+  const slot = () => data.sessies[id]!.slots[data.sessies[id]!.index]!;
+  const verloop = () => verloopVanSlot(slot(), data.pogingen.filter((p) => p.slotId === slot().id)).map((s) => s.soort + (s.soort === "fout" ? `:${s.hulp?.soort ?? "-"}` : s.soort === "vraag" ? `:${s.status}` : ""));
+  assert.deepEqual(verloop(), ["vraag:open"]);
+  const fout = ["<", "=", ">"].find((t) => t !== goedAntwoord(data.sessies[id]!))!;
+  data = registreerAntwoord(data, id, fout)!.data;
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:open"]);
+  data = vraagHulp(data, id);
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "hulp", "vraag:open"]);
+  data = registreerAntwoord(data, id, fout)!.data;
+  // Hint 1 had het kind al gevraagd: na de tweede fout geen dubbele hint.
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "hulp", "vraag:fout", "fout:-", "vraag:open"]);
+  data = registreerAntwoord(data, id, goedAntwoord(data.sessies[id]!))!.data;
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "hulp", "vraag:fout", "fout:-", "vraag:goed", "goed"]);
+  // Goed antwoord telt meteen; een fout of hint telt niet als afgeronde vraag.
+  assert.equal(oefenTeller(data.sessies[id]!).klaar, 1);
+  assert.equal(kanInChat(data.sessies[id]!), true);
+  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "europa" }), false);
+  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "tafels", instellingen: { metTijd: true } }), false);
+});
+
+test("chat-oefenen: vier fouten geven de uitleg en daarna Verder", () => {
+  let { data, sessie } = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const id = sessie.id;
+  const fout = ["<", "=", ">"].find((t) => t !== goedAntwoord(data.sessies[id]!))!;
+  for (let i = 0; i < 4; i++) data = registreerAntwoord(data, id, fout)!.data;
+  const s = data.sessies[id]!.slots[0]!;
+  const stappen = verloopVanSlot(s, data.pogingen.filter((p) => p.slotId === s.id));
+  assert.deepEqual(stappen.filter((x) => x.soort === "fout").map((x) => (x.soort === "fout" ? x.hulp?.soort ?? "-" : "")), ["-", "hint", "hint", "uitleg"]);
+  assert.equal(stappen.at(-1)?.soort, "verder");
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);
