@@ -6,18 +6,30 @@ import { vindOnderdeel } from "@/content/onderwerpen";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useVoorlezen } from "@/components/mees/Voorlezen";
-import { gastLimietBereikt, maakEuropaSessie, maakSessie, maakTafelSessie, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
+import { namen } from "@/features/oefenen/europa-vragen";
+import { gaVerder, gastLimietBereikt, maakEuropaSessie, maakSessie, maakTafelSessie, openSessie, registreerAntwoord, rondOvergangAf, sessieRoute, vraagHulp } from "@/features/oefenen/sessie";
+import { vindVraag } from "@/features/oefenen/vragen";
 import type { OpslagData } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
-import { Invoer } from "./ChatInvoer";
+import { Invoer, type Optie } from "./ChatInvoer";
+
+/** Wat een optie in de chatbalk doet. */
+type OptieActie =
+  | { soort: "antwoord"; waarde: string }
+  | { soort: "hint" }
+  | { soort: "verder" }
+  | { soort: "nogEenRondje" }
+  | { soort: "ietsAnders" }
+  | { soort: "keuze"; keuze: Keuze };
 import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { markeerNieuw, NaTypen, TypTekst } from "./ChatTypen";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
 import { antwoord, reageer, startkaarten, type Antwoord, type Bericht, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
 import { OefenBlok } from "./OefenBlok";
-import { kanInChat, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
+import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
+import { leesKlok, markeerActie, useKaartKeuze, useMeesBezig, zetKaartKeuze } from "./ritme";
 import { maakBericht as bericht, useChats, voegToeAanActief } from "./opslag";
 const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNamen> = { leren: "boek", oefenen: "herhaal", vraag: "chat" };
 
@@ -51,11 +63,19 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   const voorlezen = useVoorlezen();
   const [leestId, setLeestId] = useState<string | null>(null);
   const [hernoemen, setHernoemen] = useState(false);
+  const [bewaarFout, setBewaarFout] = useState(false);
+  const meesBezig = useMeesBezig();
+  const kaartKeuze = useKaartKeuze();
 
   const gesprek = chats?.actief ? (chats.gesprekken.find((g) => g.id === chats.actief) ?? null) : null;
   const laatste = gesprek?.berichten.at(-1);
   const actieveOefening = laatste?.oefening && laatste.oefening.tot === undefined ? opslag?.sessies[laatste.oefening.sessieId] : undefined;
   const oefentBezig = actieveOefening?.status === "bezig";
+  // De open vraag (voor de chatbalk): antwoorden, of verder na goed/uitleg.
+  const sessie = oefentBezig ? actieveOefening : undefined;
+  const slot = sessie && sessie.soort !== "puzzel" ? sessie.slots[sessie.index] : undefined;
+  const vraag = slot ? vindVraag(slot.vraagId) : null;
+  const fase = slot ? faseVan(slot) : null;
   // Verandert bij elke stap in de oefening: dan het nieuwste deel in beeld brengen.
   const stand = `${gesprek?.id}-${gesprek?.berichten.length}-${actieveOefening?.versie}-${actieveOefening?.status}-${opslag?.pogingen.length}`;
 
@@ -154,13 +174,65 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   };
   const meesZegt = (r: Antwoord) => bericht("mees", r.tekst, { keuzes: r.keuzes, kaart: r.kaart });
 
+  // ── Oefenen via de chatbalk ──
+  function oefenActie(w: (d: OpslagData) => OpslagData) {
+    markeerActie();
+    setBewaarFout(!wijzigOpslag(w));
+  }
+  function beantwoord(waarde: string) {
+    if (!sessie) return;
+    stopVoorlezen();
+    zetKaartKeuze(null);
+    const duur = vraag?.soort === "tafel" ? leesKlok() : undefined;
+    oefenActie((d) => registreerAntwoord(d, sessie.id, waarde, { actieveDuurMs: duur })?.data ?? d);
+  }
+  function hint() {
+    if (!sessie) return;
+    stopVoorlezen();
+    oefenActie((d) => vraagHulp(d, sessie.id));
+  }
+  function verder() {
+    if (!sessie) return;
+    stopVoorlezen();
+    oefenActie((d) => gaVerder(d, sessie.id));
+  }
+
+  /** Getypte tekst tijdens het oefenen: een antwoord, een opdracht (hint, pauze, verder) of een eigen vraag. */
+  function stuurTijdensOefenen(tekst: string) {
+    if (!sessie) return;
+    const opdracht = leesOpdracht(tekst);
+    if (opdracht === "pauze") return pauze();
+    if (opdracht === "hint" && fase === "antwoorden") return hint();
+    if (opdracht === "verder" && fase && fase !== "antwoorden") return verder();
+    if (fase === "antwoorden" && vraag && slot) {
+      const a = leesAntwoord(tekst, vraag, slot, namen);
+      if (a !== null) return beantwoord(a);
+    }
+    // Een eigen vraag of iets anders: Mees reageert, daarna gaat de oefening gewoon verder.
+    const uitleg =
+      fase !== "antwoorden"
+        ? "Kies Volgende vraag als je verder wilt, of typ pauze om even te stoppen."
+        : vraag?.soort === "tafel"
+          ? "Typ je antwoord als getal, bijvoorbeeld 42. Of typ hint als je hulp wilt."
+          : "Kies je antwoord onderin of typ het. Typ hint als je hulp wilt, of pauze om even te stoppen.";
+    voegToe(
+      [
+        bericht("kind", tekst),
+        bericht("mees", `Daar kan ik nog geen goed antwoord op geven, ik leer nog! ${uitleg}`),
+        bericht("mees", "", { oefening: { sessieId: sessie.id, vanaf: sessie.index } }),
+      ],
+      { sluitSessie: { id: sessie.id, tot: sessie.index } },
+    );
+  }
+
   function stuur(tekst: string, onderwerp?: Onderwerp, titel?: string) {
     const schoon = tekst.trim().slice(0, 500);
     if (!schoon) return;
     stopVoorlezen();
+    setInvoer("");
+    if (sessie && !onderwerp) return stuurTijdensOefenen(schoon);
     const reactie = onderwerp ? antwoord(onderwerp, context()) : reageer(schoon, context());
     voegToe([bericht("kind", schoon), meesZegt(reactie)], { titel });
-    setInvoer("");
   }
 
   function kies(k: Keuze) {
@@ -292,13 +364,53 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     setLeestId(null);
   }
 
+  // Klikbare opties in de chatbalk: antwoorden en vervolgstappen tijdens het oefenen, anders de keuzes van Mees.
+  const opties: Optie<OptieActie>[] = [];
+  if (sessie?.soort === "puzzel") {
+    // De puzzel bedien je op de kaart; pauzeren kan bovenin of door "pauze" te typen.
+  } else if (sessie && slot && vraag && fase === "antwoorden") {
+    if (vraag.soort === "europa" && vraag.type === "map-click" && kaartKeuze?.slotId === slot.id)
+      opties.push({ label: `Controleer: ${namen[kaartKeuze.id] ?? "deze plek"}`, primair: true, doe: { soort: "antwoord", waarde: kaartKeuze.id } });
+    for (const o of antwoordOpties(vraag, slot)) opties.push({ label: o.label, doe: { soort: "antwoord", waarde: o.waarde } });
+    opties.push({ label: slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien", icoon: "hint", doe: { soort: "hint" } });
+  } else if (sessie && fase) {
+    const laatsteVraag = sessie.index + 1 >= sessie.slots.length;
+    opties.push({ label: laatsteVraag ? "Rond af" : fase === "goed" ? "Volgende vraag" : "Verder", primair: true, doe: { soort: "verder" } });
+  } else if (laatste?.oefening && actieveOefening?.status === "afgerond") {
+    opties.push({ label: "Nog een rondje", primair: true, doe: { soort: "nogEenRondje" } }, { label: "Iets anders doen", doe: { soort: "ietsAnders" } });
+  } else if (laatste?.van === "mees" && laatste.keuzes?.length) {
+    for (const k of laatste.keuzes) opties.push({ label: k.label, primair: k.soort === "voorstel" || k.soort === "hervat", doe: { soort: "keuze", keuze: k } });
+  }
+
+  function voerUit(a: OptieActie) {
+    if (a.soort === "antwoord") return beantwoord(a.waarde);
+    if (a.soort === "hint") return hint();
+    if (a.soort === "verder") return verder();
+    if (a.soort === "nogEenRondje") return nogEenRondje();
+    if (a.soort === "ietsAnders") return ietsAnders();
+    return kies(a.keuze);
+  }
+
+  const plaatshouder = !gesprek
+    ? "Praat met Mees of typ je vraag…"
+    : fase === "antwoorden"
+      ? vraag?.soort === "tafel"
+        ? "Typ je antwoord…"
+        : "Typ je antwoord of een vraag…"
+      : "Typ een bericht aan Mees…";
+
   const invoerVeld = (
     <Invoer
       waarde={invoer}
       onWijzig={setInvoer}
       onStuur={() => stuur(invoer)}
       onLuisteren={stopVoorlezen}
-      plaatshouder={gesprek ? "Stel een vervolgvraag…" : "Praat met Mees of typ je vraag…"}
+      plaatshouder={plaatshouder}
+      kortePlaatshouder={!gesprek ? "Typ je vraag…" : fase === "antwoorden" ? "Typ je antwoord…" : "Typ een bericht…"}
+      opties={opties}
+      onOptie={(o) => voerUit(o.doe)}
+      optiesWachten={meesBezig || navigeert}
+      cijfers={fase === "antwoorden" && vraag?.soort === "tafel"}
     />
   );
 
@@ -353,7 +465,6 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     );
   }
 
-  const laatsteMees = gesprek.berichten.findLast((b) => b.van === "mees" && !b.oefening)?.id;
   const teller = actieveOefening && oefentBezig ? oefenTeller(actieveOefening) : null;
 
   return (
@@ -403,12 +514,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
               if (b.oefening)
                 return (
                   <NaTypen key={b.id} id={b.id}>
-                    <OefenBlok
-                      verwijzing={b.oefening}
-                      actief={isLaatste}
-                      onNogEenRondje={nogEenRondje}
-                      onIetsAnders={ietsAnders}
-                    />
+                    <OefenBlok verwijzing={b.oefening} actief={isLaatste} />
                   </NaTypen>
                 );
               if (b.van === "kind")
@@ -425,23 +531,6 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
                     {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
                       <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} onStartEuropa={startEuropa} />
                     )}
-                    {b.id === laatsteMees && isLaatste && b.keuzes && b.keuzes.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {b.keuzes.map((k) => (
-                          <button
-                            key={k.label}
-                            type="button"
-                            disabled={navigeert}
-                            onClick={() => kies(k)}
-                            className={`min-h-12 rounded-[14px] border px-4 font-semibold disabled:opacity-60 ${
-                              k.soort === "voorstel" || k.soort === "hervat" ? "border-actie-blauw bg-actie-blauw text-wit hover:bg-actie-hover" : "border-[#cfe6fb] bg-[#f3f9ff] text-inkt hover:border-actie-blauw hover:bg-blauw-zacht"
-                            }`}
-                          >
-                            {k.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                     <div className="mt-3">
                       <VoorleesLink id={b.id} tekst={b.tekst} />
                     </div>
@@ -453,12 +542,13 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
           <div ref={ruimte} aria-hidden />
         </div>
 
-        {/* Tijdens het oefenen staat de bediening in de vraag zelf; daarna komt het invoerveld terug. */}
-        {!oefentBezig && (
-          <div data-sticky-onder className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
-            <div className="mx-auto max-w-[860px]">{invoerVeld}</div>
+        {/* De chatbalk staat altijd onderaan, zoals in een AI-chat; daarboven verschijnen de berichten van Mees. */}
+        <div data-sticky-onder className="sticky bottom-0 z-10 bg-gradient-to-t from-[#f5fbff] via-[#f5fbff]/95 to-transparent px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 tablet:px-8">
+          <div className="mx-auto max-w-[860px]">
+            {bewaarFout && <p className="mb-2 rounded-[12px] bg-fout-zacht px-4 py-2 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
+            {invoerVeld}
           </div>
-        )}
+        </div>
       </div>
     </ChatVoorleesContext>
   );

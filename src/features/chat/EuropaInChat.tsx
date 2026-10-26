@@ -7,6 +7,7 @@ import { landPerId, viewBoxVan } from "@/features/europa/kaart";
 import { KaartVlak, type KaartLaag } from "@/features/europa/KaartVlak";
 import { legPuzzelstukNaUitleg, registreerAntwoord, vraagHulp, werkPuzzelBij } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie } from "@/features/oefenen/types";
+import { namen } from "@/features/oefenen/europa-vragen";
 import { goedAntwoordTekst, vindVraag, type EuropaVraag } from "@/features/oefenen/vragen";
 import { hintVoorleesTekst, uitlegVoorleesTekst } from "@/features/voorlezen/teksten";
 import { haalOpslag } from "@/lib/opslag/lokaal";
@@ -65,34 +66,13 @@ export function EuropaOpgave({
           donker={isLigging ? opties.map((o) => o.id).filter((id) => landPerId.has(id)) : []}
         />
       </div>
-      {vraag.type === "map-click" ? (
-        <p className="mt-2 tekst-klein font-semibold text-actie-blauw" aria-live="polite">
-          {gekozen ? `Je hebt een plek gekozen.` : "Tik een plek aan op de kaart. Knijp of dubbeltik om in te zoomen."}
-        </p>
-      ) : (
-        <fieldset className="mt-3">
-          <legend className="sr-only">Kies één antwoord.</legend>
-          <div className="grid grid-cols-2 gap-2">
-            {opties.map((o) => {
-              const aan = gekozen === o.id;
-              return (
-                <button
-                  key={o.id}
-                  type="button"
-                  aria-pressed={aan}
-                  onClick={() => onKies(o.id)}
-                  className={`flex min-h-14 items-center gap-2 rounded-[14px] border px-3 text-left font-bold ${aan ? "border-2 border-actie-blauw bg-blauw-zacht" : "border-rand-interactief bg-[#f5faff] hover:bg-blauw-zacht"}`}
-                >
-                  <span aria-hidden className={`grid size-6 shrink-0 place-items-center rounded-full border-2 ${aan ? "border-actie-blauw bg-actie-blauw" : "border-rand-interactief"}`}>
-                    {aan && <span className="size-2.5 rounded-full bg-wit" />}
-                  </span>
-                  {o.label}
-                </button>
-              );
-            })}
-          </div>
-        </fieldset>
-      )}
+      <p className="mt-2 tekst-klein font-semibold text-actie-blauw" aria-live="polite">
+        {vraag.type !== "map-click"
+          ? "Kies je antwoord onderin, of typ het."
+          : gekozen
+            ? `Je koos ${namen[gekozen] ?? "een plek"}. Tik onderin op Controleer, of kies een andere plek.`
+            : "Tik een plek aan op de kaart. Knijp of dubbeltik om in te zoomen."}
+      </p>
     </>
   );
 }

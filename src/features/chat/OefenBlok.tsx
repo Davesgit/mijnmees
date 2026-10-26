@@ -1,10 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { createContext, use, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { createContext, Fragment, use, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
-import { gaVerder, registreerAntwoord, sessieStatistiek, vraagHulp } from "@/features/oefenen/sessie";
+import { sessieStatistiek } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie, Slot } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
 import { antwoordTekst, goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, type TafelVraag, type Vraag } from "@/features/oefenen/vragen";
@@ -12,6 +12,7 @@ import { hintVoorleesTekst, uitlegVoorleesTekst, vraagVoorleesTekst } from "@/fe
 import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
 import { Puntjes, TIK_MS } from "./ChatTypen";
+import { isNetGehandeld, markeerActie, meesTypt, meesWacht, rustigeWeergave, useKaartKeuze, useMeesTypt, zetKaartKeuze, zetKlok } from "./ritme";
 
 // De kaart van Europa is groot (alle landvormen): pas laden als er echt Europa geoefend wordt.
 const kaartRuimte = () => <div className="mt-3 h-[clamp(260px,52dvh,560px)] animate-pulse rounded-[16px] bg-blauw-zacht tablet:h-[clamp(320px,58dvh,640px)]" aria-hidden />;
@@ -19,30 +20,8 @@ const EuropaOpgave = dynamic(() => import("./EuropaInChat").then((m) => m.Europa
 const EuropaUitlegKaart = dynamic(() => import("./EuropaInChat").then((m) => m.EuropaUitlegKaart), { ssr: false, loading: kaartRuimte });
 const PuzzelBlok = dynamic(() => import("./EuropaInChat").then((m) => m.PuzzelBlok), { ssr: false, loading: kaartRuimte });
 
-// Na een actie van het kind (antwoord, hint, volgende) reageert Mees zichtbaar: eerst even de puntjes, dan
-// verschijnt de melding; de vraag om het opnieuw te proberen komt daar weer even later onder.
-// Bij herladen of het openen van een oud gesprek staat alles er meteen.
-let netGehandeld = false;
-let netGehandeldTimer: ReturnType<typeof setTimeout> | undefined;
-function markeerActie() {
-  netGehandeld = true;
-  clearTimeout(netGehandeldTimer);
-  netGehandeldTimer = setTimeout(() => (netGehandeld = false), 1200);
-}
 const REACTIE_MS = 900;
 const DAARNA_MS = 500;
-
-/** Hoeveel kaarten Mees op dit moment typt; wat erna komt (de vraag opnieuw) wacht daarop. */
-let aanHetTypen = 0;
-const typLuisteraars = new Set<() => void>();
-const meldTypen = (n: number) => {
-  aanHetTypen = Math.max(0, aanHetTypen + n);
-  typLuisteraars.forEach((l) => l());
-};
-const abonneerTypen = (l: () => void) => {
-  typLuisteraars.add(l);
-  return () => typLuisteraars.delete(l);
-};
 
 /** True als de kaart net als reactie verschijnt: dan typt Mees de inhoud. */
 const NieuweReactie = createContext(false);
@@ -69,13 +48,10 @@ function TypOnthul({ className = "", children }: { className?: string; children:
       blok.style.visibility = "hidden";
       return { blok, teksten };
     });
-    let bezig = true;
-    meldTypen(1);
+    const afmelden = meesTypt();
     const klaar = () => {
-      if (!bezig) return;
-      bezig = false;
       clearInterval(iv);
-      meldTypen(-1);
+      afmelden();
     };
     let b = 0;
     let t = 0;
@@ -120,11 +96,11 @@ function TypOnthul({ className = "", children }: { className?: string; children:
 
 /** Toont een nieuwe stap pas na een korte pauze; met puntjes van Mees als die stap een reactie van Mees is. */
 function NaActie({ id, ms, puntjes, children }: { id: string; ms: number; puntjes: boolean; children: ReactNode }) {
-  const [wacht, setWacht] = useState(() => netGehandeld && document.documentElement.dataset.rustigeOvergangen !== "true" && !matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [wacht, setWacht] = useState(() => isNetGehandeld() && !rustigeWeergave());
   // Onthouden dat er gewacht is: dan is dit een nieuwe reactie en typt Mees de inhoud.
   const [gewacht] = useState(wacht);
   // Een vervolg (de vraag opnieuw) wacht ook tot Mees klaar is met het typen van zijn reactie.
-  const typt = useSyncExternalStore(abonneerTypen, () => aanHetTypen > 0, () => false);
+  const typt = useMeesTypt();
   useEffect(() => {
     if (!wacht) return;
     const t = setTimeout(() => setWacht(false), ms);
@@ -134,6 +110,8 @@ function NaActie({ id, ms, puntjes, children }: { id: string; ms: number; puntje
   const [getoond, setGetoond] = useState(false);
   const toon = getoond || (!wacht && !(gewacht && !puntjes && typt));
   if (toon && !getoond) setGetoond(true);
+  // Zolang dit nog moet verschijnen, wachten de opties in de chatbalk.
+  useEffect(() => (toon ? undefined : meesWacht()), [toon]);
   if (toon) return <NieuweReactie value={gewacht}>{children}</NieuweReactie>;
   if (!puntjes) return null;
   return (
@@ -152,17 +130,7 @@ type BreukOfTafel = Vraag;
  * Een oefening in het gesprek. Alle pogingen blijven staan; alleen de nieuwste vraag is interactief.
  * Antwoordcontrole, hulp en voortgang komen uit de oefenmotor (sessie.ts) en de lokale opslag.
  */
-export function OefenBlok({
-  verwijzing,
-  actief,
-  onNogEenRondje,
-  onIetsAnders,
-}: {
-  verwijzing: OefenVerwijzing;
-  actief: boolean;
-  onNogEenRondje: () => void;
-  onIetsAnders: () => void;
-}) {
+export function OefenBlok({ verwijzing, actief }: { verwijzing: OefenVerwijzing; actief: boolean }) {
   const opslag = useOpslag();
   const sessie = opslag?.sessies[verwijzing.sessieId];
   const [bewaarFout, setBewaarFout] = useState(false);
@@ -182,7 +150,7 @@ export function OefenBlok({
         {bewaarFout && <p className="rounded-[16px] bg-fout-zacht p-4 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
         {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && (
           <NaActie id={`terugblik-${sessie.id}`} ms={REACTIE_MS} puntjes>
-            <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />
+            <Terugblik sessie={sessie} opslag={opslag} />
           </NaActie>
         )}
       </>
@@ -203,14 +171,13 @@ export function OefenBlok({
             nummer={index + 1}
             pogingen={opslag.pogingen.filter((p) => p.sessieId === sessie.id && p.slotId === slot.id)}
             interactief={interactief && index === sessie.index}
-            bewaar={bewaar}
           />
         );
       })}
       {bewaarFout && <p className="rounded-[16px] bg-fout-zacht p-4 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
       {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && (
           <NaActie id={`terugblik-${sessie.id}`} ms={REACTIE_MS} puntjes>
-            <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />
+            <Terugblik sessie={sessie} opslag={opslag} />
           </NaActie>
         )}
     </>
@@ -224,7 +191,6 @@ function SlotVerloop({
   nummer,
   pogingen,
   interactief,
-  bewaar,
 }: {
   sessie: Sessie;
   slot: Slot;
@@ -232,7 +198,6 @@ function SlotVerloop({
   nummer: number;
   pogingen: Parameters<typeof verloopVanSlot>[1];
   interactief: boolean;
-  bewaar: (w: (d: OpslagData) => OpslagData) => void;
 }) {
   const stappen = verloopVanSlot(slot, pogingen);
   const laatsteVraag = stappen.findLastIndex((s) => s.soort === "vraag");
@@ -246,21 +211,27 @@ function SlotVerloop({
           switch (stap.soort) {
             case "vraag":
               return (
-                <VraagKaart
-                  key={id}
-                  id={id}
-                  vraag={vraag}
-                  sessie={sessie}
-                  opties={vraag.soort === "europa" ? (vraag.opties ?? slot.opties ?? []) : []}
-                  nummer={nummer}
-                  herhaling={Boolean(slot.herhalingVan)}
-                  stap={stap}
-                  interactief={interactief && stap.status === "open" && i === laatsteVraag}
-                  seconden={sessie.soort === "tafels" && sessie.instellingen?.metTijd ? (sessie.instellingen.secondenPerVraag ?? null) : null}
-                  onControleer={(antwoord, actieveDuurMs) => bewaar((d) => registreerAntwoord(d, sessie.id, antwoord, { actieveDuurMs })?.data ?? d)}
-                  onHint={() => bewaar((d) => vraagHulp(d, sessie.id))}
-                  hintLabel={slot.hulp.hints === 0 ? "Geef me een hint" : slot.hulp.hints === 1 ? "Nog een hint" : "Laat de uitleg zien"}
-                />
+                <Fragment key={id}>
+                  <VraagKaart
+                    id={id}
+                    slotId={slot.id}
+                    vraag={vraag}
+                    sessie={sessie}
+                    opties={vraag.soort === "europa" ? (vraag.opties ?? slot.opties ?? []) : []}
+                    nummer={nummer}
+                    herhaling={Boolean(slot.herhalingVan)}
+                    stap={stap}
+                    interactief={interactief && stap.status === "open" && i === laatsteVraag}
+                    seconden={sessie.soort === "tafels" && sessie.instellingen?.metTijd ? (sessie.instellingen.secondenPerVraag ?? null) : null}
+                  />
+                  {/* Het antwoord van het kind, als eigen chatbericht onder de vraag. */}
+                  {stap.antwoord && (
+                    <div data-stap={`${id}-antwoord`} className="ml-auto max-w-[85%] rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
+                      <span className="sr-only">Jij: </span>
+                      {antwoordWoorden(vraag, stap.antwoord)}
+                    </div>
+                  )}
+                </Fragment>
               );
             case "fout":
               return (
@@ -292,22 +263,13 @@ function SlotVerloop({
                   <p className="mt-2 text-lg">
                     <TekstMetBreuken tekst={vraag.explanation} />
                   </p>
-                  {interactief && (
-                    <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
-                      {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Volgende vraag"}
-                      <Icoon naam="pijl-rechts" className="size-6" />
-                    </button>
-                  )}
                 </Kaart>
               );
             case "verder":
-              return interactief ? (
+              // Na de uitleg: bij een kaartvraag de goede plek op de kaart. Verder gaat via de chatbalk.
+              return interactief && vraag.soort === "europa" && vraag.type === "map-click" ? (
                 <div key={id} data-stap={id} className="w-full tablet:max-w-[92%]">
-                  {vraag.soort === "europa" && <EuropaUitlegKaart vraag={vraag} sessie={sessie} />}
-                  <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
-                    {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Verder"}
-                    <Icoon naam="pijl-rechts" className="size-6" />
-                  </button>
+                  <EuropaUitlegKaart vraag={vraag} sessie={sessie} />
                 </div>
               ) : null;
           }
@@ -326,9 +288,6 @@ function SlotVerloop({
     </>
   );
 }
-
-const hoofdKnop =
-  "inline-flex min-h-14 items-center justify-center gap-2 rounded-[14px] bg-actie-blauw px-6 text-lg font-bold text-wit hover:bg-actie-hover active:bg-actie-ingedrukt disabled:bg-uitgeschakeld-vlak disabled:text-uitgeschakeld-tekst";
 
 function Kaart({ toon, voorlees, children }: { toon: "normaal" | "fout" | "hulp" | "goed"; voorlees: { id: string; tekst: string }; children: ReactNode }) {
   const stijl = {
@@ -387,8 +346,10 @@ function antwoordWoorden(vraag: BreukOfTafel, antwoord: string) {
   return antwoord;
 }
 
+/** De vraag als bericht van Mees. Antwoorden gaat via de chatbalk; alleen bij "Waar ligt …?" tik je op de kaart. */
 function VraagKaart({
   id,
+  slotId,
   vraag,
   sessie,
   opties,
@@ -397,11 +358,9 @@ function VraagKaart({
   stap,
   interactief,
   seconden,
-  onControleer,
-  onHint,
-  hintLabel,
 }: {
   id: string;
+  slotId: string;
   vraag: BreukOfTafel;
   sessie: Sessie;
   opties: { id: string; label: string }[];
@@ -411,53 +370,41 @@ function VraagKaart({
   interactief: boolean;
   /** Tafels op tijd: seconden per vraag (afteller). */
   seconden?: number | null;
-  onControleer: (antwoord: string, actieveDuurMs?: number) => void;
-  onHint: () => void;
-  hintLabel: string;
 }) {
-  const [gekozen, setGekozen] = useState<string>("");
-  const tijd = useActieveTijd(interactief && Boolean(seconden));
+  const tijd = useActieveTijd(interactief && vraag.soort === "tafel");
+  const kaartKeuze = useKaartKeuze();
   const titel = stap.opnieuw ? "Probeer het nog eens." : herhaling ? "Nog een soortgelijke vraag." : `Vraag ${nummer}`;
-  const getoond = interactief ? gekozen : (stap.antwoord ?? "");
+  // De chatbalk leest de antwoordtijd af als het kind antwoordt.
+  const leesTijd = tijd.ms;
+  useEffect(() => {
+    if (!interactief || vraag.soort !== "tafel") return;
+    zetKlok(leesTijd);
+    return () => zetKlok(null);
+  }, [interactief, vraag.soort, leesTijd]);
 
   return (
     <div data-stap={id} className={`w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17] tablet:px-6 ${interactief ? "" : "opacity-90"}`}>
       <MeesAfzender />
       <p className="mt-2 font-semibold text-actie-blauw">{titel}</p>
       <h3 className="mt-1 text-xl font-extrabold tablet:text-2xl">{vraag.prompt}</h3>
-      {vraag.soort !== "tafel" && <p className="mt-1 text-[#5b6fae]">{vraag.instructie}</p>}
+      {vraag.soort !== "tafel" && <p className="mt-1 text-[#5b6fae]">{vraag.soort === "breuk" ? "Kies het teken onderin, of typ het." : vraag.instructie}</p>}
       {interactief && seconden ? <Afteller resterendMs={Math.max(0, seconden * 1000 - tijd.nu)} totaalMs={seconden * 1000} /> : null}
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (interactief && gekozen.trim()) onControleer(gekozen.trim(), vraag.soort === "tafel" ? tijd.ms() : undefined);
-        }}
-      >
-        {vraag.soort === "breuk" ? (
-          <BreukOpgave vraag={vraag} gekozen={getoond} onKies={setGekozen} vergrendeld={!interactief} groep={id} />
-        ) : vraag.soort === "tafel" ? (
-          <TafelOpgave vraag={vraag} waarde={getoond} onWijzig={setGekozen} vergrendeld={!interactief} id={id} />
-        ) : interactief ? (
-          // Europa: alleen de open vraag krijgt een kaart; eerdere pogingen staan als tekst.
-          <EuropaOpgave vraag={vraag} sessie={sessie} opties={opties} gekozen={gekozen} onKies={setGekozen} />
-        ) : null}
-
-        {interactief ? (
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <button type="submit" disabled={!gekozen.trim()} className={hoofdKnop}>
-              Kijk samen met Mees
-              <Icoon naam="pijl-rechts" className="size-6" />
-            </button>
-            <button type="button" onClick={onHint} className="inline-flex min-h-12 items-center gap-2 rounded-[12px] px-3 font-semibold text-actie-blauw hover:bg-blauw-zacht">
-              <Icoon naam="hint" className="size-6" />
-              {hintLabel}
-            </button>
-          </div>
-        ) : (
-          stap.antwoord && <p className="mt-3 tekst-klein text-tekst-zacht">Jouw antwoord: {antwoordWoorden(vraag, stap.antwoord)}</p>
-        )}
-      </form>
+      {vraag.soort === "breuk" ? (
+        <BreukOpgave vraag={vraag} />
+      ) : vraag.soort === "tafel" ? (
+        <TafelOpgave vraag={vraag} />
+      ) : interactief ? (
+        // Europa: alleen de open vraag krijgt een kaart; eerdere pogingen staan als tekst.
+        <EuropaOpgave
+          vraag={vraag}
+          sessie={sessie}
+          opties={opties}
+          gekozen={kaartKeuze?.slotId === slotId ? kaartKeuze.id : ""}
+          onKies={(plek) => zetKaartKeuze({ slotId, id: plek })}
+        />
+      ) : null}
+      {interactief && vraag.soort === "tafel" && <p className="mt-3 text-center text-[#5b6fae]">Typ je antwoord onderin.</p>}
       <div className="mt-2">
         <VoorleesLink id={id} tekst={vraagVoorleesTekst(vraag)} />
       </div>
@@ -512,91 +459,31 @@ function Afteller({ resterendMs, totaalMs }: { resterendMs: number; totaalMs: nu
   );
 }
 
-function BreukOpgave({ vraag, gekozen, onKies, vergrendeld, groep }: { vraag: BreukVergelijkVraag; gekozen: string; onKies: (w: string) => void; vergrendeld: boolean; groep: string }) {
+function BreukOpgave({ vraag }: { vraag: BreukVergelijkVraag }) {
   const [l1, l2] = vraag.visual.links;
   const [r1, r2] = vraag.visual.rechts;
   return (
-    <>
-      <div className="mt-4 flex items-center justify-center gap-5 text-[2.75rem] font-bold text-inkt tablet:gap-8 tablet:text-[3.25rem]" role="group" aria-label={`Breuk ${l1}/${l2} en breuk ${r1}/${r2}`}>
-        <Breuk teller={l1} noemer={l2} />
-        <span className={`grid size-16 place-items-center rounded-[12px] border-2 text-[0.75em] tablet:size-20 ${gekozen ? "border-actie-blauw bg-blauw-zacht" : "border-rand-interactief text-[#6c7fbf]"}`} aria-hidden>
-          {gekozen || "?"}
-        </span>
-        <Breuk teller={r1} noemer={r2} />
-      </div>
-      <fieldset className="mt-4" disabled={vergrendeld}>
-        <legend className="sr-only">{vraag.instructie}</legend>
-        <div className="mx-auto grid max-w-xs grid-cols-3 gap-3">
-          {vraag.options.map((optie) => {
-            const isGekozen = gekozen === optie;
-            return (
-              <label
-                key={optie}
-                className={`grid min-h-16 place-items-center rounded-[14px] border text-4xl font-bold has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus ${
-                  isGekozen ? "border-2 border-actie-blauw bg-blauw-zacht" : "border-rand-interactief bg-[#f5faff]"
-                } ${vergrendeld ? "cursor-default" : "cursor-pointer [@media(hover:hover)]:hover:bg-blauw-zacht"}`}
-              >
-                <input
-                  type="radio"
-                  name={`antwoord-${groep}`}
-                  value={optie}
-                  checked={isGekozen}
-                  onChange={() => onKies(optie)}
-                  className="sr-only"
-                  aria-label={optie === "<" ? "kleiner dan" : optie === ">" ? "groter dan" : "is gelijk aan"}
-                />
-                <span aria-hidden>{optie}</span>
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
-    </>
-  );
-}
-
-function TafelOpgave({ vraag, waarde, onWijzig, vergrendeld, id }: { vraag: TafelVraag; waarde: string; onWijzig: (w: string) => void; vergrendeld: boolean; id: string }) {
-  const veld = useRef<HTMLInputElement>(null);
-  // Meteen klaar om te typen, maar zonder het gesprek te laten verspringen (de chat bepaalt zelf wat in beeld komt).
-  useEffect(() => {
-    if (!vergrendeld && !matchMedia("(pointer: coarse)").matches) veld.current?.focus({ preventScroll: true });
-  }, [vergrendeld]);
-  return (
-    <div className="mt-4 flex items-center justify-center gap-3 text-[2.5rem] font-bold text-inkt tablet:text-[3rem]">
-      <span aria-hidden>
-        {vraag.links} {vraag.bewerking === "x" ? "×" : ":"} {vraag.rechts} =
+    <div className="mt-4 flex items-center justify-center gap-5 text-[2.75rem] font-bold text-inkt tablet:gap-8 tablet:text-[3.25rem]" role="group" aria-label={`Breuk ${l1}/${l2} en breuk ${r1}/${r2}`}>
+      <Breuk teller={l1} noemer={l2} />
+      <span className="grid size-16 place-items-center rounded-[12px] border-2 border-rand-interactief text-[0.75em] text-[#6c7fbf] tablet:size-20" aria-hidden>
+        ?
       </span>
-      <label htmlFor={`tafel-${id}`} className="sr-only">
-        Antwoord op {vraag.links} {vraag.bewerking === "x" ? "keer" : "gedeeld door"} {vraag.rechts}
-      </label>
-      <input
-        id={`tafel-${id}`}
-        type="text"
-        inputMode="numeric"
-        pattern="[0-9]*"
-        autoComplete="off"
-        maxLength={4}
-        value={waarde}
-        readOnly={vergrendeld}
-        ref={veld}
-        onChange={(e) => onWijzig(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))}
-        className="h-16 w-28 rounded-[14px] border-2 border-rand-interactief bg-wit text-center focus:border-actie-blauw tablet:h-20 tablet:w-36"
-      />
+      <Breuk teller={r1} noemer={r2} />
     </div>
   );
 }
 
-function Terugblik({
-  sessie,
-  opslag,
-  onNogEenRondje,
-  onIetsAnders,
-}: {
-  sessie: Sessie;
-  opslag: OpslagData;
-  onNogEenRondje: () => void;
-  onIetsAnders: () => void;
-}) {
+function TafelOpgave({ vraag }: { vraag: TafelVraag }) {
+  return (
+    <p className="mt-4 text-center text-[2.5rem] font-bold text-inkt tablet:text-[3rem]" aria-label={`${vraag.links} ${vraag.bewerking === "x" ? "keer" : "gedeeld door"} ${vraag.rechts}`}>
+      <span aria-hidden>
+        {vraag.links} {vraag.bewerking === "x" ? "×" : ":"} {vraag.rechts} = ?
+      </span>
+    </p>
+  );
+}
+
+function Terugblik({ sessie, opslag }: { sessie: Sessie; opslag: OpslagData }) {
   const { zelfstandig, aantal } = sessieStatistiek(sessie);
   const metHulp = aantal - zelfstandig;
   const limietMs = sessie.soort === "tafels" && sessie.instellingen?.metTijd && sessie.instellingen.secondenPerVraag ? sessie.instellingen.secondenPerVraag * 1000 : null;
@@ -615,14 +502,6 @@ function Terugblik({
         <h3 className="mt-2 text-2xl font-extrabold">Goed gewerkt! 🎉</h3>
         <p className="mt-1 font-semibold text-tekst-zacht">{sessieNaam(sessie)}</p>
         <p className="mt-2 text-lg">{tekst}</p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <button type="button" onClick={onNogEenRondje} className={hoofdKnop}>
-            Nog een rondje
-          </button>
-          <button type="button" onClick={onIetsAnders} className="inline-flex min-h-14 items-center rounded-[14px] border border-[#cfe6fb] bg-[#f3f9ff] px-5 font-bold hover:bg-blauw-zacht">
-            Iets anders doen
-          </button>
-        </div>
         <div className="mt-2">
           <VoorleesLink id={`terugblik-${sessie.id}`} tekst={`Goed gewerkt! ${tekst}`} />
         </div>

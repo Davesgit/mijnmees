@@ -24,7 +24,8 @@ import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/featu
 import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
 import type { Poging } from "@/features/oefenen/types";
 import { antwoord, bewaarGesprek, herken, reageer, tafelsUit, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
-import { kanInChat, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
+import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
+import { namen as europaNamenMap } from "@/features/oefenen/europa-vragen";
 import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
@@ -381,6 +382,40 @@ test("chat-oefenen: vier fouten geven de uitleg en daarna Verder", () => {
   const stappen = verloopVanSlot(s, data.pogingen.filter((p) => p.slotId === s.id));
   assert.deepEqual(stappen.filter((x) => x.soort === "fout").map((x) => (x.soort === "fout" ? x.hulp?.soort ?? "-" : "")), ["-", "hint", "hint", "uitleg"]);
   assert.equal(stappen.at(-1)?.soort, "verder");
+});
+
+test("chatbalk: getypte antwoorden en opdrachten begrijpen", () => {
+  assert.equal(leesOpdracht("Geef me een hint"), "hint");
+  assert.equal(leesOpdracht("ik snap het niet"), "hint");
+  assert.equal(leesOpdracht("even pauze!"), "pauze");
+  assert.equal(leesOpdracht("volgende vraag"), "verder");
+  assert.equal(leesOpdracht("hoe deel je door 4"), null);
+  const breuk = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  const bslot = breuk.sessie.slots[0]!;
+  const bvraag = vindVraag(bslot.vraagId)!;
+  assert.equal(leesAntwoord("<", bvraag, bslot, europaNamenMap), "<");
+  assert.equal(leesAntwoord("Groter", bvraag, bslot, europaNamenMap), ">");
+  assert.equal(leesAntwoord("is gelijk", bvraag, bslot, europaNamenMap), "=");
+  assert.equal(leesAntwoord("wat is een breuk", bvraag, bslot, europaNamenMap), null);
+  assert.deepEqual(antwoordOpties(bvraag, bslot).map((o) => o.waarde), bvraag.soort === "breuk" ? bvraag.options : []);
+  const tafel = maakTafelSessie(leeg(), { tafels: [7], bewerkingen: ["x"], aantal: 4, metTijd: false, bron: "zelf" });
+  const tslot = tafel.sessie.slots[0]!;
+  const tvraag = vindVraag(tslot.vraagId)!;
+  assert.equal(leesAntwoord("42", tvraag, tslot, europaNamenMap), "42");
+  assert.equal(leesAntwoord("het is 42", tvraag, tslot, europaNamenMap), "42");
+  assert.equal(leesAntwoord("veertig", tvraag, tslot, europaNamenMap), null);
+  assert.equal(antwoordOpties(tvraag, tslot).length, 0);
+  const eu = maakEuropaSessie(leeg(), { gebieden: ["west"], landen: landenVanGebieden(["west"]), onderwerpen: ["landen"], vorm: "afwisselend" });
+  const kaartSlot = eu.sessie.slots.find((sl) => (vindVraag(sl.vraagId) as { type?: string })?.type === "map-click")!;
+  const kaartVraag = vindVraag(kaartSlot.vraagId)!;
+  assert.equal(leesAntwoord("frankrijk", kaartVraag, kaartSlot, europaNamenMap), "FR");
+  const keuzeSlot = eu.sessie.slots.find((sl) => (vindVraag(sl.vraagId) as { type?: string })?.type === "choice");
+  if (keuzeSlot) {
+    const keuzeVraag = vindVraag(keuzeSlot.vraagId)!;
+    const optie = antwoordOpties(keuzeVraag, keuzeSlot)[0]!;
+    assert.equal(leesAntwoord(optie.label.toUpperCase(), keuzeVraag, keuzeSlot, europaNamenMap), optie.waarde);
+  }
+  assert.equal(faseVan(bslot), "antwoorden");
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);

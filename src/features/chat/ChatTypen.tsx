@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { meesTypt, meesWacht } from "./ritme";
 
 // Mees "typt" zijn antwoord, zoals in een AI-chat: eerst even nadenken (drie puntjes), dan verschijnt de tekst van
 // boven naar beneden. Alleen voor berichten die net zijn toegevoegd; na herladen staat alles er meteen.
@@ -45,6 +46,8 @@ export function TypTekst({ id, tekst, className, children }: { id: string; tekst
 
   // Klaar met typen zodra alle woorden staan (afgeleid; geen extra state).
   const klaar = fase === "klaar" || (fase === "typt" && getoond >= delen.length);
+  // Zolang Mees typt, wachten de opties in de chatbalk.
+  useEffect(() => (klaar ? undefined : meesTypt()), [klaar]);
 
   useEffect(() => {
     if (klaar) return klaarMet(id);
@@ -105,6 +108,7 @@ export function NaTypen({ id, children }: { id: string; children: ReactNode }) {
     }, 10000);
     return () => clearTimeout(t);
   }, [wacht, id]);
+  useEffect(() => (wacht ? meesWacht() : undefined), [wacht]);
   if (wacht) return null;
   return <>{children}</>;
 }

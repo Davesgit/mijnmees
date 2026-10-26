@@ -3,6 +3,7 @@
 // opnieuw worden opgebouwd. De oefenmotor (sessie.ts) blijft de enige die bepaalt wat goed is en wat telt.
 
 import type { Poging, Sessie, Slot } from "@/features/oefenen/types";
+import type { Vraag } from "@/features/oefenen/vragen";
 
 export type Hulp = { soort: "hint"; niveau: 1 | 2 } | { soort: "uitleg" };
 
@@ -92,3 +93,65 @@ export function oefenTeller(sessie: Sessie) {
 
 export const AANTAL_KEUZES = [4, 6, 8] as const;
 export const STANDAARD_AANTAL = 6;
+
+// ── De chatbalk tijdens het oefenen ──────────────────────────────────────────────────────────────────────────────
+// Antwoorden en opdrachten kunnen als klikbare optie of als getypte tekst; de oefenmotor beoordeelt het antwoord.
+
+/** Waar staat de open vraagplaats: antwoorden, goed (verder met de volgende) of uitleg gelezen (verder). */
+export type Fase = "antwoorden" | "goed" | "uitleg";
+
+export function faseVan(slot: Slot): Fase {
+  if (slot.uitkomst === "zelfstandig" || slot.uitkomst === "met-hulp") return "goed";
+  if (slot.hulp.uitleg) return "uitleg";
+  return "antwoorden";
+}
+
+export type Snelkeuze = { label: string; waarde: string };
+
+const tekenLabel: Record<string, string> = { "<": "<  kleiner dan", "=": "=  is gelijk aan", ">": ">  groter dan" };
+
+/** Klikbare antwoorden voor de chatbalk (leeg bij tafels: dan typ je het getal, en bij "Waar ligt …": tik op de kaart). */
+export function antwoordOpties(vraag: Vraag, slot: Slot): Snelkeuze[] {
+  if (vraag.soort === "breuk") return vraag.options.map((o) => ({ label: tekenLabel[o] ?? o, waarde: o }));
+  if (vraag.soort === "europa" && vraag.type === "choice") return (vraag.opties ?? slot.opties ?? []).map((o) => ({ label: o.label, waarde: o.id }));
+  return [];
+}
+
+const schoon = (t: string) =>
+  ` ${t
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[.!?,]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()} `;
+
+/** Een opdracht in getypte tekst: om hulp vragen, pauzeren of verder gaan. */
+export function leesOpdracht(tekst: string): "hint" | "pauze" | "verder" | null {
+  const t = schoon(tekst);
+  if (/ (hint|help|hulp|tip|snap|begrijp|weet het niet|weet ik niet|geen idee|uitleg) /.test(t)) return "hint";
+  if (/ (pauze|stop|stoppen|ophouden|klaar voor nu|even niet) /.test(t)) return "pauze";
+  if (/^ (volgende|volgende vraag|verder|ga door|ga verder|next|ok|oke|okay|rond af) $/.test(t)) return "verder";
+  return null;
+}
+
+/** Een antwoord in getypte tekst, of null als de tekst geen antwoord op deze vraag is. */
+export function leesAntwoord(tekst: string, vraag: Vraag, slot: Slot, namen: Record<string, string>): string | null {
+  const t = schoon(tekst);
+  if (vraag.soort === "tafel") {
+    const getal = t.match(/^ (\d{1,4}) $/) ?? t.match(/ (?:is|=) (\d{1,4}) $/);
+    return getal ? getal[1]! : null;
+  }
+  if (vraag.soort === "breuk") {
+    if (/^ (<|kleiner|kleiner dan|is kleiner|minder) $/.test(t)) return "<";
+    if (/^ (>|groter|groter dan|is groter|meer) $/.test(t)) return ">";
+    if (/^ (=|gelijk|is gelijk|even groot|hetzelfde) $/.test(t)) return "=";
+    return null;
+  }
+  if (vraag.type === "choice") {
+    const opties = vraag.opties ?? slot.opties ?? [];
+    return opties.find((o) => schoon(o.label) === t)?.id ?? null;
+  }
+  // "Waar ligt …?": de naam van een plek typen kan ook.
+  return Object.entries(namen).find(([, naam]) => schoon(naam) === t)?.[0] ?? null;
+}

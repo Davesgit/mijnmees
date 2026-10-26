@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Icoon } from "@/components/mees/Icoon";
+import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
+
+/** Een klikbare optie in de chatbalk (antwoord, vervolgstap of keuze van Mees). `doe` zegt wat er moet gebeuren. */
+export type Optie<T = unknown> = { label: string; doe: T; primair?: boolean; icoon?: AlleIcoonNamen };
 
 // Inspreken via de spraakherkenning van de browser: alleen na een tik, tekst komt ter controle in het invoerveld.
 type Herkenning = {
@@ -23,7 +26,33 @@ const herkenningKlasse = () => {
 };
 const geenAbonnement = () => () => {};
 
-export function Invoer({ waarde, onWijzig, onStuur, onLuisteren, plaatshouder }: { waarde: string; onWijzig: (t: string) => void; onStuur: () => void; onLuisteren: () => void; plaatshouder: string }) {
+export function Invoer<T>({
+  waarde,
+  onWijzig,
+  onStuur,
+  onLuisteren,
+  plaatshouder,
+  kortePlaatshouder = "Typ je vraag…",
+  opties = [],
+  onOptie,
+  optiesWachten = false,
+  cijfers = false,
+}: {
+  waarde: string;
+  onWijzig: (t: string) => void;
+  onStuur: () => void;
+  onLuisteren: () => void;
+  plaatshouder: string;
+  /** Kortere tekst voor smalle schermen. */
+  kortePlaatshouder?: string;
+  /** Klikbare opties boven het invoerveld. Typen kan altijd. */
+  opties?: Optie<T>[];
+  onOptie?: (o: Optie<T>) => void;
+  /** Mees is nog bezig met zijn reactie: de opties wachten even. */
+  optiesWachten?: boolean;
+  /** Een getal als antwoord verwacht (tafels): cijfertoetsenbord op telefoon en tablet. */
+  cijfers?: boolean;
+}) {
   const kanPraten = useSyncExternalStore(geenAbonnement, () => herkenningKlasse() !== null, () => false);
   const smal = useSyncExternalStore(geenAbonnement, () => matchMedia("(max-width: 767px)").matches, () => false);
   const [luistert, setLuistert] = useState(false);
@@ -68,6 +97,24 @@ export function Invoer({ waarde, onWijzig, onStuur, onLuisteren, plaatshouder }:
 
   return (
     <div>
+      {opties.length > 0 && (
+        <div role="group" aria-label="Snelle antwoorden" className={`mb-2 flex flex-wrap justify-center gap-2 transition-opacity ${optiesWachten ? "pointer-events-none opacity-40" : ""}`} aria-disabled={optiesWachten || undefined}>
+          {opties.map((o) => (
+            <button
+              key={o.label}
+              type="button"
+              disabled={optiesWachten}
+              onClick={() => onOptie?.(o)}
+              className={`inline-flex min-h-12 items-center gap-2 rounded-full border px-4 text-[1.0625rem] font-bold shadow-[0_4px_14px_#69b5ec1f] ${
+                o.primair ? "border-actie-blauw bg-actie-blauw text-wit hover:bg-actie-hover" : "border-[#cfe6fb] bg-wit text-inkt hover:border-actie-blauw hover:bg-blauw-zacht"
+              }`}
+            >
+              {o.icoon && <Icoon naam={o.icoon} className="size-5" />}
+              <span className="whitespace-pre">{o.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -96,8 +143,9 @@ export function Invoer({ waarde, onWijzig, onStuur, onLuisteren, plaatshouder }:
           onChange={(e) => onWijzig(e.target.value)}
           maxLength={500}
           autoComplete="off"
+          inputMode={cijfers ? "numeric" : undefined}
           enterKeyHint="send"
-          placeholder={luistert ? "Mees luistert…" : smal ? "Typ je vraag…" : plaatshouder}
+          placeholder={luistert ? "Mees luistert…" : smal ? kortePlaatshouder : plaatshouder}
           className="min-w-0 flex-1 rounded-full border border-[#edf7ff] bg-transparent px-4 py-3 text-lg placeholder:text-[#6f7db0] tablet:px-5 tablet:py-4 tablet:text-xl"
         />
         <button type="submit" aria-label="Verstuur je vraag" disabled={!waarde.trim()} className="grid size-12 shrink-0 place-items-center rounded-full bg-actie-blauw text-wit hover:bg-[#004fa8] disabled:opacity-50 tablet:size-16">
