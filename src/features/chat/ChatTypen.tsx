@@ -32,9 +32,10 @@ function klaarMet(id: string) {
 
 const rustig = () => document.documentElement.dataset.rustigeOvergangen === "true" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const DENKEN_MS = 450;
-const WOORDEN_PER_TIK = 2;
-const TIK_MS = 35;
+// Rustig genoeg om te zien dat Mees antwoordt: eerst even nadenken, dan ongeveer 13 woorden per seconde.
+const DENKEN_MS = 900;
+const WOORDEN_PER_TIK = 1;
+const TIK_MS = 75;
 
 /** Tekst van Mees die verschijnt alsof hij typt; `children` (keuzes, kaart, voorlezen) komen daarna. */
 export function TypTekst({ id, tekst, className, children }: { id: string; tekst: string; className?: string; children?: ReactNode }) {
@@ -101,7 +102,7 @@ export function NaTypen({ id, children }: { id: string; children: ReactNode }) {
     const t = setTimeout(() => {
       teksten.clear();
       meld();
-    }, 4000);
+    }, 10000);
     return () => clearTimeout(t);
   }, [wacht, id]);
   if (wacht) return null;
