@@ -7,13 +7,13 @@ import { vindWeetje } from "@/content/weetjes";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useVoorlezen } from "@/components/mees/Voorlezen";
-import { gastLimietBereikt, maakSessie, maakTafelSessie, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
+import { gastLimietBereikt, maakEuropaSessie, maakSessie, maakTafelSessie, openSessie, rondOvergangAf, sessieRoute } from "@/features/oefenen/sessie";
 import type { OpslagData } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
 import { weetjeVoorleesTekst } from "@/features/voorlezen/teksten";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { Invoer } from "./ChatInvoer";
-import { TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, WeetjeKaart, WeetjesKaart, type TafelInstelling } from "./ChatKaarten";
+import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, WeetjeKaart, WeetjesKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
 import { antwoord, reageer, startkaarten, type Antwoord, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
 import { OefenBlok } from "./OefenBlok";
@@ -158,6 +158,10 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     }, label);
   }
 
+  function startEuropa(i: EuropaInstelling, label: string) {
+    startRondje((d) => maakEuropaSessie(d, { gebieden: i.gebieden, landen: i.landen, onderwerpen: i.onderwerpen, vorm: i.vorm }), label);
+  }
+
   function startTafels(i: TafelInstelling, label: string) {
     startRondje((d) => maakTafelSessie(d, { tafels: i.tafels, bewerkingen: i.bewerkingen, aantal: i.aantal, metTijd: i.metTijd, secondenPerVraag: i.seconden, bron: "zelf" }), label);
   }
@@ -178,7 +182,9 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
 
   function nogEenRondje() {
     const sessie = actieveOefening ?? (laatste?.oefening ? haalOpslag().sessies[laatste.oefening.sessieId] : undefined);
-    if (sessie?.soort === "tafels")
+    if (sessie?.soort === "europa" || sessie?.soort === "puzzel")
+      voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Wat wil je nu oefenen op de kaart?", { kaart: { soort: "europa", vorm: sessie.soort === "puzzel" ? "puzzel" : "afwisselend" } })]);
+    else if (sessie?.soort === "tafels")
       voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Welke tafels wil je nu doen?", { kaart: { soort: "tafels", tafels: sessie.instellingen?.tafels ?? [] } })]);
     else voegToe([bericht("kind", "Nog een rondje!"), bericht("mees", "Leuk! Kies wat je wilt doen en hoeveel vragen.", { kaart: { soort: "voorstel", standaard: voorstelOpties(haalOpslag())[0]!.id } })]);
   }
@@ -267,7 +273,7 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
             <div className="mx-auto flex max-w-[860px] items-center gap-4 px-4 py-2.5 tablet:px-8">
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold">
-                  Vraag {teller.nummer} van {teller.totaal} <span className="font-semibold text-tekst-zacht">· {sessieNaam(actieveOefening)}</span>
+                  {actieveOefening.soort === "puzzel" ? `${teller.klaar} van ${teller.totaal} landen` : `Vraag ${teller.nummer} van ${teller.totaal}`} <span className="font-semibold text-tekst-zacht">· {sessieNaam(actieveOefening)}</span>
                 </p>
                 <p className="tekst-klein text-tekst-zacht">
                   {teller.klaar} klaar · Nog {teller.nogTeDoen} te doen
@@ -304,7 +310,7 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
                   <MeesAfzender />
                   <p className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">{b.tekst}</p>
                   {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
-                    <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} />
+                    <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} onStartEuropa={startEuropa} />
                   )}
                   {b.id === laatsteMees && isLaatste && b.keuzes && b.keuzes.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -350,18 +356,22 @@ function KaartWeergave({
   onKies,
   onStartVoorstel,
   onStartTafels,
+  onStartEuropa,
 }: {
   kaart: Kaart;
   actief: boolean;
   onKies: (k: Keuze) => void;
   onStartVoorstel: (keuze: string, aantal: number, label: string) => void;
   onStartTafels: (i: TafelInstelling, label: string) => void;
+  onStartEuropa: (i: EuropaInstelling, label: string) => void;
 }) {
   switch (kaart.soort) {
     case "voorstel":
       return <VoorstelKaart standaard={kaart.standaard} actief={actief} onStart={onStartVoorstel} />;
     case "tafels":
       return <TafelKaart tafels={kaart.tafels} bewerking={kaart.bewerking} actief={actief} onStart={onStartTafels} />;
+    case "europa":
+      return <EuropaKaart vorm={kaart.vorm} onderwerpen={kaart.onderwerpen} actief={actief} onStart={onStartEuropa} />;
     case "voortgang":
       return <VoortgangKaart actief={actief} onKies={onKies} />;
     case "weetjes":

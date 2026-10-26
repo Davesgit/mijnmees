@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
-import { Icoon } from "@/components/mees/Icoon";
+import { useMemo, useState, type ReactNode } from "react";
+import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
 import { vindWeetje, weetjesPlekken } from "@/content/weetjes";
+import { alleEuropaVragen } from "@/features/oefenen/europa-vragen";
+import { MICROSTATEN, europaMeta, europaOnderwerpen, landenVanGebieden, telEuropaOnderdelen, type EuropaOnderwerp } from "@/features/oefenen/europa-sessie";
 import { openSessie, tijdKeuzes } from "@/features/oefenen/sessie";
 import { TAFELS } from "@/features/oefenen/tafel-vragen";
 import type { OpslagData } from "@/features/oefenen/types";
@@ -173,6 +175,145 @@ export function TafelKaart({ tafels: begin, bewerking: beginBewerking, actief, o
   );
 }
 
+export type EuropaInstelling = { gebieden: string[]; landen: string[]; onderwerpen: EuropaOnderwerp[]; vorm: "afwisselend" | "puzzel" };
+
+const gebiedVolgorde = ["heel", "north", "west", "south", "east", "central", "southeast"];
+const gebiedNaam = (id: string) => (id === "heel" ? "Heel Europa" : (europaMeta.gebieden.find((g) => g.id === id)?.naam ?? id));
+
+/** Europa kiezen: gebied, vorm (vragen of puzzel), onderwerpen en de heel kleine landen. */
+export function EuropaKaart({
+  vorm: beginVorm,
+  onderwerpen: beginOnderwerpen,
+  actief,
+  onStart,
+}: {
+  vorm?: "afwisselend" | "puzzel";
+  onderwerpen?: string[];
+  actief: boolean;
+  onStart: (i: EuropaInstelling, label: string) => void;
+}) {
+  const [gebieden, setGebieden] = useState<string[]>(["west"]);
+  const [vorm, setVorm] = useState<"afwisselend" | "puzzel">(beginVorm ?? "afwisselend");
+  const [onderwerpen, setOnderwerpen] = useState<EuropaOnderwerp[]>(
+    (beginOnderwerpen?.filter((o) => europaOnderwerpen.some((x) => x.id === o)) as EuropaOnderwerp[] | undefined) ?? ["landen"],
+  );
+  const [metMicrostaten, setMetMicrostaten] = useState(true);
+
+  const gebiedLanden = useMemo(() => landenVanGebieden(gebieden), [gebieden]);
+  const heeftMicrostaten = gebiedLanden.some((id) => (MICROSTATEN as readonly string[]).includes(id));
+  const landen = useMemo(() => (metMicrostaten ? gebiedLanden : gebiedLanden.filter((id) => !(MICROSTATEN as readonly string[]).includes(id))), [gebiedLanden, metMicrostaten]);
+  const liggingMogelijk = useMemo(() => alleEuropaVragen().some((v) => v.module === "relative" && (v.vereist ?? [v.doel]).every((id) => landen.includes(id))), [landen]);
+  const gekozen = onderwerpen.filter((o) => o !== "ligging" || liggingMogelijk);
+  const aantal = vorm === "puzzel" ? landen.length : telEuropaOnderdelen(landen, gekozen);
+  const kan = landen.length > 0 && (vorm === "puzzel" ? landen.length >= 2 : gekozen.length > 0);
+
+  function wisselGebied(id: string) {
+    setGebieden((g) => {
+      if (id === "heel") return g.includes("heel") ? [] : ["heel"];
+      const zonder = g.filter((x) => x !== "heel");
+      return zonder.includes(id) ? zonder.filter((x) => x !== id) : [...zonder, id];
+    });
+  }
+
+  return (
+    <fieldset disabled={!actief} className="mt-4">
+      <legend className="font-bold">Welk gebied?</legend>
+      <div className="mt-2 grid grid-cols-2 gap-2 tablet:grid-cols-4">
+        {gebiedVolgorde.map((id) => (
+          <button key={id} type="button" aria-pressed={gebieden.includes(id)} onClick={() => wisselGebied(id)} className={`${keuzeKnop(gebieden.includes(id), actief)} font-bold`}>
+            {gebiedNaam(id)}
+          </button>
+        ))}
+      </div>
+      {heeftMicrostaten && (
+        <button
+          type="button"
+          aria-pressed={!metMicrostaten}
+          onClick={() => setMetMicrostaten((m) => !m)}
+          className="mt-2 inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 tekst-klein font-semibold text-actie-blauw hover:bg-blauw-zacht"
+        >
+          <span aria-hidden className={`grid size-5 place-items-center rounded-[6px] border-2 ${!metMicrostaten ? "border-actie-blauw bg-actie-blauw text-wit" : "border-rand-interactief"}`}>
+            {!metMicrostaten && <Icoon naam="check" className="size-4" />}
+          </span>
+          Heel kleine landen overslaan (zoals Monaco en Vaticaanstad)
+        </button>
+      )}
+
+      <p className="mt-4 font-bold">Hoe wil je oefenen?</p>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        {(
+          [
+            ["afwisselend", "Vragen", "Aanwijzen en kiezen", "landen"],
+            ["puzzel", "Landenpuzzel", "Leg landen op hun plek", "puzzel"],
+          ] as const
+        ).map(([waarde, naam, uitleg, icoon]) => (
+          <button key={waarde} type="button" aria-pressed={vorm === waarde} onClick={() => setVorm(waarde)} className={`${keuzeKnop(vorm === waarde, actief)} flex items-center gap-3`}>
+            <Icoon naam={icoon as AlleIcoonNamen} className="size-7 shrink-0 text-actie-blauw" />
+            <span>
+              <span className="block font-bold">{naam}</span>
+              <span className="block tekst-klein text-tekst-zacht">{uitleg}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {vorm === "afwisselend" && (
+        <>
+          <p className="mt-4 font-bold">Wat wil je oefenen?</p>
+          <div className="mt-2 grid grid-cols-2 gap-2 tablet:grid-cols-3">
+            {europaOnderwerpen.map((o) => {
+              const uit = o.id === "ligging" && !liggingMogelijk;
+              const aan = onderwerpen.includes(o.id) && !uit;
+              return (
+                <button
+                  key={o.id}
+                  type="button"
+                  disabled={uit || !actief}
+                  aria-pressed={aan}
+                  onClick={() => setOnderwerpen((h) => (h.includes(o.id) ? h.filter((x) => x !== o.id) : [...h, o.id]))}
+                  className={`${keuzeKnop(aan, actief && !uit)} flex items-center gap-2 disabled:opacity-50`}
+                >
+                  <Icoon naam={o.icoon as AlleIcoonNamen} className="size-6 shrink-0 text-actie-blauw" />
+                  <span>
+                    <span className="block font-bold">{o.naam}</span>
+                    {uit && <span className="block tekst-klein text-tekst-zacht">Nog niet voor dit gebied</span>}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      <p className="mt-3 tekst-klein text-tekst-zacht">
+        {!kan
+          ? vorm === "puzzel"
+            ? "Kies een gebied met minstens twee landen."
+            : "Kies een gebied en iets om te oefenen."
+          : vorm === "puzzel"
+            ? `${aantal} landen om te leggen. Je kunt altijd even pauze nemen.`
+            : `Je oefent alles uit je keuze: ${aantal} onderdelen. Je kunt altijd even pauze nemen.`}
+      </p>
+      {actief && (
+        <button
+          type="button"
+          disabled={!kan}
+          onClick={() =>
+            onStart(
+              { gebieden, landen, onderwerpen: gekozen, vorm },
+              vorm === "puzzel" ? `Landenpuzzel: ${gebieden.map(gebiedNaam).join(" + ")}` : `${gebieden.map(gebiedNaam).join(" + ")}: ${gekozen.map((o) => europaOnderwerpen.find((x) => x.id === o)!.naam.toLowerCase()).join(", ")}`,
+            )
+          }
+          className={startKnop}
+        >
+          {vorm === "puzzel" ? "Start de puzzel" : "Start met oefenen"}
+          <Icoon naam="pijl-rechts" className="size-6" />
+        </button>
+      )}
+    </fieldset>
+  );
+}
+
 const groepen: { status: BewijsStatus; titel: string; regel: string }[] = [
   { status: "gaat-zelfstandig", titel: "Gaat zelfstandig", regel: "Dit lukt je zonder hulp." },
   { status: "aan-het-oefenen", titel: "Aan het oefenen", regel: "Blijf dit oefenen." },
@@ -184,7 +325,10 @@ function oefenKeuze(leerdoelId: string): Keuze {
   const naam = leerdoelNaam(leerdoelId);
   const t = leerdoelId.match(/^(tafel|deeltafel)-(\d+)$/);
   if (t) return { label: `${naam} oefenen`, soort: "kaart", tekst: `${naam}. Kies nog hoe je wilt oefenen.`, kaart: { soort: "tafels", tafels: [Number(t[2])], ...(t[1] === "deeltafel" ? { bewerking: ":" } : {}) } };
-  if (leerdoelId.startsWith("europa-")) return { label: `${naam} oefenen`, soort: "ga", href: "/kind/aardrijkskunde/europa" };
+  if (leerdoelId.startsWith("europa-")) {
+    const onderwerp = { "europa-landen": "landen", "europa-hoofdsteden": "hoofdsteden", "europa-wateren": "wateren", "europa-gebergten": "gebergten", "europa-ligging": "ligging" }[leerdoelId];
+    return { label: `${naam} oefenen`, soort: "kaart", tekst: "Kies welk gebied je wilt oefenen.", kaart: { soort: "europa", onderwerpen: onderwerp ? [onderwerp] : undefined } };
+  }
   const o = vindOnderdeelBijLeerdoel(leerdoelId);
   return { label: `${naam} oefenen`, soort: "kaart", tekst: "Kies hoeveel vragen je wilt doen.", kaart: { soort: "voorstel", standaard: o ? `doel:${o.onderdeel.id}` : "" } };
 }

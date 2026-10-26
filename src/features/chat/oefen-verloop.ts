@@ -66,10 +66,10 @@ export function verloopVanSlot(slot: Slot, pogingen: Poging[]): Stap[] {
   return stappen;
 }
 
-/** Kan deze oefening in het gesprek? Europa (kaart) volgt nog. */
+/** Kan deze oefening in het gesprek? Alleen de niveaubepaling en tutorcontrole volgen nog. */
 export function kanInChat(sessie: Sessie) {
   const soort = sessie.soort ?? "oefening";
-  return soort === "oefening" || soort === "tafels";
+  return soort === "oefening" || soort === "tafels" || soort === "europa" || soort === "puzzel";
 }
 
 /** Teller voor de voortgangsbalk: afgeronde vraagplaatsen en wat er nog komt. */

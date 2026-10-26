@@ -6,12 +6,13 @@
 export type Kaart =
   | { soort: "voorstel"; standaard: string }
   | { soort: "tafels"; tafels: number[]; bewerking?: "x" | ":" | "beide" }
+  | { soort: "europa"; vorm?: "afwisselend" | "puzzel"; onderwerpen?: string[] }
   | { soort: "voortgang" }
   | { soort: "weetjes" }
   | { soort: "weetje"; id: string };
 
 export type Keuze =
-  /** Alleen nog voor Europa (komt later in de chat) en het bewaren van gastvoortgang. */
+  /** Alleen voor het bewaren van gastvoortgang (een pagina voor de ouder). */
   | { label: string; soort: "ga"; href: string }
   | { label: string; soort: "voorstel" }
   | { label: string; soort: "hervat" }
@@ -65,8 +66,7 @@ export const startkaarten = [
 const keuze = {
   rekenen: { label: "Rekenen", soort: "vervolg", onderwerp: "rekenen" },
   tafels: { label: "Tafels", soort: "vervolg", onderwerp: "tafels" },
-  // Europa met de kaart komt in een volgende stap in de chat; tot die tijd nog op een eigen scherm.
-  europa: { label: "Topo Europa", soort: "ga", href: "/kind/aardrijkskunde/europa" },
+  europa: { label: "Topo Europa", soort: "vervolg", onderwerp: "europa" },
   weetjes: { label: "Mijn weetjes", soort: "vervolg", onderwerp: "weetjes" },
   voortgang: { label: "Mijn voortgang", soort: "vervolg", onderwerp: "voortgang" },
 } as const satisfies Record<string, Keuze>;
@@ -78,6 +78,7 @@ export function herken(tekst: string): Onderwerp {
   const t = ` ${tekst.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")} `;
   const heeft = (...woorden: string[]) => woorden.some((w) => t.includes(w));
   if (heeft("tafel", " keer ", "maal", "vermenigvuldig", " x ")) return "tafels";
+  if (heeft("puzzel")) return "europa";
   if (heeft("europa", "land", "hoofdstad", "topo", "kaart", "aardrijkskunde", "rivier", "gebergte")) return "europa";
   if (heeft("breuk", "procent", "kommagetal", "decimaal", "rekenen", " som ", "sommen", "plus", "min ", "delen", "gedeeld", "meten", "geld", "tijd", "klok")) return "rekenen";
   if (heeft("weetje", "weetjes", "wist je")) return "weetjes";
@@ -123,7 +124,7 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context, tafels: number[] = 
         kaart: { soort: "tafels", tafels },
       };
     case "europa":
-      return { tekst: "Op de kaart van Europa oefen je landen, hoofdsteden, rivieren en gebergten. Dit doen we nog even op een eigen scherm.", keuzes: [keuze.europa] };
+      return { tekst: "Op de kaart van Europa! Kies welk gebied, wat je wilt oefenen, en of je vragen wilt of een puzzel.", kaart: { soort: "europa" } };
     case "weetjes":
       return { tekst: "Dit zijn de weetjes die je al hebt verzameld. Tik op een weetje om het te lezen.", kaart: { soort: "weetjes" } };
     case "werkblad":

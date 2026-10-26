@@ -324,9 +324,11 @@ test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {
   const ctx = { open: null, voorstel: "Breuken vergelijken", voorstelId: "doel:breuken-vergelijken", aantal: 6 };
   assert.equal(antwoord("oefenen", ctx).keuzes?.[0]?.soort, "voorstel");
   assert.equal(antwoord("oefenen", { ...ctx, open: "Tafels" }).keuzes?.[0]?.soort, "hervat");
-  // Alles blijft in de chat: alleen Europa gaat (tijdelijk) nog naar een eigen scherm.
+  // Alles blijft in de chat: geen enkele keuze stuurt naar een andere pagina.
   for (const o of ["leren", "oefenen", "rekenen", "tafels", "europa", "weetjes", "werkblad", "voortgang", "groet", "onbekend"] as const)
-    for (const k of antwoord(o, ctx).keuzes ?? []) if (k.soort === "ga") assert.equal(k.href, "/kind/aardrijkskunde/europa", `${o}: ${k.href}`);
+    for (const k of antwoord(o, ctx).keuzes ?? []) assert.notEqual(k.soort, "ga", `${o}: ${k.label}`);
+  assert.equal(reageer("Wat is de hoofdstad van Italië?", ctx).kaart?.soort, "europa");
+  assert.equal(reageer("ik wil een landenpuzzel", ctx).kaart?.soort, "europa");
   assert.deepEqual(tafelsUit("ik wil de tafel van 7 en 12 trainen"), [7, 12]);
   assert.deepEqual(reageer("ik wil tafels trainen", ctx).kaart, { soort: "tafels", tafels: [] });
   assert.deepEqual(reageer("tafel van 8", ctx).kaart, { soort: "tafels", tafels: [8] });
@@ -360,7 +362,8 @@ test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
   // Goed antwoord telt meteen; een fout of hint telt niet als afgeronde vraag.
   assert.equal(oefenTeller(data.sessies[id]!).klaar, 1);
   assert.equal(kanInChat(data.sessies[id]!), true);
-  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "europa" }), false);
+  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "europa" }), true);
+  assert.equal(kanInChat({ ...data.sessies[id]!, soort: "niveau" }), false);
   assert.equal(kanInChat({ ...data.sessies[id]!, soort: "tafels", instellingen: { metTijd: true } }), true);
 });
 

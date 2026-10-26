@@ -10,9 +10,9 @@ const nextConfig: NextConfig = {
     ];
   },
   // De chat met Mees is de enige werkplek voor kinderen: oude kinderpagina's sturen door naar de chat.
-  // (Europa, lessen en tutorhulp volgen later; die blijven nog bereikbaar.)
+  // (Lessen en tutorhulp volgen later; die blijven nog bereikbaar.)
   async redirects() {
-    return ["/kind/rekenen/:pad*", "/kind/tafeltrainer/:pad*", "/kind/voortgang", "/kind/weetjesboek", "/kind/weetjes/:pad*", "/kind/oefening/instellen", "/kind/niveaubepaling/:pad*"].map(
+    return ["/kind/rekenen/:pad*", "/kind/tafeltrainer/:pad*", "/kind/voortgang", "/kind/weetjesboek", "/kind/weetjes/:pad*", "/kind/oefening/instellen", "/kind/niveaubepaling/:pad*", "/kind/aardrijkskunde/:pad*"].map(
       (source) => ({ source, destination: "/kind/start", permanent: false }),
     );
   },

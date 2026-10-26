@@ -8,14 +8,15 @@ import { vindWeetje } from "@/content/weetjes";
 import { gaVerder, registreerAntwoord, sessieStatistiek, vraagHulp } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie, Slot } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
-import { goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, type TafelVraag } from "@/features/oefenen/vragen";
+import { antwoordTekst, goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, type TafelVraag, type Vraag } from "@/features/oefenen/vragen";
 import { hintVoorleesTekst, uitlegVoorleesTekst, vraagVoorleesTekst } from "@/features/voorlezen/teksten";
 import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
+import { EuropaOpgave, EuropaUitlegKaart, PuzzelBlok } from "./EuropaInChat";
 import type { OefenVerwijzing } from "./gesprek";
 import { verloopVanSlot, type Hulp, type Stap } from "./oefen-verloop";
 
-type BreukOfTafel = BreukVergelijkVraag | TafelVraag;
+type BreukOfTafel = Vraag;
 
 /**
  * Een oefening in het gesprek. Alle pogingen blijven staan; alleen de nieuwste vraag is interactief.
@@ -31,12 +32,21 @@ export function OefenBlok({ verwijzing, actief, onNogEenRondje, onIetsAnders }: 
   const interactief = actief && verwijzing.tot === undefined && sessie.status === "bezig";
   const bewaar = (w: (d: OpslagData) => OpslagData) => setBewaarFout(!wijzigOpslag(w));
 
+  if (sessie.soort === "puzzel")
+    return (
+      <>
+        {(sessie.status === "bezig" || verwijzing.tot !== undefined) && <PuzzelBlok sessie={sessie} interactief={interactief} bewaar={bewaar} />}
+        {bewaarFout && <p className="rounded-[16px] bg-fout-zacht p-4 font-semibold text-fout">Bewaren lukt nu niet. Sluit dit scherm nog niet.</p>}
+        {actief && verwijzing.tot === undefined && sessie.status === "afgerond" && <Terugblik sessie={sessie} opslag={opslag} onNogEenRondje={onNogEenRondje} onIetsAnders={onIetsAnders} />}
+      </>
+    );
+
   return (
     <>
       {sessie.slots.slice(verwijzing.vanaf, eind).map((slot, i) => {
         const index = verwijzing.vanaf + i;
         const vraag = vindVraag(slot.vraagId);
-        if (!vraag || vraag.soort === "europa") return null;
+        if (!vraag || (vraag.soort === "europa" && vraag.type === "puzzel")) return null;
         return (
           <SlotVerloop
             key={slot.id}
@@ -88,6 +98,8 @@ function SlotVerloop({
                 key={id}
                 id={id}
                 vraag={vraag}
+                sessie={sessie}
+                opties={vraag.soort === "europa" ? (vraag.opties ?? slot.opties ?? []) : []}
                 nummer={nummer}
                 herhaling={Boolean(slot.herhalingVan)}
                 stap={stap}
@@ -131,7 +143,8 @@ function SlotVerloop({
             );
           case "verder":
             return interactief ? (
-              <div key={id} className="pl-1">
+              <div key={id} className="w-full tablet:max-w-[92%]">
+                {vraag.soort === "europa" && <EuropaUitlegKaart vraag={vraag} sessie={sessie} />}
                 <button type="button" onClick={() => bewaar((d) => gaVerder(d, sessie.id))} className={`${hoofdKnop} mt-4`}>
                   {sessie.index + 1 >= sessie.slots.length ? "Rond af" : "Verder"}
                   <Icoon naam="pijl-rechts" className="size-6" />
@@ -197,6 +210,7 @@ function hulpTekstVoorlezen(vraag: BreukOfTafel, hulp: Hulp | null) {
 }
 
 function antwoordWoorden(vraag: BreukOfTafel, antwoord: string) {
+  if (vraag.soort === "europa") return antwoordTekst(vraag, antwoord);
   if (vraag.soort === "breuk") return antwoord === "<" ? "< (is kleiner dan)" : antwoord === ">" ? "> (is groter dan)" : "= (is gelijk aan)";
   return antwoord;
 }
@@ -204,6 +218,8 @@ function antwoordWoorden(vraag: BreukOfTafel, antwoord: string) {
 function VraagKaart({
   id,
   vraag,
+  sessie,
+  opties,
   nummer,
   herhaling,
   stap,
@@ -215,6 +231,8 @@ function VraagKaart({
 }: {
   id: string;
   vraag: BreukOfTafel;
+  sessie: Sessie;
+  opties: { id: string; label: string }[];
   nummer: number;
   herhaling: boolean;
   stap: Extract<Stap, { soort: "vraag" }>;
@@ -235,7 +253,7 @@ function VraagKaart({
       <MeesAfzender />
       <p className="mt-2 font-semibold text-actie-blauw">{titel}</p>
       <h3 className="mt-1 text-xl font-extrabold tablet:text-2xl">{vraag.prompt}</h3>
-      {vraag.soort === "breuk" && <p className="mt-1 text-[#5b6fae]">{vraag.instructie}</p>}
+      {vraag.soort !== "tafel" && <p className="mt-1 text-[#5b6fae]">{vraag.instructie}</p>}
       {interactief && seconden ? <Afteller resterendMs={Math.max(0, seconden * 1000 - tijd.nu)} totaalMs={seconden * 1000} /> : null}
 
       <form
@@ -246,9 +264,12 @@ function VraagKaart({
       >
         {vraag.soort === "breuk" ? (
           <BreukOpgave vraag={vraag} gekozen={getoond} onKies={setGekozen} vergrendeld={!interactief} groep={id} />
-        ) : (
+        ) : vraag.soort === "tafel" ? (
           <TafelOpgave vraag={vraag} waarde={getoond} onWijzig={setGekozen} vergrendeld={!interactief} id={id} />
-        )}
+        ) : interactief ? (
+          // Europa: alleen de open vraag krijgt een kaart; eerdere pogingen staan als tekst.
+          <EuropaOpgave vraag={vraag} sessie={sessie} opties={opties} gekozen={gekozen} onKies={setGekozen} />
+        ) : null}
 
         {interactief ? (
           <div className="mt-5 flex flex-wrap items-center gap-3">
