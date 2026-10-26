@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { vindOnderdeel } from "@/content/onderwerpen";
 import { vindWeetje } from "@/content/weetjes";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
@@ -14,8 +14,9 @@ import { weetjeVoorleesTekst } from "@/features/voorlezen/teksten";
 import { haalOpslag, useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { Invoer } from "./ChatInvoer";
 import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, WeetjeKaart, WeetjesKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
+import { markeerNieuw, NaTypen, TypTekst } from "./ChatTypen";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
-import { antwoord, reageer, startkaarten, type Antwoord, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
+import { antwoord, reageer, startkaarten, type Antwoord, type Bericht, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
 import { OefenBlok } from "./OefenBlok";
 import { kanInChat, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
 import { maakBericht as bericht, useChats, voegToeAanActief } from "./opslag";
@@ -25,22 +26,25 @@ const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNa
 const naTerugkomst: Keuze[] = [
   { label: "Verder oefenen", soort: "vervolg", onderwerp: "oefenen" },
   { label: "Iets leren", soort: "vervolg", onderwerp: "leren" },
-  { label: "Mijn voortgang", soort: "ga", href: "/kind/voortgang" },
+  { label: "Mijn voortgang", soort: "vervolg", onderwerp: "voortgang" },
 ];
 
-/**
- * Brengt nieuw verschenen inhoud rustig in beeld: het begin ervan net onder de vaste balken bovenin.
- * Past alles al in beeld, dan blijft het scherm staan.
- */
-function toonNieuw(eerste: HTMLElement, laatste: HTMLElement, vloeiend: boolean) {
-  const boven = Math.max(0, ...[...document.querySelectorAll<HTMLElement>("[data-sticky-boven]")].map((e) => e.getBoundingClientRect().bottom)) + 12;
-  const onderBalk = document.querySelector<HTMLElement>("[data-sticky-onder]");
-  const onder = (onderBalk ? onderBalk.getBoundingClientRect().top : window.innerHeight) - 12;
-  const begin = eerste.getBoundingClientRect().top;
-  const eind = laatste.getBoundingClientRect().bottom;
-  if (begin >= boven && eind <= onder) return;
-  const rustig = !vloeiend || document.documentElement.dataset.rustigeOvergangen === "true" || matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.scrollTo({ top: window.scrollY + begin - boven, behavior: rustig ? "auto" : "smooth" });
+// Scrollen zoals in een AI-chat: een verstuurd bericht schuift naar boven (net onder de vaste balken) en het
+// antwoord groeit eronder naar beneden. Je ziet altijd eerst het begin van een antwoord, nooit het midden.
+
+const randBoven = () => Math.max(0, ...[...document.querySelectorAll<HTMLElement>("[data-sticky-boven]")].map((e) => e.getBoundingClientRect().bottom)) + 12;
+const randOnder = () => (document.querySelector<HTMLElement>("[data-sticky-onder]")?.getBoundingClientRect().top ?? window.innerHeight) - 12;
+const zachtScrollen = () => document.documentElement.dataset.rustigeOvergangen !== "true" && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Zet de bovenkant van een element net onder de vaste balken. */
+function zetBovenaan(el: HTMLElement, vloeiend: boolean) {
+  window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - randBoven(), behavior: vloeiend && zachtScrollen() ? "smooth" : "auto" });
+}
+
+/** Nieuwe stap in een oefening: het begin ervan in beeld, tenzij alles al zichtbaar is. */
+function toonNieuw(eerste: HTMLElement, laatste: HTMLElement) {
+  if (eerste.getBoundingClientRect().top >= randBoven() && laatste.getBoundingClientRect().bottom <= randOnder()) return;
+  zetBovenaan(eerste, true);
 }
 
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
@@ -61,9 +65,27 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
   // Verandert bij elke stap in de oefening: dan het nieuwste deel in beeld brengen.
   const stand = `${gesprek?.id}-${gesprek?.berichten.length}-${actieveOefening?.versie}-${actieveOefening?.status}-${opslag?.pogingen.length}`;
 
-  // Na elke stap het begin van het nieuwe deel in beeld brengen (niet de onderkant: dan valt de vraag weg).
+  // Het laatst verstuurde bericht van het kind blijft bovenaan staan terwijl het antwoord eronder groeit.
+  // Daarvoor is onder het gesprek tijdelijk ruimte nodig (net als in AI-chats); die krimpt mee als het antwoord groeit.
+  const verstuurd = useRef<string | null>(null);
+  const anker = useRef<string | null>(null);
+  const ruimte = useRef<HTMLDivElement>(null);
+  const log = useRef<HTMLDivElement>(null);
   const gezien = useRef<{ gesprek: string; stappen: Set<string> } | null>(null);
-  useEffect(() => {
+
+  function pasRuimteAan() {
+    const r = ruimte.current;
+    if (!r) return;
+    const a = anker.current ? document.querySelector<HTMLElement>(`[data-stap="${CSS.escape(anker.current)}"]`) : null;
+    if (!a) {
+      r.style.height = "0px";
+      return;
+    }
+    const inhoud = r.getBoundingClientRect().top - a.getBoundingClientRect().top;
+    r.style.height = `${Math.max(0, randOnder() - randBoven() - inhoud)}px`;
+  }
+
+  useLayoutEffect(() => {
     if (!gesprek) {
       gezien.current = null;
       return;
@@ -71,10 +93,41 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     const stappen = [...document.querySelectorAll<HTMLElement>("[role=log] [data-stap]")];
     const vorige = gezien.current?.gesprek === gesprek.id ? gezien.current.stappen : null;
     gezien.current = { gesprek: gesprek.id, stappen: new Set(stappen.map((e) => e.dataset.stap!)) };
-    // Gesprek (opnieuw) geopend: het laatste bericht. Anders: het eerste nieuwe bericht of de eerste nieuwe stap.
-    const doel = vorige ? stappen.find((e) => !vorige.has(e.dataset.stap!)) : stappen.at(-1);
-    if (doel) toonNieuw(doel, stappen.at(-1)!, Boolean(vorige));
+    const kind = verstuurd.current ? stappen.find((e) => e.dataset.stap === verstuurd.current) : undefined;
+    if (kind) {
+      // Net verstuurd: dit bericht bovenaan, het antwoord verschijnt eronder.
+      verstuurd.current = null;
+      anker.current = kind.dataset.stap!;
+      pasRuimteAan();
+      zetBovenaan(kind, Boolean(vorige));
+      return;
+    }
+    if (!vorige) {
+      // Gesprek (opnieuw) geopend: het begin van het laatste bericht.
+      anker.current = null;
+      pasRuimteAan();
+      const laatsteStap = stappen.at(-1);
+      if (laatsteStap) zetBovenaan(laatsteStap, false);
+      return;
+    }
+    pasRuimteAan();
+    const doel = stappen.find((e) => !vorige.has(e.dataset.stap!));
+    if (doel) toonNieuw(doel, stappen.at(-1)!);
   }, [stand]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Groeit of krimpt de inhoud (typen, kaarten, schermformaat): de vrije ruimte eronder meeschalen.
+  const gesprekVoorRuimte = gesprek?.id;
+  useEffect(() => {
+    const l = log.current;
+    if (!l) return;
+    const ro = new ResizeObserver(() => pasRuimteAan());
+    ro.observe(l);
+    window.addEventListener("resize", pasRuimteAan);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", pasRuimteAan);
+    };
+  }, [gesprekVoorRuimte]);
 
   // Voorlezen stopt bij een andere chat.
   const gesprekId = gesprek?.id;
@@ -87,7 +140,13 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
     return { open: open ? sessieNaam(open) : null, voorstel: v.naam, voorstelId: v.id, aantal: STANDAARD_AANTAL };
   }
 
-  const voegToe = voegToeAanActief;
+  /** Berichten toevoegen: nieuwe antwoorden van Mees worden getypt, een bericht van het kind schuift naar boven. */
+  const voegToe = (nieuw: Bericht[], opties?: Parameters<typeof voegToeAanActief>[1]) => {
+    markeerNieuw(nieuw.filter((b) => b.van === "mees"));
+    const kind = nieuw.find((b) => b.van === "kind");
+    if (kind) verstuurd.current = kind.id;
+    voegToeAanActief(nieuw, opties);
+  };
   const meesZegt = (r: Antwoord) => bericht("mees", r.tekst, { keuzes: r.keuzes, kaart: r.kaart });
 
   function stuur(tekst: string, onderwerp?: Onderwerp, titel?: string) {
@@ -319,10 +378,15 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
 
         <div className="mx-auto flex w-full max-w-[860px] flex-1 flex-col px-4 pt-6 tablet:px-8 tablet:pt-10">
           <h1 className="truncate text-xl font-extrabold tablet:text-2xl">{gesprek.titel}</h1>
-          <div role="log" aria-live="polite" aria-label="Gesprek met Mees" className="mt-4 flex flex-col gap-3 pb-6">
+          <div ref={log} role="log" aria-live="polite" aria-label="Gesprek met Mees" className="mt-4 flex flex-col gap-3 pb-6">
             {gesprek.berichten.map((b) => {
               const isLaatste = b.id === laatste?.id;
-              if (b.oefening) return <OefenBlok key={b.id} verwijzing={b.oefening} actief={isLaatste} onNogEenRondje={nogEenRondje} onIetsAnders={ietsAnders} />;
+              if (b.oefening)
+                return (
+                  <NaTypen key={b.id} id={b.id}>
+                    <OefenBlok verwijzing={b.oefening} actief={isLaatste} onNogEenRondje={nogEenRondje} onIetsAnders={ietsAnders} />
+                  </NaTypen>
+                );
               if (b.van === "kind")
                 return (
                   <div key={b.id} data-stap={b.id} className="ml-auto max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
@@ -333,34 +397,36 @@ export function ChatScherm({ meldingen }: { meldingen?: ReactNode }) {
               return (
                 <div key={b.id} data-stap={b.id} className="w-full tablet:max-w-[92%] rounded-[20px] border border-[#e9f5ff] bg-wit px-5 py-4 shadow-[0_8px_24px_#92c5eb17]">
                   <MeesAfzender />
-                  <p className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">{b.tekst}</p>
-                  {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
-                    <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} onStartEuropa={startEuropa} />
-                  )}
-                  {b.id === laatsteMees && isLaatste && b.keuzes && b.keuzes.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {b.keuzes.map((k) => (
-                        <button
-                          key={k.label}
-                          type="button"
-                          disabled={navigeert}
-                          onClick={() => kies(k)}
-                          className={`min-h-12 rounded-[14px] border px-4 font-semibold disabled:opacity-60 ${
-                            k.soort === "voorstel" || k.soort === "hervat" ? "border-actie-blauw bg-actie-blauw text-wit hover:bg-actie-hover" : "border-[#cfe6fb] bg-[#f3f9ff] text-inkt hover:border-actie-blauw hover:bg-blauw-zacht"
-                          }`}
-                        >
-                          {k.label}
-                        </button>
-                      ))}
+                  <TypTekst id={b.id} tekst={b.tekst} className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">
+                    {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
+                      <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} onStartEuropa={startEuropa} />
+                    )}
+                    {b.id === laatsteMees && isLaatste && b.keuzes && b.keuzes.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {b.keuzes.map((k) => (
+                          <button
+                            key={k.label}
+                            type="button"
+                            disabled={navigeert}
+                            onClick={() => kies(k)}
+                            className={`min-h-12 rounded-[14px] border px-4 font-semibold disabled:opacity-60 ${
+                              k.soort === "voorstel" || k.soort === "hervat" ? "border-actie-blauw bg-actie-blauw text-wit hover:bg-actie-hover" : "border-[#cfe6fb] bg-[#f3f9ff] text-inkt hover:border-actie-blauw hover:bg-blauw-zacht"
+                            }`}
+                          >
+                            {k.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-3">
+                      <VoorleesLink id={b.id} tekst={b.kaart?.soort === "weetje" && vindWeetje(b.kaart.id) ? weetjeVoorleesTekst(vindWeetje(b.kaart.id)!) : b.tekst} />
                     </div>
-                  )}
-                  <div className="mt-3">
-                    <VoorleesLink id={b.id} tekst={b.kaart?.soort === "weetje" && vindWeetje(b.kaart.id) ? weetjeVoorleesTekst(vindWeetje(b.kaart.id)!) : b.tekst} />
-                  </div>
+                  </TypTekst>
                 </div>
               );
             })}
           </div>
+          <div ref={ruimte} aria-hidden />
         </div>
 
         {/* Tijdens het oefenen staat de bediening in de vraag zelf; daarna komt het invoerveld terug. */}
