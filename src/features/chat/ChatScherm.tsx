@@ -40,12 +40,6 @@ function zetBovenaan(el: HTMLElement, vloeiend: boolean) {
   window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - randBoven(), behavior: vloeiend && zachtScrollen() ? "smooth" : "auto" });
 }
 
-/** Nieuwe stap in een oefening: het begin ervan in beeld, tenzij alles al zichtbaar is. */
-function toonNieuw(eerste: HTMLElement, laatste: HTMLElement) {
-  if (eerste.getBoundingClientRect().top >= randBoven() && laatste.getBoundingClientRect().bottom <= randOnder()) return;
-  zetBovenaan(eerste, true);
-}
-
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
 export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: ReactNode; /** Volgens het cookie staat er een gesprek open (dan geen welkomstscherm vooraf). */ gesprekOpen?: boolean }) {
   const router = useRouter();
@@ -110,9 +104,13 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
       if (laatsteStap) zetBovenaan(laatsteStap, false);
       return;
     }
-    pasRuimteAan();
+    // Nieuwe reactie van Mees tijdens het oefenen (feedback, hint, volgende vraag): net als een antwoord in een
+    // AI-chat bovenaan laten beginnen, met ruimte eronder om naar beneden te groeien.
     const doel = stappen.find((e) => !vorige.has(e.dataset.stap!));
-    if (doel) toonNieuw(doel, stappen.at(-1)!);
+    if (!doel) return pasRuimteAan();
+    anker.current = doel.dataset.stap!;
+    pasRuimteAan();
+    zetBovenaan(doel, true);
   }, [stand]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Groeit of krimpt de inhoud (typen, kaarten, schermformaat): de vrije ruimte eronder meeschalen.
