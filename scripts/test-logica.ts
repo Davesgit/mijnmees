@@ -26,7 +26,7 @@ import type { Poging } from "@/features/oefenen/types";
 import { antwoord, bewaarGesprek, herken, reageer, tafelsUit, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
 import { namen as europaNamenMap } from "@/features/oefenen/europa-vragen";
-import { voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "@/features/chat/voortgang-chat";
+import { doelVoortgang, tafelOverzicht, voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "@/features/chat/voortgang-chat";
 import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
@@ -443,6 +443,17 @@ test("chat-voortgang: eerst kiezen, dan samenvatting en voorstellen", () => {
   assert.match(tekst, /de tafel van 8/);
   assert.deepEqual(voortgangVoorstellen(items).map((k) => k.label), ["De tafel van 8 oefenen"]);
   assert.equal(voortgangVan(data, "europa").length, 0);
+  // Doel per onderdeel: zelfstandig is gehaald; de tafel van 8 (één oefenmoment) heeft nog iets nodig.
+  const t7 = items.find((b) => b.leerdoelId === "tafel-7")!;
+  const t8 = items.find((b) => b.leerdoelId === "tafel-8")!;
+  assert.deepEqual(doelVoortgang(t7), { deel: 1, tekst: "Gehaald! ⭐" });
+  assert.ok(doelVoortgang(t8).deel < 1 && /nog één oefenmoment tot ⭐/.test(doelVoortgang(t8).tekst), doelVoortgang(t8).tekst);
+  // Tafeloverzicht: 12 vakjes voor keer; geen rij voor delen (niet geoefend).
+  const overzicht = tafelOverzicht(items);
+  assert.equal(overzicht.keer?.length, 12);
+  assert.equal(overzicht.keer?.[6]?.status, "gaat-zelfstandig");
+  assert.equal(overzicht.keer?.[0]?.status, null);
+  assert.equal(overzicht.delen, null);
   assert.match(voortgangSamenvatting([], "europa"), /nog niet geoefend/);
 });
 

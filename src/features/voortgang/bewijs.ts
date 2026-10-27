@@ -19,6 +19,8 @@ export type LeerdoelBewijs = {
   leerdoelId: string;
   status: BewijsStatus;
   zelfstandig: number;
+  /** Aantal oefenmomenten (sessies) met een zelfstandig goed antwoord. */
+  sessies: number;
   laatstGeoefend: string;
 };
 
@@ -44,6 +46,6 @@ export function berekenBewijs(data: OpslagData, nu = new Date()): LeerdoelBewijs
     if (reviewDoelen.has(leerdoelId) || (zelfstandig && dagenGeleden(d.laatst, nu) >= bewijsConfig.reviewNaDagen)) {
       status = "nog-eens-oefenen";
     }
-    return { leerdoelId, status, zelfstandig: d.vragen.size, laatstGeoefend: d.laatst };
+    return { leerdoelId, status, zelfstandig: d.vragen.size, sessies: d.sessies.size, laatstGeoefend: d.laatst };
   });
 }

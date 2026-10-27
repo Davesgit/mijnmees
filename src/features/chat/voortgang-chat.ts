@@ -4,7 +4,7 @@
 import { vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
 import type { OpslagData } from "@/features/oefenen/types";
 import { leerdoelNaam, leerdoelSoort, type LeerdoelSoort } from "@/features/oefenen/weergave";
-import { berekenBewijs, type LeerdoelBewijs } from "@/features/voortgang/bewijs";
+import { berekenBewijs, bewijsConfig, type BewijsStatus, type LeerdoelBewijs } from "@/features/voortgang/bewijs";
 import type { Keuze } from "./gesprek";
 
 export type VoortgangFilter = "alles" | LeerdoelSoort;
@@ -67,4 +67,35 @@ export function voortgangVoorstellen(items: LeerdoelBewijs[]): Keuze[] {
     .filter((b) => b.status !== "gaat-zelfstandig")
     .slice(0, 2)
     .map((b) => oefenKeuze(b.leerdoelId));
+}
+
+/**
+ * Hoe dichtbij ⭐ zelfstandig: zelf goede antwoorden (op verschillende vragen) en oefenmomenten.
+ * `deel` loopt van 0 tot 1 voor het balkje; `tekst` zegt wat er nog nodig is.
+ */
+export function doelVoortgang(b: LeerdoelBewijs): { deel: number; tekst: string } {
+  const { minZelfstandig, minSessies } = bewijsConfig;
+  const vragen = Math.min(b.zelfstandig, minZelfstandig);
+  const sessies = Math.min(b.sessies, minSessies);
+  const deel = (vragen + sessies * 2) / (minZelfstandig + minSessies * 2);
+  if (b.status === "gaat-zelfstandig") return { deel: 1, tekst: "Gehaald! ⭐" };
+  if (b.status === "nog-eens-oefenen" && deel >= 1) return { deel: 1, tekst: "Al even geleden. Kijk of het nog lukt." };
+  const nogVragen = minZelfstandig - vragen;
+  const nogSessies = minSessies - sessies;
+  const delen = [
+    nogVragen > 0 ? `nog ${nogVragen} keer zelf goed` : "",
+    nogSessies > 0 ? `nog ${nogSessies === 1 ? "één" : nogSessies} ${nogSessies === 1 ? "oefenmoment" : "oefenmomenten"}` : "",
+  ].filter(Boolean);
+  return { deel, tekst: delen.length ? `${delen.join(" en ")} tot ⭐` : "Bijna! ⭐" };
+}
+
+export type TafelCel = { tafel: number; status: BewijsStatus | null };
+
+/** Tafeloverzicht: per tafel (1 tot en met 12) de status, voor keer en voor delen. Rijen zonder oefening vallen weg. */
+export function tafelOverzicht(items: LeerdoelBewijs[]): { keer: TafelCel[] | null; delen: TafelCel[] | null } {
+  const rij = (voorvoegsel: string) => {
+    const cellen = Array.from({ length: 12 }, (_, i) => ({ tafel: i + 1, status: items.find((b) => b.leerdoelId === `${voorvoegsel}-${i + 1}`)?.status ?? null }));
+    return cellen.some((c) => c.status) ? cellen : null;
+  };
+  return { keer: rij("tafel"), delen: rij("deeltafel") };
 }

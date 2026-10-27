@@ -9,10 +9,10 @@ import { tijdKeuzes } from "@/features/oefenen/sessie";
 import { TAFELS } from "@/features/oefenen/tafel-vragen";
 import type { OpslagData } from "@/features/oefenen/types";
 import { leerdoelNaam, leerdoelSoort } from "@/features/oefenen/weergave";
-import type { BewijsStatus } from "@/features/voortgang/bewijs";
+import type { BewijsStatus, LeerdoelBewijs } from "@/features/voortgang/bewijs";
 import { useOpslag } from "@/lib/opslag/lokaal";
 import { TypOnthul } from "./ChatOnthul";
-import { voortgangVan, type VoortgangFilter } from "./voortgang-chat";
+import { doelVoortgang, tafelOverzicht, voortgangVan, type TafelCel, type VoortgangFilter } from "./voortgang-chat";
 import { AANTAL_KEUZES, STANDAARD_AANTAL } from "./oefen-verloop";
 
 // Kaarten in berichten van Mees: alles wat een kind kiest of bekijkt, gebeurt in het gesprek.
@@ -319,8 +319,55 @@ const groepen: { status: BewijsStatus; titel: string; symbool: string; regel: st
   { status: "gaat-zelfstandig", titel: "Gaat zelfstandig", symbool: "⭐", regel: "Dit lukt je zonder hulp." },
 ];
 
+/** Balkje met hoe dichtbij ⭐ zelfstandig is, en wat er nog nodig is. */
+function Doel({ bewijs }: { bewijs: LeerdoelBewijs }) {
+  const { deel, tekst } = doelVoortgang(bewijs);
+  return (
+    <span className="mt-1 flex items-center gap-2">
+      <span className="h-2 w-24 shrink-0 overflow-hidden rounded-full bg-[#dcebf8] tablet:w-32" aria-hidden>
+        <span className={`block h-full rounded-full ${deel >= 1 ? "bg-succes" : "bg-merk-blauw"}`} style={{ width: `${Math.round(deel * 100)}%` }} />
+      </span>
+      <span className="tekst-klein text-tekst-zacht">{tekst}</span>
+    </span>
+  );
+}
+
+const tafelKleur: Record<BewijsStatus, string> = {
+  "gaat-zelfstandig": "border-[#86d3a6] bg-succes-zacht text-succes",
+  "aan-het-oefenen": "border-[#9fcdfb] bg-blauw-zacht text-actie-blauw",
+  "nog-eens-oefenen": "border-[#e2a23b] bg-probeer-opnieuw-zacht text-probeer-opnieuw",
+};
+const tafelSymbool: Record<BewijsStatus, string> = { "gaat-zelfstandig": "⭐", "aan-het-oefenen": "💪", "nog-eens-oefenen": "🔁" };
+const tafelUitleg: Record<BewijsStatus, string> = { "gaat-zelfstandig": "gaat zelfstandig", "aan-het-oefenen": "aan het oefenen", "nog-eens-oefenen": "nog eens oefenen" };
+
+/** Alle tafels in één oogopslag: per tafel een vakje met kleur en symbool. */
+function TafelRij({ titel, cellen }: { titel: string; cellen: TafelCel[] }) {
+  return (
+    <div>
+      <p className="mb-1.5 tekst-klein font-bold text-tekst-zacht">{titel}</p>
+      <ul className="grid grid-cols-6 gap-1.5 tablet:grid-cols-12">
+        {cellen.map((c) => (
+          <li
+            key={c.tafel}
+            className={`flex min-h-12 flex-col items-center justify-center rounded-[10px] border font-extrabold leading-none ${c.status ? tafelKleur[c.status] : "border-dashed border-[#c9dcef] text-[#9aaccc]"}`}
+            aria-label={`${titel === "Delen" ? "Delen door" : "Tafel van"} ${c.tafel}: ${c.status ? tafelUitleg[c.status] : "nog niet geoefend"}`}
+          >
+            <span aria-hidden>{c.tafel}</span>
+            {c.status && (
+              <span className="mt-0.5 text-[0.7rem]" aria-hidden>
+                {tafelSymbool[c.status]}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /**
  * Voortgang in het gesprek (alles of één onderdeel). Alleen weergave: oefenen kies je in de chatbalk.
+ * Tafels staan in één overzicht; bij elk onderdeel een balkje met wat er nog nodig is voor ⭐.
  * Bij een nieuw antwoord bouwt het overzicht zich blok voor blok op, zoals Mees typt.
  */
 export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter }) {
@@ -328,10 +375,34 @@ export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter 
   if (!opslag) return null;
   const items = voortgangVan(opslag, filter);
   if (items.length === 0) return null;
+  const tafels = tafelOverzicht(items);
+  const tafelItems = items.filter((b) => leerdoelSoort(b.leerdoelId) === "tafels");
+  const overige = items.filter((b) => leerdoelSoort(b.leerdoelId) !== "tafels");
+  const tafelsBezig = tafelItems.filter((b) => b.status !== "gaat-zelfstandig");
   return (
     <TypOnthul className="mt-4 flex flex-col gap-3">
+      {(tafels.keer || tafels.delen) && (
+        <section className="rounded-[14px] border border-[#d8e9f8] p-4">
+          <h4 className="font-extrabold">Tafels</h4>
+          <div className="mt-2 flex flex-col gap-3">
+            {tafels.keer && <TafelRij titel="Keer" cellen={tafels.keer} />}
+            {tafels.delen && <TafelRij titel="Delen" cellen={tafels.delen} />}
+          </div>
+          <p className="mt-2 tekst-klein text-tekst-zacht">⭐ gaat zelfstandig · 💪 aan het oefenen · 🔁 nog eens oefenen</p>
+          {tafelsBezig.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-2 border-t border-[#e4effa] pt-3">
+              {tafelsBezig.map((b) => (
+                <li key={b.leerdoelId}>
+                  <span className="block font-bold">{leerdoelNaam(b.leerdoelId)}</span>
+                  <Doel bewijs={b} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
       {groepen.map((g) => {
-        const lijst = items.filter((b) => b.status === g.status);
+        const lijst = overige.filter((b) => b.status === g.status);
         if (lijst.length === 0) return null;
         return (
           <section key={g.status} className="overflow-hidden rounded-[14px] border border-[#d8e9f8]">
@@ -343,11 +414,10 @@ export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter 
             <ul className="divide-y divide-[#e4effa]">
               {lijst.map((b) => (
                 <li key={b.leerdoelId} className="flex items-center gap-3 px-4 py-2.5">
-                  {/* Bij tafels geen ×-pictogram: dat lijkt naast "zelfstandig" op "fout". */}
-                  <Icoon naam={leerdoelSoort(b.leerdoelId) === "tafels" ? "rekenen" : leerdoelSoort(b.leerdoelId) === "europa" ? "landen" : "breuken"} className="size-6 shrink-0 text-actie-blauw" />
+                  <Icoon naam={leerdoelSoort(b.leerdoelId) === "europa" ? "landen" : "breuken"} className="size-6 shrink-0 text-actie-blauw" />
                   <span className="min-w-0 flex-1">
                     <span className="block font-bold">{leerdoelNaam(b.leerdoelId)}</span>
-                    <span className="block tekst-klein text-tekst-zacht">{g.regel}</span>
+                    <Doel bewijs={b} />
                   </span>
                 </li>
               ))}
@@ -355,7 +425,7 @@ export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter 
           </section>
         );
       })}
-      <p className="tekst-klein text-tekst-zacht">Mees kijkt naar meerdere oefenmomenten, niet naar één keer.</p>
+      <p className="tekst-klein text-tekst-zacht">⭐ haal je als je iets bij verschillende oefenmomenten zelf goed doet, zonder hint. Mees kijkt dus niet naar één keer.</p>
     </TypOnthul>
   );
 }
