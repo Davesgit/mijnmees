@@ -90,7 +90,7 @@ export function OuderChat({ kinderen, meldingen }: { kinderen: OuderKind[]; meld
       <div className="chat-achtergrond flex flex-1 flex-col items-center justify-center px-4 py-8 tablet:px-[7%] tablet:py-12">
         <section className="w-full text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/merk/mees-vogel.svg" alt="" className="mx-auto mb-4 h-24 w-auto tablet:h-28" />
+          <img src="/assets/merk/mees-vogel.png" alt="" className="mx-auto mb-4 h-24 w-auto tablet:h-28" />
           <p className="font-bold text-actie-blauw">Voor ouders</p>
           <h1 className="mt-1 text-[2.25rem] font-extrabold leading-tight tracking-tight tablet:text-[3rem]">Hallo! 👋</h1>
           <p className="mt-2 text-xl font-semibold text-[#5e6fa8] tablet:text-[1.5rem]">Waar kan ik je mee helpen?</p>

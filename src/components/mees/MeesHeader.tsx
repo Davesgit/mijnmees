@@ -167,7 +167,7 @@ export function ProfielMenu({ omhoog = false }: { omhoog?: boolean }) {
         ) : (
           <span className="grid size-10 place-items-center rounded-full bg-blauw-zacht" aria-hidden>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/merk/mees-vogel.svg" alt="" className="h-6 w-auto" />
+            <img src="/assets/merk/mees-vogel.png" alt="" className="h-6 w-auto" />
           </span>
         )}
         {omhoog ? (

@@ -381,7 +381,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
         <section className="w-full text-center">
           <div className="relative mx-auto mb-4 w-40 tablet:mb-5 tablet:w-56">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/merk/mees-vogel.svg" alt="" className="mx-auto h-28 w-auto tablet:h-36" />
+            <img src="/assets/merk/mees-vogel.png" alt="" className="mx-auto h-28 w-auto tablet:h-36" />
             <span aria-hidden className="absolute -right-1 top-0 flex rotate-[-12deg] flex-col gap-2 tablet:-right-4">
               <span className="h-[3px] w-6 origin-left -rotate-30 rounded-full bg-[#80c6ff]" />
               <span className="h-[3px] w-7 rounded-full bg-[#80c6ff]" />

@@ -269,7 +269,7 @@ function MenuInhoud({
       <nav aria-label="Snelmenu" className="flex h-full flex-col items-center gap-2 px-3 py-5">
         <button type="button" onClick={nieuw} aria-label="Mees, nieuwe chat" title="Mees" className="mb-3 grid size-14 place-items-center rounded-[16px] hover:bg-blauw-zacht">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/merk/mees-vogel.svg" alt="" className="h-9 w-auto" />
+          <img src="/assets/merk/mees-vogel.png" alt="" className="h-9 w-auto" />
         </button>
         {items.map((i) =>
           i.href ? (

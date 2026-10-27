@@ -32,7 +32,7 @@ export function MeesAfzender() {
     <div className="flex items-center gap-2">
       <span className="grid size-9 place-items-center rounded-full bg-blauw-zacht" aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/merk/mees-vogel.svg" alt="" className="h-5 w-auto" />
+        <img src="/assets/merk/mees-vogel.png" alt="" className="h-5 w-auto" />
       </span>
       <strong className="tekst-klein">Mees</strong>
     </div>
