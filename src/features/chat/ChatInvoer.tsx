@@ -120,7 +120,8 @@ export function Invoer<T>({
           e.preventDefault();
           onStuur();
         }}
-        className={`flex items-center gap-2 rounded-full bg-wit/95 p-2 shadow-[0_7px_28px_#69b5ec26] tablet:gap-3 tablet:p-3 ${luistert ? "ring-2 ring-actie-blauw" : ""}`}
+        // Typen: een zachte lichtblauwe gloed om de hele balk (in plaats van de harde focusrand om het veld).
+        className={`flex items-center gap-2 rounded-full bg-wit/95 p-2 shadow-[0_7px_28px_#69b5ec26] transition-shadow focus-within:shadow-[0_0_0_3px_#cfe6fb,0_7px_28px_#69b5ec26] tablet:gap-3 tablet:p-3 ${luistert ? "ring-2 ring-actie-blauw" : ""}`}
       >
         {kanPraten && (
           <button
@@ -146,7 +147,7 @@ export function Invoer<T>({
           inputMode={cijfers ? "numeric" : undefined}
           enterKeyHint="send"
           placeholder={luistert ? "Mees luistert…" : smal ? kortePlaatshouder : plaatshouder}
-          className="min-w-0 flex-1 rounded-full border border-[#edf7ff] bg-transparent px-4 py-3 text-lg placeholder:text-[#6f7db0] tablet:px-5 tablet:py-4 tablet:text-xl"
+          className="min-w-0 flex-1 rounded-full border border-[#edf7ff] bg-transparent px-4 py-3 text-lg outline-none placeholder:text-[#6f7db0] focus:border-[#9fcdfb] focus-visible:outline-none tablet:px-5 tablet:py-4 tablet:text-xl"
         />
         <button type="submit" aria-label="Verstuur je vraag" disabled={!waarde.trim()} className="grid size-12 shrink-0 place-items-center rounded-full bg-actie-blauw text-wit hover:bg-[#004fa8] disabled:opacity-50 tablet:size-16">
           <Icoon naam="verstuur" className="size-6 tablet:size-7" />
