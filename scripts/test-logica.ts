@@ -314,9 +314,9 @@ test("app-modus: herkenning en doorsturen", () => {
   assert.equal(isAppVerzoek("Mozilla/5.0 (iPhone) MeesApp/1.0", undefined), true);
   assert.equal(isAppVerzoek("Mozilla/5.0 (iPhone)", "1"), true);
   assert.equal(isAppVerzoek("Mozilla/5.0 (iPhone)", undefined), false);
-  assert.equal(appDoorsturing("/"), "/welkom");
-  for (const pad of ["/donateurs", "/donateurs/transparantie", "/tutoren", "/tutor/lessen", "/beheer"]) assert.equal(appDoorsturing(pad), "/welkom", pad);
-  for (const pad of ["/kind/start", "/ouder", "/profielen", "/privacy", "/welkom", "/tutorial", "/api/voorlezen"]) assert.equal(appDoorsturing(pad), null, pad);
+  assert.equal(appDoorsturing("/"), "/kind/start");
+  for (const pad of ["/donateurs", "/donateurs/transparantie", "/tutoren", "/tutor/lessen", "/beheer", "/over-mees"]) assert.equal(appDoorsturing(pad), "/kind/start", pad);
+  for (const pad of ["/kind/start", "/ouder", "/profielen", "/privacy", "/tutorial", "/api/voorlezen"]) assert.equal(appDoorsturing(pad), null, pad);
 });
 
 test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {

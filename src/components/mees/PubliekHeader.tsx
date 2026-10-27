@@ -7,7 +7,7 @@ import { Icoon } from "./Icoon";
 import { Logo } from "./Mees";
 
 const links: { label: string; href: string; alleenWeb?: boolean }[] = [
-  { label: "Voor ouders", href: "/" },
+  { label: "Over Mees", href: "/over-mees" },
   { label: "Hoe het werkt", href: "/hoe-mees-werkt" },
   { label: "Onze donateurs", href: "/donateurs", alleenWeb: true },
 ];
@@ -24,7 +24,7 @@ export function PubliekHeader() {
         Naar de inhoud
       </a>
       <div className="mees-content flex h-16 items-center gap-6 tablet:h-[72px] desktop:h-20">
-        <Link href="/" className="-ml-1 rounded-[12px] p-1" aria-label="Mees, naar de startpagina">
+        <Link href="/" className="-ml-1 rounded-[12px] p-1" aria-label="Mees, naar de chat">
           <Logo />
         </Link>
         <nav aria-label="Hoofdmenu" className="hidden h-full desktop:block">

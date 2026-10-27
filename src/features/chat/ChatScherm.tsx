@@ -35,6 +35,14 @@ import { useGespreksScroll } from "./useGespreksScroll";
 import { voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "./voortgang-chat";
 const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNamen> = { leren: "boek", oefenen: "herhaal", vraag: "chat" };
 
+/** Gasten oefenen gratis een paar rondjes; daarna een gratis account (dan wordt de voortgang bewaard en zichtbaar voor de ouder). */
+const GAST_GRENS_TEKST =
+  "Je hebt je gratis gastrondjes gebruikt. Vraag je ouder om een gratis account: dan bewaar ik al je voortgang en kun je onbeperkt verder oefenen. Wat je al hebt geoefend, gaat mee. Mees is en blijft altijd gratis.";
+const accountKeuzes: Keuze[] = [
+  { label: "Maak een gratis account", soort: "ga", href: "/ouder/account-aanmaken" },
+  { label: "Ik heb al een account", soort: "ga", href: "/ouder/inloggen" },
+];
+
 /** Keuzes onder "Veel plezier!": handig als het kind na het oefenen terugkomt in het gesprek. */
 const naTerugkomst: Keuze[] = [
   { label: "Verder oefenen", soort: "vervolg", onderwerp: "oefenen" },
@@ -206,7 +214,8 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   }
 
   function ga(label: string, href: string) {
-    voegToe([bericht("kind", label), bericht("mees", "Veel plezier! Als je terugkomt, praten we hier verder.", { keuzes: naTerugkomst })]);
+    const tekst = href.startsWith("/ouder") ? "Ik open het voor je. Vraag je ouder om mee te kijken." : "Veel plezier! Als je terugkomt, praten we hier verder.";
+    voegToe([bericht("kind", label), bericht("mees", tekst, { keuzes: naTerugkomst })]);
     startNavigatie(() => router.push(href));
   }
 
@@ -217,9 +226,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     if (!kind && gastLimietBereikt(data)) {
       voegToe([
         bericht("kind", label),
-        bericht("mees", "Je hebt als gast al een paar rondjes gedaan. Vraag je ouder om een gratis account, dan bewaar je je voortgang en kun je verder oefenen.", {
-          keuzes: [{ label: "Voortgang bewaren", soort: "ga", href: "/voortgang-bewaren" }],
-        }),
+        bericht("mees", GAST_GRENS_TEKST, { keuzes: accountKeuzes }),
       ]);
       return;
     }
@@ -312,7 +319,9 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     const laatsteVraag = sessie.index + 1 >= sessie.slots.length;
     opties.push({ label: laatsteVraag ? "Rond af" : fase === "goed" ? "Volgende vraag" : "Verder", primair: true, doe: { soort: "verder" } });
   } else if (laatste?.oefening && actieveOefening?.status === "afgerond") {
-    opties.push({ label: "Nog een rondje", primair: true, doe: { soort: "nogEenRondje" } }, { label: "Iets anders doen", doe: { soort: "ietsAnders" } });
+    // Gast aan de grens: geen nieuw rondje, wel een gratis account voorstellen.
+    if (!kind && opslag && gastLimietBereikt(opslag)) for (const k of accountKeuzes) opties.push({ label: k.label, primair: k.label.startsWith("Maak"), doe: { soort: "keuze", keuze: k } });
+    else opties.push({ label: "Nog een rondje", primair: true, doe: { soort: "nogEenRondje" } }, { label: "Iets anders doen", doe: { soort: "ietsAnders" } });
   } else if (laatste?.van === "mees" && laatste.keuzes?.length) {
     for (const k of laatste.keuzes) opties.push({ label: k.label, primair: k.soort === "voorstel" || k.soort === "hervat", doe: { soort: "keuze", keuze: k } });
   }

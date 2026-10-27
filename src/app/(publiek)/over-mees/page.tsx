@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BreukKaartjes } from "@/components/mees/Breuk";
@@ -6,7 +7,10 @@ import { PrimaireKnop, SecundaireKnop } from "@/components/mees/Knoppen";
 import { InstallTip } from "@/components/mees/Webapp";
 import { Mees } from "@/components/mees/Mees";
 
-export default function Home() {
+export const metadata: Metadata = { title: "Over Mees" };
+
+/** Uitleg over Mees voor ouders (mijnmees.nl zelf opent de chat). */
+export default function OverMees() {
   return (
     <>
       <section className="mees-content grid items-center gap-8 py-8 tablet:py-12 desktop:grid-cols-[1fr_1.05fr] desktop:gap-12 desktop:py-16">

@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
-import { sessieStatistiek } from "@/features/oefenen/sessie";
+import { useProfiel } from "@/components/mees/Profiel";
+import { gastRondjesOver, sessieStatistiek } from "@/features/oefenen/sessie";
 import type { OpslagData, Sessie, Slot } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
 import { antwoordTekst, goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, type TafelVraag, type Vraag } from "@/features/oefenen/vragen";
@@ -414,6 +415,15 @@ function TafelOpgave({ vraag }: { vraag: TafelVraag }) {
 }
 
 function Terugblik({ sessie, opslag }: { sessie: Sessie; opslag: OpslagData }) {
+  const { kind } = useProfiel();
+  // Gast: vriendelijk laten weten hoeveel gratis rondjes er nog zijn (daarna een gratis account).
+  const over = kind ? null : gastRondjesOver(opslag);
+  const gastZin =
+    over === null
+      ? null
+      : over === 0
+        ? "Dit was je laatste gastrondje. Met een gratis account bewaar je al je voortgang en oefen je onbeperkt verder."
+        : `Je kunt als gast nog ${over === 1 ? "één rondje" : `${over} rondjes`} doen. Met een gratis account bewaar je al je voortgang.`;
   const { zelfstandig, aantal } = sessieStatistiek(sessie);
   const metHulp = aantal - zelfstandig;
   const limietMs = sessie.soort === "tafels" && sessie.instellingen?.metTijd && sessie.instellingen.secondenPerVraag ? sessie.instellingen.secondenPerVraag * 1000 : null;
@@ -432,6 +442,7 @@ function Terugblik({ sessie, opslag }: { sessie: Sessie; opslag: OpslagData }) {
         <h3 className="mt-2 text-2xl font-extrabold">Goed gewerkt! 🎉</h3>
         <p className="mt-1 font-semibold text-tekst-zacht">{sessieNaam(sessie)}</p>
         <p className="mt-2 text-lg">{tekst}</p>
+        {gastZin && <p className="mt-3 rounded-[12px] bg-blauw-zacht px-4 py-2.5 font-semibold text-actie-blauw">{gastZin}</p>}
         <div className="mt-2">
           <VoorleesLink id={`terugblik-${sessie.id}`} tekst={`Goed gewerkt! ${tekst}`} />
         </div>

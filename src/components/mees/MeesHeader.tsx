@@ -78,7 +78,7 @@ function VoorOudersLink() {
   const { ouderIngelogd } = useProfiel();
   return (
     <Link
-      href={ouderIngelogd ? "/ouder" : "/"}
+      href={ouderIngelogd ? "/ouder" : "/over-mees"}
       className="hidden min-h-12 items-center gap-2 rounded-[12px] px-2 text-base font-semibold text-tekst-zacht hover:text-actie-blauw desktop:flex"
     >
       {ouderIngelogd && <Icoon naam="slot" className="size-5" />}

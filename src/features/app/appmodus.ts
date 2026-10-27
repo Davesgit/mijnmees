@@ -5,11 +5,11 @@
 export const APP_KENMERK = "MeesApp";
 /** Cookie voor testen in een gewone browser. */
 export const APP_COOKIE = "mees_app";
-/** Eerste scherm van de app. */
-export const APP_START = "/welkom";
+/** Eerste scherm van de app: de chat. */
+export const APP_START = "/kind/start";
 
 /** Pagina's die niet in de app horen (het pad zelf en alles eronder). */
-const NIET_IN_APP = ["/donateurs", "/tutoren", "/tutor", "/beheer"];
+const NIET_IN_APP = ["/donateurs", "/tutoren", "/tutor", "/beheer", "/over-mees", "/welkom"];
 
 export function isAppVerzoek(userAgent: string | null, cookie: string | undefined) {
   return cookie === "1" || (userAgent ?? "").includes(APP_KENMERK);

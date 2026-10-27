@@ -21,13 +21,18 @@ export const oefenConfig = {
   /** Aantal andere vragen tussen een hulpvraag en de vervolgvraag (liefst). */
   vervolgAfstand: 3,
   /** Gasten (zonder ouderaccount) mogen zoveel oefeningen afronden; hervatten blijft altijd mogelijk. */
-  maxGastAfgerond: 2,
+  maxGastAfgerond: 3,
   /** Niveaubepaling: aantal vragen (bouwvoorstel max 12). */
   niveauVragen: 8,
 } as const;
 
 export function aantalAfgerond(data: OpslagData) {
   return Object.values(data.sessies).filter((s) => s.status === "afgerond" && s.soort !== "niveau").length;
+}
+
+/** Hoeveel rondjes een gast nog mag afronden (0 = grens bereikt). */
+export function gastRondjesOver(data: OpslagData) {
+  return Math.max(0, oefenConfig.maxGastAfgerond - aantalAfgerond(data));
 }
 
 export function gastLimietBereikt(data: OpslagData) {
