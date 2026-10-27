@@ -91,12 +91,13 @@ export function wisGastgegevens() {
   meld();
 }
 
-/** Verwijdert alle lokale kinderprofielen van dit apparaat (bij uitloggen op een gedeeld apparaat). */
+/** Verwijdert alle lokale kinderprofielen en de ouderchats van dit apparaat (bij uitloggen op een gedeeld apparaat). */
 export function wisKindprofielenOpApparaat() {
   try {
     for (let i = window.localStorage.length - 1; i >= 0; i--) {
       const k = window.localStorage.key(i);
-      if (k?.startsWith("mees:kind:")) window.localStorage.removeItem(k);
+      // Kinderprofielen (met hun chats) en de chats van de ouder.
+      if (k?.startsWith("mees:kind:") || k?.startsWith("mees:ouder:")) window.localStorage.removeItem(k);
     }
   } catch {}
 }

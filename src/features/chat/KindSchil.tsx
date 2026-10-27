@@ -9,17 +9,29 @@ import { Logo } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { ZoekChats } from "./ChatZoeken";
+import { wanneer } from "./tijd";
 import { markeerNieuw } from "./ChatTypen";
 import { antwoord } from "./gesprek";
 import { voortgangSoorten } from "./voortgang-chat";
 import { haalOpslag } from "@/lib/opslag/lokaal";
-import { maakBericht, nieuweChat, openChat, useChats, voegToeAanActief } from "./opslag";
+import { ChatWinkelContext, kindChats, maakBericht, type ChatWinkel } from "./opslag";
 
-// Schil van het kindergedeelte (ontwerp versie 6): vast zijmenu naast de inhoud. Op de telefoon een smalle
-// bovenbalk met een menu dat als laag over het scherm opent. Tijdens het oefenen geen menu (rust en ruimte).
+// Schil van de chat (ontwerp versie 6), voor kinderen en ouders: vast zijmenu naast de inhoud. Op de telefoon een
+// smalle bovenbalk met een menu dat als laag over het scherm opent. Tijdens het oefenen geen menu (rust en ruimte).
+// Bovenin en onderin het menu staat alles vast; alleen de lijst met chats ertussen scrolt.
+
+/** Wat er per gebruiker (kind of ouder) anders is aan de schil. */
+export type SchilInstelling = {
+  winkel: ChatWinkel;
+  /** Derde knop in het menu (voortgang). Wordt in het gesprek getoond; `pad` is de huidige pagina. */
+  voortgang: { label: string; actie: (pad: string) => void };
+  /** Vast onderin het menu. `naKeuze` sluit het menu na een klik; `pad` is de huidige pagina. */
+  onderkant: (naKeuze: () => void, pad: string) => ReactNode;
+  /** Tijdens het oefenen geen menu (alleen kinderen). */
+  zonderMenu?: (pad: string) => boolean;
+};
 
 const INGEKLAPT = "mees:zijmenu:ingeklapt";
-const START = "/kind/start";
 
 function leesIngeklapt() {
   try {
@@ -40,20 +52,66 @@ function abonneerIngeklapt(l: () => void) {
   return () => ingeklaptLuisteraars.delete(l);
 }
 
+/** Schil van het kindergedeelte. */
 export function KindSchil({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const instelling: SchilInstelling = {
+    winkel: kindChats,
+    voortgang: {
+      label: "Mijn voortgang",
+      // Voortgang verschijnt in het gesprek: in de open chat, of in een nieuwe chat.
+      actie: (pad) => {
+        const r = antwoord("voortgang", { open: null, voorstel: "", voorstelId: "", aantal: 0, voortgang: voortgangSoorten(haalOpslag()) });
+        const mees = maakBericht("mees", r.tekst, { kaart: r.kaart, keuzes: r.keuzes });
+        markeerNieuw([mees]);
+        kindChats.voegToeAanActief([maakBericht("kind", "Hoe gaat het met mijn oefenen?"), mees], { titel: "Mijn voortgang" });
+        if (pad !== kindChats.startPad) router.push(kindChats.startPad);
+      },
+    },
+    onderkant: (naKeuze) => <KindOnderkant naKeuze={naKeuze} />,
+    zonderMenu: isOefenRoute,
+  };
+  return <ChatSchil instelling={instelling}>{children}</ChatSchil>;
+}
+
+function KindOnderkant({ naKeuze }: { naKeuze: () => void }) {
+  const { ouderIngelogd } = useProfiel();
   return (
-    <Suspense fallback={<Schil pad="">{children}</Schil>}>
-      <SchilMetPad>{children}</SchilMetPad>
-    </Suspense>
+    <>
+      <Link
+        href={ouderIngelogd ? "/ouder" : "/ouder/inloggen"}
+        onClick={naKeuze}
+        className="flex min-h-12 items-center gap-3 rounded-[12px] px-3 tekst-klein font-semibold text-tekst-zacht hover:bg-blauw-zacht hover:text-actie-blauw"
+      >
+        <Icoon naam="slot" className="size-5" />
+        Voor ouders
+      </Link>
+      <ProfielMenu omhoog />
+    </>
   );
 }
 
-function SchilMetPad({ children }: { children: ReactNode }) {
-  return <Schil pad={usePathname()}>{children}</Schil>;
+/** De chatschil met zijmenu; de instelling bepaalt chatgeschiedenis, voortgang en de vaste onderkant. */
+export function ChatSchil({ instelling, children }: { instelling: SchilInstelling; children: ReactNode }) {
+  return (
+    <ChatWinkelContext value={instelling.winkel}>
+      <Suspense fallback={<Schil pad="" instelling={instelling}>{children}</Schil>}>
+        <SchilMetPad instelling={instelling}>{children}</SchilMetPad>
+      </Suspense>
+    </ChatWinkelContext>
+  );
 }
 
-function Schil({ pad, children }: { pad: string; children: ReactNode }) {
-  const oefenen = pad !== "" && isOefenRoute(pad);
+function SchilMetPad({ instelling, children }: { instelling: SchilInstelling; children: ReactNode }) {
+  return (
+    <Schil pad={usePathname()} instelling={instelling}>
+      {children}
+    </Schil>
+  );
+}
+
+function Schil({ pad, instelling, children }: { pad: string; instelling: SchilInstelling; children: ReactNode }) {
+  const oefenen = pad !== "" && Boolean(instelling.zonderMenu?.(pad));
   const ingeklapt = useSyncExternalStore(abonneerIngeklapt, leesIngeklapt, () => false);
   const [mobielOpen, setMobielOpen] = useState(false);
   const [zoeken, setZoeken] = useState(false);
@@ -118,7 +176,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
         >
           <Icoon naam="menu" />
         </button>
-        <Link href={START} className="rounded-[12px] p-1" aria-label="Mees, naar start">
+        <Link href={instelling.winkel.startPad} className="rounded-[12px] p-1" aria-label="Mees, naar start">
           <Logo className="h-8!" />
         </Link>
       </header>
@@ -127,7 +185,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
         <div className="fixed inset-0 z-50">
           <button type="button" aria-label="Menu sluiten" className="absolute inset-0 bg-[#16396e]/30 backdrop-blur-[2px]" onClick={() => setMobielOpen(false)} />
           <div id="kind-menu" role="dialog" aria-modal="true" aria-label="Menu" className="mees-verschijn absolute inset-y-0 left-0 flex w-[min(20rem,85vw)] flex-col bg-[#fbfdff] shadow-zwevend">
-            <MenuInhoud onZoeken={() => setZoeken(true)} pad={pad} compact={false} onSluit={() => setMobielOpen(false)} />
+            <MenuInhoud instelling={instelling} onZoeken={() => setZoeken(true)} pad={pad} compact={false} onSluit={() => setMobielOpen(false)} />
           </div>
         </div>
       )}
@@ -142,14 +200,15 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
         className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-[#e1f1fe] bg-gradient-to-br from-[#fbfdff] to-[#f5fbff] tablet:flex ${ingeklapt ? "w-[84px]" : "w-[84px] desktop:w-[265px]"}`}
       >
         <div className={`h-full flex-col ${ingeklapt ? "hidden" : "hidden desktop:flex"}`}>
-          <MenuInhoud onZoeken={() => setZoeken(true)} pad={pad} compact={false} onInklappen={() => zetIngeklapt(true)} />
+          <MenuInhoud instelling={instelling} onZoeken={() => setZoeken(true)} pad={pad} compact={false} onInklappen={() => zetIngeklapt(true)} />
         </div>
         <div ref={smalMenu} className={`h-full flex-col ${ingeklapt ? "flex" : "flex desktop:hidden"}`}>
-          <MenuInhoud onZoeken={() => setZoeken(true)} pad={pad} compact onUitklappen={() => zetIngeklapt(false)} onMenu={() => setMobielOpen(true)} />
+          <MenuInhoud instelling={instelling} onZoeken={() => setZoeken(true)} pad={pad} compact onUitklappen={() => zetIngeklapt(false)} onMenu={() => setMobielOpen(true)} />
         </div>
         {zwevend && (
           <div className="mees-verschijn absolute inset-y-0 left-0 flex w-[265px] flex-col border-r border-[#e1f1fe] bg-[#fbfdff] shadow-zwevend">
             <MenuInhoud
+              instelling={instelling}
               onZoeken={() => setZoeken(true)}
               pad={pad}
               compact={false}
@@ -168,6 +227,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
       </main>
       <ZoekChats
         open={zoeken}
+        pad={pad}
         onSluit={() => setZoeken(false)}
         onGekozen={() => {
           setMobielOpen(false);
@@ -179,6 +239,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
 }
 
 function MenuInhoud({
+  instelling,
   pad,
   compact,
   onSluit,
@@ -189,6 +250,7 @@ function MenuInhoud({
   onVastzetten,
   onZoeken,
 }: {
+  instelling: SchilInstelling;
   pad: string;
   compact: boolean;
   /** Het zoekvenster openen (dat staat één keer in de schil). */
@@ -209,29 +271,25 @@ function MenuInhoud({
     onSluit?.();
     onKlaar?.();
   };
-  const chats = useChats();
-  const { ouderIngelogd } = useProfiel();
+  const { winkel } = instelling;
+  const START = winkel.startPad;
+  const chats = winkel.useChats();
   const [hernoemId, setHernoemId] = useState<string | null>(null);
   // Alle chats (behalve gearchiveerde) staan in het menu, nieuwste bovenaan, zoals in AI-chats.
   const recent = chats?.gesprekken.filter((g) => !g.gearchiveerd) ?? [];
   const opStart = pad === START;
 
   function nieuw() {
-    nieuweChat();
+    winkel.nieuweChat();
     naKeuze();
     if (!opStart) router.push(START);
   }
-  /** Voortgang verschijnt in het gesprek: in de open chat, of in een nieuwe chat. */
   function voortgang() {
-    const r = antwoord("voortgang", { open: null, voorstel: "", voorstelId: "", aantal: 0, voortgang: voortgangSoorten(haalOpslag()) });
-    const mees = maakBericht("mees", r.tekst, { kaart: r.kaart, keuzes: r.keuzes });
-    markeerNieuw([mees]);
-    voegToeAanActief([maakBericht("kind", "Hoe gaat het met mijn oefenen?"), mees], { titel: "Mijn voortgang" });
+    instelling.voortgang.actie(pad);
     naKeuze();
-    if (!opStart) router.push(START);
   }
   function open(id: string) {
-    openChat(id);
+    winkel.openChat(id);
     naKeuze();
     if (!opStart) router.push(START);
   }
@@ -239,7 +297,7 @@ function MenuInhoud({
   const items: { label: string; icoon: AlleIcoonNamen; actief: boolean; href?: string; onClick?: () => void }[] = [
     { label: "Nieuwe chat", icoon: "pen", actief: opStart && chats?.actief === null, onClick: nieuw },
     { label: "Chats zoeken", icoon: "zoek", actief: false, onClick: onZoeken },
-    { label: "Mijn voortgang", icoon: "voortgang", actief: false, onClick: voortgang },
+    { label: instelling.voortgang.label, icoon: "voortgang", actief: false, onClick: voortgang },
   ];
 
   if (compact) {
@@ -275,7 +333,8 @@ function MenuInhoud({
   }
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
+    // Bovenin en onderin staat het menu vast; alleen de lijst met chats ertussen scrolt.
+    <div className="flex h-full min-h-0 flex-col px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
       <div className="flex items-center justify-between gap-2">
         <Link href={START} onClick={naKeuze} className="rounded-[12px] p-1" aria-label="Mees, naar start">
           <Logo className="h-12!" />
@@ -314,11 +373,11 @@ function MenuInhoud({
       </nav>
 
       {recent.length > 0 && (
-        <section aria-labelledby="recent-kop" className="mt-5 border-t border-[#e1f1fe] pt-5">
+        <section aria-labelledby="recent-kop" className="-mx-1 mt-5 flex min-h-0 flex-1 flex-col border-t border-[#e1f1fe] px-1 pt-5">
           <h2 id="recent-kop" className="px-3 tekst-klein font-semibold text-[#6574ac]">
             Chats
           </h2>
-          <ul className="mt-2 flex flex-col gap-0.5">
+          <ul className="mt-2 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto pb-2">
             {recent.map((g) => {
               const actief = opStart && chats?.actief === g.id;
               return (
@@ -350,17 +409,7 @@ function MenuInhoud({
         </section>
       )}
 
-      <div className="mt-auto flex flex-col gap-2 pt-6">
-        <Link
-          href={ouderIngelogd ? "/ouder" : "/ouder/inloggen"}
-          onClick={naKeuze}
-          className="flex min-h-12 items-center gap-3 rounded-[12px] px-3 tekst-klein font-semibold text-tekst-zacht hover:bg-blauw-zacht hover:text-actie-blauw"
-        >
-          <Icoon naam="slot" className="size-5" />
-          Voor ouders
-        </Link>
-        <ProfielMenu omhoog />
-      </div>
+      <div className="mt-auto flex shrink-0 flex-col gap-2 border-t border-[#e1f1fe] pt-3">{instelling.onderkant(naKeuze, pad)}</div>
     </div>
   );
 }
@@ -369,13 +418,3 @@ const itemKlasse = (actief: boolean) =>
   `flex min-h-12 w-full items-center gap-4 rounded-[12px] px-3 py-3 text-left text-[1.0625rem] font-semibold ${actief ? "bg-[#e4f4ff] text-actie-blauw" : "text-inkt hover:bg-[#f1f9ff]"}`;
 
 const compactKlasse = (actief: boolean) => `grid size-12 place-items-center rounded-[12px] ${actief ? "bg-[#e4f4ff] text-actie-blauw" : "text-[#6574ac] hover:bg-[#f1f9ff] hover:text-inkt"}`;
-
-/** "Vandaag", "Gisteren" of de dag. */
-export function wanneer(t: number) {
-  const dag = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const verschil = Math.round((dag(new Date()) - dag(new Date(t))) / 86400000);
-  if (verschil <= 0) return "Vandaag";
-  if (verschil === 1) return "Gisteren";
-  if (verschil < 7) return new Date(t).toLocaleDateString("nl-NL", { weekday: "long" });
-  return new Date(t).toLocaleDateString("nl-NL", { day: "numeric", month: "long" });
-}

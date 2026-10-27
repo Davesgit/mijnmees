@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Dialoog } from "@/components/mees/Dialoog";
 import { Icoon } from "@/components/mees/Icoon";
 import type { Gesprek } from "./gesprek";
-import { wanneer } from "./KindSchil";
-import { openChat, useChats } from "./opslag";
+import { wanneer } from "./tijd";
+import { useChatWinkel } from "./opslag";
 
 const schoon = (t: string) =>
   t
@@ -30,20 +30,20 @@ function zoekIn(g: Gesprek, term: string): { gevonden: boolean; fragment?: strin
 }
 
 /** Chats zoeken, zoals in AI-chats: op titel en op wat er in het gesprek staat. Gearchiveerde chats komen ook mee. */
-export function ZoekChats({ open, onSluit, onGekozen }: { open: boolean; onSluit: () => void; onGekozen?: () => void }) {
+export function ZoekChats({ open, pad, onSluit, onGekozen }: { open: boolean; /** De huidige pagina. */ pad: string; onSluit: () => void; onGekozen?: () => void }) {
   const router = useRouter();
-  const pad = usePathname();
-  const chats = useChats();
+  const winkel = useChatWinkel();
+  const chats = winkel.useChats();
   const [zoekterm, setZoekterm] = useState("");
   const term = schoon(zoekterm.trim());
   const resultaten = (chats?.gesprekken ?? []).map((g) => ({ g, ...zoekIn(g, term) })).filter((r) => r.gevonden);
 
   function kies(id: string) {
-    openChat(id);
+    winkel.openChat(id);
     setZoekterm("");
     onSluit();
     onGekozen?.();
-    if (pad !== "/kind/start") router.push("/kind/start");
+    if (pad !== winkel.startPad) router.push(winkel.startPad);
   }
 
   return (
@@ -86,7 +86,7 @@ export function ZoekChats({ open, onSluit, onGekozen }: { open: boolean; onSluit
         )}
       </ul>
       <Link
-        href="/kind/chats"
+        href={winkel.startPad === "/ouder" ? "/ouder/chats" : "/kind/chats"}
         onClick={() => {
           onSluit();
           onGekozen?.();

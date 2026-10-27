@@ -370,10 +370,19 @@ function TafelRij({ titel, cellen }: { titel: string; cellen: TafelCel[] }) {
  * Tafels staan in één overzicht; bij elk onderdeel een balkje met wat er nog nodig is voor ⭐.
  * Bij een nieuw antwoord bouwt het overzicht zich blok voor blok op, zoals Mees typt.
  */
-export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter }) {
+export function VoortgangKaart({
+  filter = "alles",
+  items: gegeven,
+  voorOuder = false,
+}: {
+  filter?: VoortgangFilter;
+  /** Voortgang van de server (ouderchat); anders uit de opslag op dit apparaat. */
+  items?: LeerdoelBewijs[];
+  voorOuder?: boolean;
+}) {
   const opslag = useOpslag();
-  if (!opslag) return null;
-  const items = voortgangVan(opslag, filter);
+  if (!gegeven && !opslag) return null;
+  const items = gegeven ?? voortgangVan(opslag!, filter);
   if (items.length === 0) return null;
   const tafels = tafelOverzicht(items);
   const tafelItems = items.filter((b) => leerdoelSoort(b.leerdoelId) === "tafels");
@@ -425,7 +434,11 @@ export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter 
           </section>
         );
       })}
-      <p className="tekst-klein text-tekst-zacht">⭐ haal je als je iets bij verschillende oefenmomenten zelf goed doet, zonder hint. Mees kijkt dus niet naar één keer.</p>
+      <p className="tekst-klein text-tekst-zacht">
+        {voorOuder
+          ? "⭐ betekent: bij verschillende oefenmomenten zelf goed, zonder hint. Mees kijkt naar meerdere momenten, niet naar één keer; dit is geen toets of cijfer."
+          : "⭐ haal je als je iets bij verschillende oefenmomenten zelf goed doet, zonder hint. Mees kijkt dus niet naar één keer."}
+      </p>
     </TypOnthul>
   );
 }

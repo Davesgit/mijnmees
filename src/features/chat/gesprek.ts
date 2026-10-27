@@ -8,6 +8,8 @@ export type Kaart =
   | { soort: "tafels"; tafels: number[]; bewerking?: "x" | ":" | "beide" }
   | { soort: "europa"; vorm?: "afwisselend" | "puzzel"; onderwerpen?: string[] }
   | { soort: "voortgang"; filter?: VoortgangKeuze }
+  /** Ouderchat: de voortgang van één kind. */
+  | { soort: "ouderVoortgang"; kindId: string; filter: VoortgangKeuze }
   /** Vervallen (weetjes bestaan niet meer); alleen nog in oude gesprekken, wordt niet getoond. */
   | { soort: "weetjes" }
   | { soort: "weetje"; id: string };
@@ -21,7 +23,17 @@ export type Keuze =
   /** Mees antwoordt met deze tekst en kaart. */
   | { label: string; soort: "kaart"; tekst: string; kaart: Kaart }
   /** Voortgang van één onderdeel (of alles) bekijken. */
-  | { label: string; soort: "voortgang"; filter: VoortgangKeuze };
+  | { label: string; soort: "voortgang"; filter: VoortgangKeuze }
+  /** Ouderchat: een stap in het gesprek met de ouder. */
+  | { label: string; soort: "ouder"; doe: OuderStap };
+
+/** Stappen in de ouderchat (vaste lijst; een latere AI kiest ook alleen hieruit). */
+export type OuderStap =
+  | { stap: "voortgang"; kindId?: string; filter?: VoortgangKeuze }
+  | { stap: "tips"; leerdoelId?: string; soort?: "breuken" | "tafels" | "europa" }
+  | { stap: "thuis" }
+  | { stap: "instellingen" }
+  | { stap: "ga"; href: string };
 
 export type VoortgangKeuze = "alles" | "breuken" | "tafels" | "europa";
 

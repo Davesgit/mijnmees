@@ -6,13 +6,14 @@ import { Icoon } from "@/components/mees/Icoon";
 import { PrimaireKnop } from "@/components/mees/Knoppen";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import type { Gesprek } from "./gesprek";
-import { wanneer } from "./KindSchil";
-import { nieuweChat, openChat, useChats } from "./opslag";
+import { wanneer } from "./tijd";
+import { useChatWinkel } from "./opslag";
 
 /** Alle eerdere gesprekken met Mees op dit apparaat, met gearchiveerde chats apart. */
 export function EerdereChats() {
   const router = useRouter();
-  const chats = useChats();
+  const winkel = useChatWinkel();
+  const chats = winkel.useChats();
   const [hernoemId, setHernoemId] = useState<string | null>(null);
   const [archiefOpen, setArchiefOpen] = useState(false);
 
@@ -31,8 +32,8 @@ export function EerdereChats() {
         <button
           type="button"
           onClick={() => {
-            openChat(g.id);
-            router.push("/kind/start");
+            winkel.openChat(g.id);
+            router.push(winkel.startPad);
           }}
           className="flex min-h-14 min-w-0 flex-1 items-center gap-4 rounded-[14px] px-3 text-left hover:bg-[#f1f9ff]"
         >
@@ -59,8 +60,8 @@ export function EerdereChats() {
             <PrimaireKnop
               className="mt-4"
               onClick={() => {
-                nieuweChat();
-                router.push("/kind/start");
+                winkel.nieuweChat();
+                router.push(winkel.startPad);
               }}
             >
               Begin een gesprek

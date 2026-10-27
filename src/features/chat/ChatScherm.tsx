@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { vindOnderdeel } from "@/content/onderwerpen";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
@@ -31,6 +31,7 @@ import { OefenBlok } from "./OefenBlok";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
 import { leesKlok, markeerActie, useKaartKeuze, useMeesBezig, zetKaartKeuze } from "./ritme";
 import { maakBericht as bericht, useChats, voegToeAanActief } from "./opslag";
+import { useGespreksScroll } from "./useGespreksScroll";
 import { voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "./voortgang-chat";
 const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNamen> = { leren: "boek", oefenen: "herhaal", vraag: "chat" };
 
@@ -40,18 +41,6 @@ const naTerugkomst: Keuze[] = [
   { label: "Iets leren", soort: "vervolg", onderwerp: "leren" },
   { label: "Mijn voortgang", soort: "vervolg", onderwerp: "voortgang" },
 ];
-
-// Scrollen zoals in een AI-chat: een verstuurd bericht schuift naar boven (net onder de vaste balken) en het
-// antwoord groeit eronder naar beneden. Je ziet altijd eerst het begin van een antwoord, nooit het midden.
-
-const randBoven = () => Math.max(0, ...[...document.querySelectorAll<HTMLElement>("[data-sticky-boven]")].map((e) => e.getBoundingClientRect().bottom)) + 12;
-const randOnder = () => (document.querySelector<HTMLElement>("[data-sticky-onder]")?.getBoundingClientRect().top ?? window.innerHeight) - 12;
-const zachtScrollen = () => document.documentElement.dataset.rustigeOvergangen !== "true" && !matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-/** Zet de bovenkant van een element net onder de vaste balken. */
-function zetBovenaan(el: HTMLElement, vloeiend: boolean) {
-  window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - randBoven(), behavior: vloeiend && zachtScrollen() ? "smooth" : "auto" });
-}
 
 /** De chat met Mees: de hoofdingang voor kinderen (ontwerp versie 6). `meldingen` staan op het welkomstscherm. */
 export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: ReactNode; /** Volgens het cookie staat er een gesprek open (dan geen welkomstscherm vooraf). */ gesprekOpen?: boolean }) {
@@ -80,80 +69,8 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   // Verandert bij elke stap in de oefening: dan het nieuwste deel in beeld brengen.
   const stand = `${gesprek?.id}-${gesprek?.berichten.length}-${actieveOefening?.versie}-${actieveOefening?.status}-${opslag?.pogingen.length}`;
 
-  // Het laatst verstuurde bericht van het kind blijft bovenaan staan terwijl het antwoord eronder groeit.
-  // Daarvoor is onder het gesprek tijdelijk ruimte nodig (net als in AI-chats); die krimpt mee als het antwoord groeit.
-  const verstuurd = useRef<string | null>(null);
-  const anker = useRef<string | null>(null);
-  const ruimte = useRef<HTMLDivElement>(null);
-  const log = useRef<HTMLDivElement>(null);
-  const gezien = useRef<{ gesprek: string; stappen: Set<string> } | null>(null);
-
-  function pasRuimteAan() {
-    const r = ruimte.current;
-    if (!r) return;
-    const a = anker.current ? document.querySelector<HTMLElement>(`[data-stap="${CSS.escape(anker.current)}"]`) : null;
-    if (!a) {
-      r.style.height = "0px";
-      return;
-    }
-    const inhoud = r.getBoundingClientRect().top - a.getBoundingClientRect().top;
-    r.style.height = `${Math.max(0, randOnder() - randBoven() - inhoud)}px`;
-  }
-
-  useLayoutEffect(() => {
-    if (!gesprek) {
-      gezien.current = null;
-      return;
-    }
-    const stappen = [...document.querySelectorAll<HTMLElement>("[role=log] [data-stap]")];
-    const vorige = gezien.current?.gesprek === gesprek.id ? gezien.current.stappen : null;
-    gezien.current = { gesprek: gesprek.id, stappen: new Set(stappen.map((e) => e.dataset.stap!)) };
-    const kind = verstuurd.current ? stappen.find((e) => e.dataset.stap === verstuurd.current) : undefined;
-    if (kind) {
-      // Net verstuurd: dit bericht bovenaan, het antwoord verschijnt eronder.
-      verstuurd.current = null;
-      anker.current = kind.dataset.stap!;
-      pasRuimteAan();
-      zetBovenaan(kind, Boolean(vorige));
-      return;
-    }
-    if (!vorige) {
-      // Gesprek (opnieuw) geopend: het begin van het laatste bericht.
-      anker.current = null;
-      pasRuimteAan();
-      const laatsteStap = stappen.at(-1);
-      if (laatsteStap) zetBovenaan(laatsteStap, false);
-      return;
-    }
-    // Nieuwe reactie van Mees tijdens het oefenen (feedback, hint, volgende vraag): net als een antwoord in een
-    // AI-chat bovenaan laten beginnen, met ruimte eronder om naar beneden te groeien.
-    const doel = stappen.find((e) => !vorige.has(e.dataset.stap!));
-    if (!doel) return pasRuimteAan();
-    anker.current = doel.dataset.stap!;
-    pasRuimteAan();
-    zetBovenaan(doel, true);
-  }, [stand]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Groeit of krimpt de inhoud (typen, kaarten, schermformaat): de vrije ruimte eronder meeschalen.
-  const gesprekVoorRuimte = gesprek?.id;
-  useEffect(() => {
-    const l = log.current;
-    if (!l) return;
-    const ro = new ResizeObserver(() => pasRuimteAan());
-    ro.observe(l);
-    // Wat later verschijnt (bijv. een oefening na het typen) telt ook als gezien; anders lijkt het bij de volgende
-    // stap "nieuw" en springt het scherm terug.
-    const mo = new MutationObserver(() => {
-      if (gezien.current) gezien.current.stappen = new Set([...l.querySelectorAll<HTMLElement>("[data-stap]")].map((e) => e.dataset.stap!));
-    });
-    mo.observe(l, { childList: true, subtree: true });
-    window.addEventListener("resize", pasRuimteAan);
-    return () => {
-      mo.disconnect();
-      ro.disconnect();
-      window.removeEventListener("resize", pasRuimteAan);
-    };
-  }, [gesprekVoorRuimte]);
+  // Scrollen zoals in een AI-chat (zie useGespreksScroll).
+  const { log, ruimte, markeerVerstuurd } = useGespreksScroll(gesprek?.id, stand);
 
   // Voorlezen stopt bij een andere chat.
   const gesprekId = gesprek?.id;
@@ -170,7 +87,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   const voegToe = (nieuw: Bericht[], opties?: Parameters<typeof voegToeAanActief>[1]) => {
     markeerNieuw(nieuw.filter((b) => b.van === "mees"));
     const kind = nieuw.find((b) => b.van === "kind");
-    if (kind) verstuurd.current = kind.id;
+    if (kind) markeerVerstuurd(kind.id);
     voegToeAanActief(nieuw, opties);
   };
   const meesZegt = (r: Antwoord) => bericht("mees", r.tekst, { keuzes: r.keuzes, kaart: r.kaart });
@@ -285,7 +202,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
       voegToe([bericht("kind", k.label), bericht("mees", "Er staat geen oefening meer open. Zullen we iets nieuws doen?", { keuzes: naTerugkomst })]);
       return;
     }
-    ga(k.label, k.href);
+    if (k.soort === "ga") ga(k.label, k.href);
   }
 
   function ga(label: string, href: string) {

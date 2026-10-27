@@ -27,6 +27,8 @@ import { antwoord, bewaarGesprek, herken, reageer, tafelsUit, maakTitel, MAX_GES
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
 import { namen as europaNamenMap } from "@/features/oefenen/europa-vragen";
 import { doelVoortgang, tafelOverzicht, voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "@/features/chat/voortgang-chat";
+import { antwoordOuder, herkenOuder, reageerOuder, weekZin, type OuderKind } from "@/features/ouderchat/ouder-gesprek";
+import { berekenBewijs } from "@/features/voortgang/bewijs";
 import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
@@ -455,6 +457,32 @@ test("chat-voortgang: eerst kiezen, dan samenvatting en voorstellen", () => {
   assert.equal(overzicht.keer?.[0]?.status, null);
   assert.equal(overzicht.delen, null);
   assert.match(voortgangSamenvatting([], "europa"), /nog niet geoefend/);
+});
+
+test("ouderchat: voortgang per kind, samenvatting en suggesties voor ouders", () => {
+  let data = leeg();
+  const r8 = maakTafelSessie(data, { tafels: [8], bewerkingen: ["x"], aantal: 4, metTijd: false, bron: "zelf" });
+  data = speelUit(r8.data, r8.sessie.id, [0]);
+  const sam: OuderKind = { id: "k1", voornaam: "Sam", bewijs: berekenBewijs(data), week: { momenten: 1, vragen: 4, zelfGoed: 3 } };
+  const lot: OuderKind = { id: "k2", voornaam: "Lot", bewijs: [], week: { momenten: 0, vragen: 0, zelfGoed: 0 } };
+  // Herkennen
+  assert.deepEqual(herkenOuder("Hoe gaat het met Sam?", [sam, lot]), { stap: "voortgang", kindId: "k1", filter: undefined });
+  assert.deepEqual(herkenOuder("tips voor de tafels", [sam]), { stap: "tips", soort: "tafels" });
+  assert.equal(herkenOuder("waar kan ik de privacy regelen", [sam])?.stap, "instellingen");
+  assert.equal(reageerOuder("wat is het weer", [sam]).keuzes?.length, 3);
+  // Twee kinderen: eerst kiezen wie
+  assert.deepEqual(antwoordOuder({ stap: "voortgang" }, [sam, lot]).keuzes?.map((k) => k.label), ["Sam", "Lot"]);
+  // Eén onderdeel geoefend: meteen de samenvatting met de week en suggesties
+  const a = antwoordOuder({ stap: "voortgang", kindId: "k1" }, [sam, lot]);
+  assert.match(a.tekst, /^Met de tafel van 8 is Sam nog aan het oefenen\./);
+  assert.deepEqual(a.kaart, { soort: "ouderVoortgang", kindId: "k1", filter: "tafels" });
+  assert.deepEqual(a.keuzes?.map((k) => k.label), ["Tips voor de tafel van 8", "Werkblad: de tafel van 8", "Laat Sam oefenen", "Ander kind"]);
+  // Nog niet geoefend
+  assert.match(antwoordOuder({ stap: "voortgang", kindId: "k2" }, [sam, lot]).tekst, /^Lot heeft de afgelopen week niet geoefend\./);
+  assert.equal(weekZin(sam), "Sam heeft de afgelopen week één keer geoefend: 4 vragen, waarvan 3 in één keer zelf goed.");
+  // Tips
+  assert.match(antwoordOuder({ stap: "tips", leerdoelId: "tafel-8" }, [sam]).tekst, /^Zo kun je thuis helpen met de tafel van 8:/);
+  assert.equal(antwoordOuder({ stap: "tips" }, [sam]).keuzes?.length, 3);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);

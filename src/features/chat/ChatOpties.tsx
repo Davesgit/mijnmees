@@ -5,12 +5,13 @@ import { Dialoog } from "@/components/mees/Dialoog";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { SecundaireKnop } from "@/components/mees/Knoppen";
 import type { Gesprek } from "./gesprek";
-import { archiveerChat, hernoemChat, verwijderChat } from "./opslag";
+import { useChatWinkel } from "./opslag";
 
 // Beheer van een gesprek, zoals in AI-chats: drie puntjes met naam wijzigen, archiveren en verwijderen.
 
 /** Invulveld om de naam van een gesprek te wijzigen. Enter of wegklikken bewaart, Escape annuleert. */
 export function NaamVeld({ gesprek, onKlaar, className = "" }: { gesprek: Gesprek; onKlaar: () => void; className?: string }) {
+  const { hernoemChat } = useChatWinkel();
   const [waarde, setWaarde] = useState(gesprek.titel);
   const veld = useRef<HTMLInputElement>(null);
   const klaar = useRef(false);
@@ -49,6 +50,7 @@ export function NaamVeld({ gesprek, onKlaar, className = "" }: { gesprek: Gespre
 
 /** De drie puntjes naast een gesprek, met het menu en de bevestiging bij verwijderen. */
 export function ChatMenu({ gesprek, onHernoem, className = "" }: { gesprek: Gesprek; onHernoem: () => void; className?: string }) {
+  const { archiveerChat, verwijderChat } = useChatWinkel();
   const [plek, setPlek] = useState<{ top: number; left: number } | null>(null);
   const [verwijderVragen, setVerwijderVragen] = useState(false);
   const knop = useRef<HTMLButtonElement>(null);
