@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Suspense, useEffect, useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
+import { Suspense, useEffect, useRef, useState, type PointerEvent, type ReactNode } from "react";
 import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { isOefenRoute, ProfielMenu } from "@/components/mees/MeesHeader";
 import { Logo } from "@/components/mees/Mees";
@@ -30,27 +30,6 @@ export type SchilInstelling = {
   /** Tijdens het oefenen geen menu (alleen kinderen). */
   zonderMenu?: (pad: string) => boolean;
 };
-
-const INGEKLAPT = "mees:zijmenu:ingeklapt";
-
-function leesIngeklapt() {
-  try {
-    return localStorage.getItem(INGEKLAPT) === "1";
-  } catch {
-    return false;
-  }
-}
-const ingeklaptLuisteraars = new Set<() => void>();
-function zetIngeklapt(waarde: boolean) {
-  try {
-    localStorage.setItem(INGEKLAPT, waarde ? "1" : "0");
-  } catch {}
-  ingeklaptLuisteraars.forEach((l) => l());
-}
-function abonneerIngeklapt(l: () => void) {
-  ingeklaptLuisteraars.add(l);
-  return () => ingeklaptLuisteraars.delete(l);
-}
 
 /** Schil van het kindergedeelte. */
 export function KindSchil({ children }: { children: ReactNode }) {
@@ -112,7 +91,6 @@ function SchilMetPad({ instelling, children }: { instelling: SchilInstelling; ch
 
 function Schil({ pad, instelling, children }: { pad: string; instelling: SchilInstelling; children: ReactNode }) {
   const oefenen = pad !== "" && Boolean(instelling.zonderMenu?.(pad));
-  const ingeklapt = useSyncExternalStore(abonneerIngeklapt, leesIngeklapt, () => false);
   const [mobielOpen, setMobielOpen] = useState(false);
   const [zoeken, setZoeken] = useState(false);
   // Muis op het smalle menu: het volledige menu klapt (over de inhoud heen) uit, en weer in als de muis weggaat.
@@ -190,20 +168,17 @@ function Schil({ pad, instelling, children }: { pad: string; instelling: SchilIn
         </div>
       )}
 
-      {/* Tablet en groter: vast zijmenu; op tablet compact, op desktop naar keuze uit- of ingeklapt. */}
+      {/* Tablet en groter: een smal zijmenu dat met de muis erop uitklapt; op een aanraakscherm via de menuknop. */}
       <aside
         aria-label="Navigatie"
         onPointerEnter={muisErop}
         onPointerLeave={muisEraf}
         // Klik je meteen op een pictogram, dan niet tijdens de klik uitklappen (anders telt de klik niet).
         onPointerDown={() => clearTimeout(zweefTimer.current)}
-        className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-[#e1f1fe] bg-gradient-to-br from-[#fbfdff] to-[#f5fbff] tablet:flex ${ingeklapt ? "w-[84px]" : "w-[84px] desktop:w-[265px]"}`}
+        className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-[#e1f1fe] bg-gradient-to-br from-[#fbfdff] to-[#f5fbff] tablet:flex w-[84px]`}
       >
-        <div className={`h-full flex-col ${ingeklapt ? "hidden" : "hidden desktop:flex"}`}>
-          <MenuInhoud instelling={instelling} onZoeken={() => setZoeken(true)} pad={pad} compact={false} onInklappen={() => zetIngeklapt(true)} />
-        </div>
-        <div ref={smalMenu} className={`h-full flex-col ${ingeklapt ? "flex" : "flex desktop:hidden"}`}>
-          <MenuInhoud instelling={instelling} onZoeken={() => setZoeken(true)} pad={pad} compact onUitklappen={() => zetIngeklapt(false)} onMenu={() => setMobielOpen(true)} />
+        <div ref={smalMenu} className="flex h-full flex-col">
+          <MenuInhoud instelling={instelling} onZoeken={() => setZoeken(true)} pad={pad} compact onMenu={() => setMobielOpen(true)} />
         </div>
         {zwevend && (
           <div className="mees-verschijn absolute inset-y-0 left-0 flex w-[265px] flex-col border-r border-[#e1f1fe] bg-[#fbfdff] shadow-zwevend">
@@ -213,10 +188,6 @@ function Schil({ pad, instelling, children }: { pad: string; instelling: SchilIn
               pad={pad}
               compact={false}
               onKlaar={() => setZwevend(false)}
-              onVastzetten={() => {
-                zetIngeklapt(false);
-                setZwevend(false);
-              }}
             />
           </div>
         )}
@@ -243,11 +214,8 @@ function MenuInhoud({
   pad,
   compact,
   onSluit,
-  onInklappen,
-  onUitklappen,
   onMenu,
   onKlaar,
-  onVastzetten,
   onZoeken,
 }: {
   instelling: SchilInstelling;
@@ -259,10 +227,6 @@ function MenuInhoud({
   onSluit?: () => void;
   /** Na een keuze aanroepen, zonder sluitknop (uitgeklapt menu bij aanwijzen met de muis). */
   onKlaar?: () => void;
-  /** Computer: het uitgeklapte menu blijvend openzetten. */
-  onVastzetten?: () => void;
-  onInklappen?: () => void;
-  onUitklappen?: () => void;
   /** Tablet: het volledige menu (met profiel en Voor ouders) als laag openen. */
   onMenu?: () => void;
 }) {
@@ -318,13 +282,8 @@ function MenuInhoud({
             </button>
           ),
         )}
-        {onUitklappen && (
-          <button type="button" onClick={onUitklappen} aria-label="Menu uitklappen" title="Menu uitklappen" className="mt-2 hidden size-12 place-items-center rounded-full text-tekst-zacht hover:bg-blauw-zacht desktop:grid">
-            <Icoon naam="paneel-in" className="size-6 rotate-180" />
-          </button>
-        )}
         {onMenu && (
-          <button type="button" onClick={onMenu} aria-label="Menu openen (profiel en Voor ouders)" title="Menu" className="mt-auto grid size-12 place-items-center rounded-full text-tekst-zacht hover:bg-blauw-zacht desktop:hidden">
+          <button type="button" onClick={onMenu} aria-label="Menu openen (profiel en Voor ouders)" title="Menu" className="mt-auto grid size-12 place-items-center rounded-full text-tekst-zacht hover:bg-blauw-zacht">
             <Icoon naam="menu" />
           </button>
         )}
@@ -342,16 +301,6 @@ function MenuInhoud({
         {onSluit && (
           <button type="button" onClick={onSluit} aria-label="Menu sluiten" className="grid size-12 place-items-center rounded-full hover:bg-blauw-zacht">
             <Icoon naam="sluiten" />
-          </button>
-        )}
-        {onVastzetten && (
-          <button type="button" onClick={onVastzetten} aria-label="Menu vastzetten" title="Menu vastzetten" className="hidden size-10 place-items-center rounded-full text-tekst-zacht hover:bg-blauw-zacht desktop:grid">
-            <Icoon naam="paneel-in" className="size-6 rotate-180" />
-          </button>
-        )}
-        {onInklappen && (
-          <button type="button" onClick={onInklappen} aria-label="Menu invouwen" title="Menu invouwen" className="grid size-10 place-items-center rounded-full text-tekst-zacht hover:bg-blauw-zacht">
-            <Icoon naam="paneel-in" className="size-6" />
           </button>
         )}
       </div>

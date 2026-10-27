@@ -21,6 +21,7 @@ type OptieActie =
   | { soort: "verder" }
   | { soort: "nogEenRondje" }
   | { soort: "ietsAnders" }
+  | { soort: "account" }
   | { soort: "keuze"; keuze: Keuze };
 import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart, type EuropaInstelling, type TafelInstelling } from "./ChatKaarten";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
@@ -38,6 +39,8 @@ const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNa
 /** Gasten oefenen gratis een paar rondjes; daarna een gratis account (dan wordt de voortgang bewaard en zichtbaar voor de ouder). */
 const GAST_GRENS_TEKST =
   "Je hebt je gratis gastrondjes gebruikt. Vraag je ouder om een gratis account: dan bewaar ik al je voortgang en kun je onbeperkt verder oefenen. Wat je al hebt geoefend, gaat mee. Mees is en blijft altijd gratis.";
+const ACCOUNT_TEKST =
+  "Met een gratis account bewaar ik al je voortgang en kan je ouder zien wat je hebt geoefend. Wat je als gast al hebt gedaan, gaat mee. Vraag je ouder om te helpen. Heb je al een account?";
 const accountKeuzes: Keuze[] = [
   { label: "Maak een gratis account", soort: "ga", href: "/ouder/account-aanmaken" },
   { label: "Ik heb al een account", soort: "ga", href: "/ouder/inloggen" },
@@ -296,6 +299,10 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     voegToe([bericht("kind", "Iets anders doen."), meesZegt(antwoord("leren", context()))]);
   }
 
+  function aanmelden() {
+    voegToe([bericht("kind", "Aanmelden / inloggen"), bericht("mees", ACCOUNT_TEKST, { keuzes: accountKeuzes })]);
+  }
+
   function lees(id: string, tekst: string) {
     if (leestId === id && voorlezen.bezig) return stopVoorlezen();
     setLeestId(id);
@@ -321,7 +328,11 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
   } else if (laatste?.oefening && actieveOefening?.status === "afgerond") {
     // Gast aan de grens: geen nieuw rondje, wel een gratis account voorstellen.
     if (!kind && opslag && gastLimietBereikt(opslag)) for (const k of accountKeuzes) opties.push({ label: k.label, primair: k.label.startsWith("Maak"), doe: { soort: "keuze", keuze: k } });
-    else opties.push({ label: "Nog een rondje", primair: true, doe: { soort: "nogEenRondje" } }, { label: "Iets anders doen", doe: { soort: "ietsAnders" } });
+    else {
+      opties.push({ label: "Nog een rondje", primair: true, doe: { soort: "nogEenRondje" } }, { label: "Iets anders doen", doe: { soort: "ietsAnders" } });
+      // Gasten kunnen na elk rondje al een account maken of inloggen, zodat hun voortgang bewaard blijft.
+      if (!kind) opties.push({ label: "Aanmelden / inloggen", doe: { soort: "account" } });
+    }
   } else if (laatste?.van === "mees" && laatste.keuzes?.length) {
     for (const k of laatste.keuzes) opties.push({ label: k.label, primair: k.soort === "voorstel" || k.soort === "hervat", doe: { soort: "keuze", keuze: k } });
   }
@@ -332,6 +343,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     if (a.soort === "verder") return verder();
     if (a.soort === "nogEenRondje") return nogEenRondje();
     if (a.soort === "ietsAnders") return ietsAnders();
+    if (a.soort === "account") return aanmelden();
     return kies(a.keuze);
   }
 
