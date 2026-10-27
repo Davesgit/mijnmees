@@ -7,7 +7,7 @@ import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { useProfiel } from "@/components/mees/Profiel";
 import { useVoorlezen } from "@/components/mees/Voorlezen";
 import { namen } from "@/features/oefenen/europa-vragen";
-import { gaVerder, gastLimietBereikt, maakEuropaSessie, maakSessie, maakTafelSessie, openSessie, registreerAntwoord, rondOvergangAf, sessieRoute, vraagHulp } from "@/features/oefenen/sessie";
+import { gaVerder, gastLimietBereikt, maakEuropaSessie, maakSessie, maakTafelSessie, openSessie, registreerAntwoord, rondOvergangAf, sessieRoute, startNiveau, vraagHulp } from "@/features/oefenen/sessie";
 import { vindVraag } from "@/features/oefenen/vragen";
 import type { OpslagData } from "@/features/oefenen/types";
 import { sessieNaam } from "@/features/oefenen/weergave";
@@ -27,7 +27,7 @@ import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart,
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { markeerNieuw, NaTypen, TypTekst } from "./ChatTypen";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
-import { antwoord, reageer, startkaarten, type Antwoord, type Bericht, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
+import { antwoord, groepVraag, groepZin, leesGroep, reageer, startkaarten, type Antwoord, type Bericht, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
 import { OefenBlok } from "./OefenBlok";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
 import { leesKlok, markeerActie, useKaartKeuze, useMeesBezig, zetKaartKeuze } from "./ritme";
@@ -91,7 +91,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     const data = haalOpslag();
     const open = openSessie(data);
     const v = voorstelOpties(data)[0]!;
-    return { open: open ? sessieNaam(open) : null, voorstel: v.naam, voorstelId: v.id, aantal: STANDAARD_AANTAL, voortgang: voortgangSoorten(data) };
+    return { open: open ? sessieNaam(open) : null, voorstel: v.naam, voorstelId: v.id, aantal: STANDAARD_AANTAL, voortgang: voortgangSoorten(data), groep: kind?.groep ?? data.groep };
   }
 
   /** Berichten toevoegen: nieuwe antwoorden van Mees worden getypt, een bericht van het kind schuift naar boven. */
@@ -160,12 +160,40 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     stopVoorlezen();
     setInvoer("");
     if (sessie && !onderwerp) return stuurTijdensOefenen(schoon);
+    // De groep: getypt ("ik zit in groep 7"), of als antwoord op Mees' vraag ook alleen een getal of "weet ik niet".
+    const groepGevraagd = laatste?.van === "mees" ? laatste.keuzes?.find((k) => k.soort === "groep") : undefined;
+    const getypt = onderwerp ? null : leesGroep(schoon, Boolean(groepGevraagd));
+    if (getypt !== null) {
+      if (kind) return voegToe([bericht("kind", schoon), bericht("mees", `Je groep staat in je profiel: groep ${kind.groep}. Je ouder kan die aanpassen.`)]);
+      return kiesGroep(schoon, getypt, groepGevraagd?.vraag, groepGevraagd?.onderwerp);
+    }
+    if (groepGevraagd) {
+      voegToe([bericht("kind", schoon), bericht("mees", "Typ of kies je groep: 5, 6, 7 of 8. Weet je het niet? Kies dan Weet ik niet.", { keuzes: laatste?.keuzes })]);
+      return;
+    }
+    // Een gast zonder bekende groep: eerst de groep vragen, zodat de opdrachten passen. Daarna het antwoord op de vraag.
+    if (!kind && haalOpslag().groep === undefined) {
+      voegToe([bericht("kind", schoon), meesZegt(groepVraag(schoon, onderwerp))], { titel });
+      return;
+    }
     const reactie = onderwerp ? antwoord(onderwerp, context()) : reageer(schoon, context());
     voegToe([bericht("kind", schoon), meesZegt(reactie)], { titel });
   }
 
+  /** Gast: groep bewaren en dan alsnog antwoorden op de eerste vraag (als die er was). */
+  function kiesGroep(label: string, groep: number, vraag?: string, onderwerp?: Onderwerp) {
+    wijzigOpslag((d) => ({ ...d, groep }));
+    if (!vraag) {
+      voegToe([bericht("kind", label), bericht("mees", groep ? `Ik heb onthouden dat je in groep ${groep} zit. Daar pas ik de opdrachten op aan.` : groepZin(0))]);
+      return;
+    }
+    const reactie = onderwerp ? antwoord(onderwerp, context()) : reageer(vraag, context());
+    voegToe([bericht("kind", label), meesZegt({ ...reactie, tekst: `${groepZin(groep)} ${reactie.tekst}` })]);
+  }
+
   function kies(k: Keuze) {
     stopVoorlezen();
+    if (k.soort === "groep") return kiesGroep(k.label, k.groep, k.vraag, k.onderwerp);
     if (k.soort === "vervolg") {
       const reactie = antwoord(k.onderwerp, context());
       voegToe([bericht("kind", k.label), meesZegt(reactie)]);
@@ -260,7 +288,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     startRondje((d) => {
       const o = vindOnderdeel(keuze.replace(/^doel:/, ""));
       if (!o?.onderdeel.leerdoelId) return null;
-      return maakSessie(d, { leerdoelId: o.onderdeel.leerdoelId, onderdeelId: o.onderdeel.id, onderwerpId: o.onderwerp.id, niveau: "past-bij-mij", aantal, bron: "voorstel" });
+      return maakSessie(d, { leerdoelId: o.onderdeel.leerdoelId, onderdeelId: o.onderdeel.id, onderwerpId: o.onderwerp.id, niveau: startNiveau(d, o.onderdeel.leerdoelId, kind?.groep ?? d.groep), aantal, bron: "voorstel" });
     }, label);
   }
 

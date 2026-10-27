@@ -113,4 +113,6 @@ export type OpslagData = {
   weetjes: WeetjeOntdekt[];
   reviews: ReviewItem[];
   instellingen: Leesinstellingen;
+  /** Groep van een gast (gevraagd in de chat); 0 = weet het niet. Kinderen met een profiel hebben hun groep in het profiel. */
+  groep?: number;
 };

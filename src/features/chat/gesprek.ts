@@ -25,7 +25,9 @@ export type Keuze =
   /** Voortgang van één onderdeel (of alles) bekijken. */
   | { label: string; soort: "voortgang"; filter: VoortgangKeuze }
   /** Ouderchat: een stap in het gesprek met de ouder. */
-  | { label: string; soort: "ouder"; doe: OuderStap };
+  | { label: string; soort: "ouder"; doe: OuderStap }
+  /** Gast: de groep kiezen (0 = weet ik niet); daarna antwoordt Mees alsnog op de eerste vraag. */
+  | { label: string; soort: "groep"; groep: number; vraag: string; onderwerp?: Onderwerp };
 
 /** Stappen in de ouderchat (vaste lijst; een latere AI kiest ook alleen hieruit). */
 export type OuderStap =
@@ -78,6 +80,8 @@ export type Context = {
   aantal: number;
   /** Onderdelen waarin al geoefend is (voor de voortgang). */
   voortgang?: ("breuken" | "tafels" | "europa")[];
+  /** Groep van het kind (profiel of gevraagd); 0 of leeg = onbekend. */
+  groep?: number;
 };
 
 export const MAX_GESPREKKEN = 20;
@@ -147,14 +151,17 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context, tafels: number[] = 
     case "vraag":
       return { tekst: "Stel je vraag maar! Typ hem hieronder of tik op de microfoon om te praten. Ik kan nog niet alles beantwoorden, maar ik help je graag op weg." };
     case "rekenen":
-      return { tekst: "Rekenen! Kies wat je wilt oefenen en hoeveel vragen.", kaart: { soort: "voorstel", standaard: ctx.voorstelId } };
+      return { tekst: `Rekenen! ${rekenNiveauZin(ctx)}Kies wat je wilt oefenen en hoeveel vragen.`, kaart: { soort: "voorstel", standaard: ctx.voorstelId } };
     case "tafels":
       return {
         tekst: tafels.length ? `De tafel${tafels.length > 1 ? "s" : ""} van ${tafels.join(", ")}. Kies nog hoe je wilt oefenen.` : "Welke tafels wil je trainen? Kies er één of meer.",
         kaart: { soort: "tafels", tafels },
       };
     case "europa":
-      return { tekst: "Op de kaart van Europa! Kies welk gebied, wat je wilt oefenen, en of je vragen wilt of een puzzel.", kaart: { soort: "europa" } };
+      return {
+        tekst: `Op de kaart van Europa! ${ctx.groep && ctx.groep <= 6 ? "Topografie van Europa krijg je meestal in groep 7 en 8, maar je mag het gerust proberen. Ik help je met hints. " : ""}Kies welk gebied, wat je wilt oefenen, en of je vragen wilt of een puzzel.`,
+        kaart: { soort: "europa" },
+      };
     case "werkblad":
       return { tekst: "Werkbladen maken kan nog niet in de chat. Zullen we samen oefenen?", keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, keuze.tafels] };
     case "voortgang": {
@@ -178,6 +185,43 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context, tafels: number[] = 
         keuzes: [{ label: "Ja, oefenen", soort: "vervolg", onderwerp: "oefenen" }, ...onderwerpKeuzes],
       };
   }
+}
+
+/** Bij het eerste rekenrondje: zo begint Mees, passend bij de groep. Daarna past het niveau zich aan op hoe het ging. */
+function rekenNiveauZin(ctx: Context): string {
+  if (!ctx.groep || ctx.voortgang?.includes("breuken")) return "";
+  if (ctx.groep <= 6) return `Je zit in groep ${ctx.groep}, dus ik begin met makkelijkere vragen. Gaat het goed, dan worden ze moeilijker. `;
+  if (ctx.groep === 8) return "Je zit in groep 8, dus ik begin met wat pittigere vragen. Is het te moeilijk, dan worden ze makkelijker. ";
+  return "";
+}
+
+/** Gast: Mees vraagt eerst de groep, zodat de opdrachten passen. Daarna antwoordt hij op `vraag`. */
+export function groepVraag(vraag: string, onderwerp?: Onderwerp): Antwoord {
+  return {
+    tekst: "Leuk dat je er bent! Eerst even: in welke groep zit je? Dan kies ik opdrachten die bij je passen.",
+    keuzes: [
+      ...[5, 6, 7, 8].map((g) => ({ label: `Groep ${g}`, soort: "groep" as const, groep: g, vraag, onderwerp })),
+      { label: "Weet ik niet", soort: "groep", groep: 0, vraag, onderwerp },
+    ],
+  };
+}
+
+/** Een getypte groep herkennen ("groep 6", "6", "ik zit in groep 7"); 0 = weet het niet; null = geen groep. */
+export function leesGroep(tekst: string, alleenGetal = false): number | null {
+  const t = tekst.toLowerCase().trim();
+  const met = t.match(/groep\s*([1-8])\b/);
+  if (met) return Number(met[1]);
+  if (!alleenGetal) return null;
+  const los = t.match(/^(?:in\s+)?([1-8])$/);
+  if (los) return Number(los[1]);
+  return /weet|geen idee|niet|zeg ik niet/.test(t) ? 0 : null;
+}
+
+/** Bevestiging na het kiezen van de groep. */
+export function groepZin(groep: number): string {
+  if (!groep) return "Geeft niks! Ik begin in het midden en kijk hoe het gaat.";
+  if (groep < 5) return `Groep ${groep}! Mees is vooral voor groep 5 tot en met 8, dus ik begin met makkelijke opdrachten.`;
+  return "Fijn, dank je!";
 }
 
 const VRAAGWOORDEN = /^\s*(wat|wie|waar|waarom|wanneer|hoe|hoeveel|welke?|kun|kan|mag|is|zijn|weet)\b/i;

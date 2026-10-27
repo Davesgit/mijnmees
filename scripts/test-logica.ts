@@ -11,7 +11,9 @@ import {
   maakSessie,
   maakTafelSessie,
   niveauAdvies,
+  niveauVoorGroep,
   registreerAntwoord,
+  startNiveau,
   sessieStatistiek,
   vraagHulp,
   werkPuzzelBij,
@@ -23,7 +25,7 @@ import { bordInStukjes, decodeer } from "@/features/live/bordkanaal";
 import { beoordeelTutorhulp, controleUitkomst, kiesControleVraag } from "@/features/tutorhulp/criteria";
 import { bordOp, type BordOpname } from "@/features/tutorhulp/bord";
 import type { Poging } from "@/features/oefenen/types";
-import { antwoord, bewaarGesprek, herken, reageer, tafelsUit, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
+import { antwoord, bewaarGesprek, groepVraag, herken, leesGroep, reageer, tafelsUit, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
 import { namen as europaNamenMap } from "@/features/oefenen/europa-vragen";
 import { doelVoortgang, tafelOverzicht, voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "@/features/chat/voortgang-chat";
@@ -483,6 +485,29 @@ test("ouderchat: voortgang per kind, samenvatting en suggesties voor ouders", ()
   // Tips
   assert.match(antwoordOuder({ stap: "tips", leerdoelId: "tafel-8" }, [sam]).tekst, /^Zo kun je thuis helpen met de tafel van 8:/);
   assert.equal(antwoordOuder({ stap: "tips" }, [sam]).keuzes?.length, 3);
+});
+
+test("groep: beginniveau, aanpassen na een rondje en de groep herkennen", () => {
+  assert.equal(niveauVoorGroep(5), "makkelijk");
+  assert.equal(niveauVoorGroep(7), "past-bij-mij");
+  assert.equal(niveauVoorGroep(8), "uitdagend");
+  assert.equal(niveauVoorGroep(0), "past-bij-mij");
+  const instelling = { leerdoelId: "breuken-vergelijken", onderdeelId: "x", onderwerpId: "y", aantal: 4, bron: "voorstel" as const };
+  // Eerste rondje: de groep telt. Alles zelf goed: een niveau hoger. Steeds hulp nodig: een niveau lager.
+  assert.equal(startNiveau(leeg(), "breuken-vergelijken", 6), "makkelijk");
+  const goed = maakSessie(leeg(), { ...instelling, niveau: "makkelijk" });
+  assert.equal(startNiveau(speelUit(goed.data, goed.sessie.id), "breuken-vergelijken", 6), "past-bij-mij");
+  const moeilijk = maakSessie(leeg(), { ...instelling, niveau: "uitdagend" });
+  assert.equal(startNiveau(speelUit(moeilijk.data, moeilijk.sessie.id, [0, 1, 2, 3, 4, 5, 6, 7]), "breuken-vergelijken", 8), "past-bij-mij");
+  // De groep herkennen
+  assert.equal(leesGroep("ik zit in groep 7"), 7);
+  assert.equal(leesGroep("6"), null);
+  assert.equal(leesGroep("6", true), 6);
+  assert.equal(leesGroep("weet ik niet", true), 0);
+  assert.equal(leesGroep("tafel van 6", true), null);
+  assert.deepEqual(groepVraag("hoi").keuzes?.map((k) => k.label), ["Groep 5", "Groep 6", "Groep 7", "Groep 8", "Weet ik niet"]);
+  assert.match(antwoord("rekenen", { open: null, voorstel: "", voorstelId: "", aantal: 4, groep: 5 }).tekst, /groep 5, dus ik begin met makkelijkere vragen/);
+  assert.match(antwoord("europa", { open: null, voorstel: "", voorstelId: "", aantal: 4, groep: 6 }).tekst, /meestal in groep 7 en 8/);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);

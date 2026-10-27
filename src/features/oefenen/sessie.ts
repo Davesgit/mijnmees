@@ -450,3 +450,27 @@ export function sessieRoute(sessie: Sessie) {
 }
 
 export type { SessieInstellingen };
+
+/** Beginniveau bij rekenen op basis van de groep (zolang er nog niet geoefend is). Onbekend: het middelste niveau. */
+export function niveauVoorGroep(groep?: number): Niveau {
+  if (!groep) return "past-bij-mij";
+  if (groep <= 6) return "makkelijk";
+  return groep === 7 ? "past-bij-mij" : "uitdagend";
+}
+
+/**
+ * Niveau voor een nieuw rondje: het eerste rondje volgt de groep, daarna het vorige rondje van hetzelfde leerdoel.
+ * Ging dat (bijna) helemaal zelf goed, dan een niveau hoger; was er vaak hulp nodig, dan een niveau lager.
+ */
+export function startNiveau(data: OpslagData, leerdoelId: string, groep?: number): Niveau {
+  const vorige = Object.values(data.sessies)
+    .filter((s) => (s.soort ?? "oefening") === "oefening" && s.status === "afgerond" && s.leerdoelId === leerdoelId)
+    .sort((a, b) => (a.afgerondOp ?? a.gestartOp).localeCompare(b.afgerondOp ?? b.gestartOp))
+    .at(-1);
+  if (!vorige) return niveauVoorGroep(groep);
+  const eerste = vorige.slots.filter((s) => !s.herhalingVan && s.uitkomst);
+  if (eerste.length === 0) return vorige.niveau;
+  const zelf = eerste.filter((s) => s.uitkomst === "zelfstandig").length / eerste.length;
+  const i = niveaus.indexOf(vorige.niveau);
+  return niveaus[Math.min(2, Math.max(0, i + (zelf >= 0.8 ? 1 : zelf <= 0.5 ? -1 : 0)))]!;
+}
