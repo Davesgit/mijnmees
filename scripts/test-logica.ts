@@ -26,6 +26,7 @@ import type { Poging } from "@/features/oefenen/types";
 import { antwoord, bewaarGesprek, herken, reageer, tafelsUit, maakTitel, MAX_GESPREKKEN, type Gesprek } from "@/features/chat/gesprek";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, verloopVanSlot } from "@/features/chat/oefen-verloop";
 import { namen as europaNamenMap } from "@/features/oefenen/europa-vragen";
+import { voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "@/features/chat/voortgang-chat";
 import { appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
 import { kiesWerkbladVragen, maakWerkblad, type WerkbladInstellingen } from "@/features/werkbladen/werkblad";
 
@@ -333,7 +334,8 @@ test("chat: onderwerpen herkennen en antwoorden met vaste keuzes", () => {
   assert.deepEqual(tafelsUit("ik wil de tafel van 7 en 12 trainen"), [7, 12]);
   assert.deepEqual(reageer("ik wil tafels trainen", ctx).kaart, { soort: "tafels", tafels: [] });
   assert.deepEqual(reageer("tafel van 8", ctx).kaart, { soort: "tafels", tafels: [8] });
-  assert.equal(reageer("wat heb ik al geoefend", ctx).kaart?.soort, "voortgang");
+  // Voortgang: eerst kiezen waarvan (hier nog niets geoefend, dus een uitnodiging om te oefenen).
+  assert.match(reageer("wat heb ik al geoefend", ctx).tekst, /nog niet geoefend/);
   assert.match(reageer("Wat is de hoofdstad van Frankrijk?", ctx).tekst, /nog geen eigen antwoord/);
   assert.doesNotMatch(reageer("Ik wil Europa oefenen", ctx).tekst, /nog geen eigen antwoord/);
   assert.equal(maakTitel("  a  b "), "a b");
@@ -416,6 +418,32 @@ test("chatbalk: getypte antwoorden en opdrachten begrijpen", () => {
     assert.equal(leesAntwoord(optie.label.toUpperCase(), keuzeVraag, keuzeSlot, europaNamenMap), optie.waarde);
   }
   assert.equal(faseVan(bslot), "antwoorden");
+});
+
+test("chat-voortgang: eerst kiezen, dan samenvatting en voorstellen", () => {
+  const ctx = { open: null, voorstel: "x", voorstelId: "x", aantal: 6 };
+  // Nog niets geoefend: geen keuzes van onderdelen, wel uitnodigen om te oefenen.
+  assert.equal(voortgangSoorten(leeg()).length, 0);
+  assert.equal(antwoord("voortgang", { ...ctx, voortgang: [] }).keuzes?.[0]?.soort, "vervolg");
+  // Twee rondjes tafel van 7 (allemaal goed) en één rondje tafel van 8 met hulp.
+  let data = leeg();
+  for (let i = 0; i < 2; i++) {
+    const r = maakTafelSessie(data, { tafels: [7], bewerkingen: ["x"], aantal: 8, metTijd: false, bron: "zelf" });
+    data = speelUit(r.data, r.sessie.id);
+  }
+  const r8 = maakTafelSessie(data, { tafels: [8], bewerkingen: ["x"], aantal: 4, metTijd: false, bron: "zelf" });
+  data = speelUit(r8.data, r8.sessie.id, [0]);
+  assert.deepEqual(voortgangSoorten(data), ["tafels"]);
+  const keuzes = antwoord("voortgang", { ...ctx, voortgang: voortgangSoorten(data) }).keuzes ?? [];
+  assert.deepEqual(keuzes.map((k) => k.label), ["Tafels"], "één onderdeel: geen 'Alles'");
+  const items = voortgangVan(data, "tafels");
+  assert.equal(items.at(-1)?.status, "gaat-zelfstandig", "zelfstandig staat onderaan");
+  const tekst = voortgangSamenvatting(items, "tafels");
+  assert.match(tekst, /^Bij de tafels zie ik dit\. Knap! De tafel van 7 gaat al zelfstandig\./);
+  assert.match(tekst, /de tafel van 8/);
+  assert.deepEqual(voortgangVoorstellen(items).map((k) => k.label), ["De tafel van 8 oefenen"]);
+  assert.equal(voortgangVan(data, "europa").length, 0);
+  assert.match(voortgangSamenvatting([], "europa"), /nog niet geoefend/);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);

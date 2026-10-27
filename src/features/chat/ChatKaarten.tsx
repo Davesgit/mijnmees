@@ -5,13 +5,14 @@ import { Icoon, type AlleIcoonNamen } from "@/components/mees/Icoon";
 import { vindOnderdeelBijLeerdoel } from "@/content/onderwerpen";
 import { alleEuropaVragen } from "@/features/oefenen/europa-vragen";
 import { MICROSTATEN, europaMeta, europaOnderwerpen, landenVanGebieden, telEuropaOnderdelen, type EuropaOnderwerp } from "@/features/oefenen/europa-sessie";
-import { openSessie, tijdKeuzes } from "@/features/oefenen/sessie";
+import { tijdKeuzes } from "@/features/oefenen/sessie";
 import { TAFELS } from "@/features/oefenen/tafel-vragen";
 import type { OpslagData } from "@/features/oefenen/types";
-import { leerdoelNaam, leerdoelSoort, sessieNaam } from "@/features/oefenen/weergave";
-import { berekenBewijs, type BewijsStatus } from "@/features/voortgang/bewijs";
+import { leerdoelNaam, leerdoelSoort } from "@/features/oefenen/weergave";
+import type { BewijsStatus } from "@/features/voortgang/bewijs";
 import { useOpslag } from "@/lib/opslag/lokaal";
-import type { Keuze } from "./gesprek";
+import { TypOnthul } from "./ChatOnthul";
+import { voortgangVan, type VoortgangFilter } from "./voortgang-chat";
 import { AANTAL_KEUZES, STANDAARD_AANTAL } from "./oefen-verloop";
 
 // Kaarten in berichten van Mees: alles wat een kind kiest of bekijkt, gebeurt in het gesprek.
@@ -312,80 +313,49 @@ export function EuropaKaart({
   );
 }
 
-const groepen: { status: BewijsStatus; titel: string; regel: string }[] = [
-  { status: "gaat-zelfstandig", titel: "Gaat zelfstandig", regel: "Dit lukt je zonder hulp." },
-  { status: "aan-het-oefenen", titel: "Aan het oefenen", regel: "Blijf dit oefenen." },
-  { status: "nog-eens-oefenen", titel: "Nog eens oefenen", regel: "Kijk of dit nog lukt." },
+const groepen: { status: BewijsStatus; titel: string; symbool: string; regel: string }[] = [
+  { status: "nog-eens-oefenen", titel: "Nog eens oefenen", symbool: "🔁", regel: "Al even geleden. Kijk of het nog lukt." },
+  { status: "aan-het-oefenen", titel: "Aan het oefenen", symbool: "💪", regel: "Blijf dit oefenen." },
+  { status: "gaat-zelfstandig", titel: "Gaat zelfstandig", symbool: "⭐", regel: "Dit lukt je zonder hulp." },
 ];
 
-/** Keuze om een leerdoel uit de voortgang te oefenen, binnen het gesprek. */
-function oefenKeuze(leerdoelId: string): Keuze {
-  const naam = leerdoelNaam(leerdoelId);
-  const t = leerdoelId.match(/^(tafel|deeltafel)-(\d+)$/);
-  if (t) return { label: `${naam} oefenen`, soort: "kaart", tekst: `${naam}. Kies nog hoe je wilt oefenen.`, kaart: { soort: "tafels", tafels: [Number(t[2])], ...(t[1] === "deeltafel" ? { bewerking: ":" } : {}) } };
-  if (leerdoelId.startsWith("europa-")) {
-    const onderwerp = { "europa-landen": "landen", "europa-hoofdsteden": "hoofdsteden", "europa-wateren": "wateren", "europa-gebergten": "gebergten", "europa-ligging": "ligging" }[leerdoelId];
-    return { label: `${naam} oefenen`, soort: "kaart", tekst: "Kies welk gebied je wilt oefenen.", kaart: { soort: "europa", onderwerpen: onderwerp ? [onderwerp] : undefined } };
-  }
-  const o = vindOnderdeelBijLeerdoel(leerdoelId);
-  return { label: `${naam} oefenen`, soort: "kaart", tekst: "Kies hoeveel vragen je wilt doen.", kaart: { soort: "voorstel", standaard: o ? `doel:${o.onderdeel.id}` : "" } };
-}
-
-/** Voortgang in het gesprek: wat gaat zelfstandig, wat oefen je nog. */
-export function VoortgangKaart({ actief, onKies }: { actief: boolean; onKies: (k: Keuze) => void }) {
+/**
+ * Voortgang in het gesprek (alles of één onderdeel). Alleen weergave: oefenen kies je in de chatbalk.
+ * Bij een nieuw antwoord bouwt het overzicht zich blok voor blok op, zoals Mees typt.
+ */
+export function VoortgangKaart({ filter = "alles" }: { filter?: VoortgangFilter }) {
   const opslag = useOpslag();
   if (!opslag) return null;
-  const bewijs = berekenBewijs(opslag);
-  const open = openSessie(opslag);
+  const items = voortgangVan(opslag, filter);
+  if (items.length === 0) return null;
   return (
-    <div className="mt-4 flex flex-col gap-3">
-      {open && (
-        <div className="flex flex-col gap-3 rounded-[14px] bg-blauw-zacht p-4 tablet:flex-row tablet:items-center tablet:justify-between">
-          <div>
-            <p className="tekst-klein font-semibold text-actie-blauw">Je kunt verder waar je was.</p>
-            <p className="font-bold">{sessieNaam(open)}</p>
-          </div>
-          {actief && (
-            <button type="button" onClick={() => onKies({ label: "Verder waar ik was", soort: "hervat" })} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[12px] bg-actie-blauw px-4 font-bold text-wit hover:bg-actie-hover">
-              Verder oefenen
-              <Icoon naam="pijl-rechts" className="size-5" />
-            </button>
-          )}
-        </div>
-      )}
-      {bewijs.length === 0 ? (
-        <p className="rounded-[14px] bg-[#f6fbff] p-4">Hier komt je voortgang zodra je hebt geoefend. Zullen we beginnen?</p>
-      ) : (
-        groepen.map((g) => {
-          const items = bewijs.filter((b) => b.status === g.status);
-          if (items.length === 0) return null;
-          return (
-            <section key={g.status} className="overflow-hidden rounded-[14px] border border-[#d8e9f8]">
-              <h4 className="bg-[#f2f8ff] px-4 py-2.5 font-extrabold">
-                {g.titel} <span className="font-semibold text-tekst-zacht">· {items.length}</span>
-              </h4>
-              <ul className="divide-y divide-[#e4effa]">
-                {items.map((b) => (
-                  <li key={b.leerdoelId} className="flex items-center gap-3 px-4 py-2.5">
-                    <Icoon naam={leerdoelSoort(b.leerdoelId) === "tafels" ? "tafels" : leerdoelSoort(b.leerdoelId) === "europa" ? "landen" : "breuken"} className="size-6 shrink-0 text-actie-blauw" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-bold">{leerdoelNaam(b.leerdoelId)}</span>
-                      <span className="block tekst-klein text-tekst-zacht">{g.regel}</span>
-                    </span>
-                    {actief && (
-                      <button type="button" onClick={() => onKies(oefenKeuze(b.leerdoelId))} className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-[10px] px-2 font-bold text-actie-blauw hover:bg-blauw-zacht">
-                        <span className="max-[479px]:sr-only">Oefenen</span>
-                        <span className="sr-only"> {leerdoelNaam(b.leerdoelId)}</span>
-                        <Icoon naam="pijl-rechts" className="size-5" />
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })
-      )}
-    </div>
+    <TypOnthul className="mt-4 flex flex-col gap-3">
+      {groepen.map((g) => {
+        const lijst = items.filter((b) => b.status === g.status);
+        if (lijst.length === 0) return null;
+        return (
+          <section key={g.status} className="overflow-hidden rounded-[14px] border border-[#d8e9f8]">
+            <h4 className="flex items-center gap-2 bg-[#f2f8ff] px-4 py-2.5 font-extrabold">
+              <span aria-hidden>{g.symbool}</span>
+              {g.titel}
+              <span className="font-semibold text-tekst-zacht">· {lijst.length}</span>
+            </h4>
+            <ul className="divide-y divide-[#e4effa]">
+              {lijst.map((b) => (
+                <li key={b.leerdoelId} className="flex items-center gap-3 px-4 py-2.5">
+                  {/* Bij tafels geen ×-pictogram: dat lijkt naast "zelfstandig" op "fout". */}
+                  <Icoon naam={leerdoelSoort(b.leerdoelId) === "tafels" ? "rekenen" : leerdoelSoort(b.leerdoelId) === "europa" ? "landen" : "breuken"} className="size-6 shrink-0 text-actie-blauw" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold">{leerdoelNaam(b.leerdoelId)}</span>
+                    <span className="block tekst-klein text-tekst-zacht">{g.regel}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+      <p className="tekst-klein text-tekst-zacht">Mees kijkt naar meerdere oefenmomenten, niet naar één keer.</p>
+    </TypOnthul>
   );
 }

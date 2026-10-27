@@ -9,7 +9,10 @@ import { Logo } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { ZoekChats } from "./ChatZoeken";
+import { markeerNieuw } from "./ChatTypen";
 import { antwoord } from "./gesprek";
+import { voortgangSoorten } from "./voortgang-chat";
+import { haalOpslag } from "@/lib/opslag/lokaal";
 import { maakBericht, nieuweChat, openChat, useChats, voegToeAanActief } from "./opslag";
 
 // Schil van het kindergedeelte (ontwerp versie 6): vast zijmenu naast de inhoud. Op de telefoon een smalle
@@ -220,8 +223,10 @@ function MenuInhoud({
   }
   /** Voortgang verschijnt in het gesprek: in de open chat, of in een nieuwe chat. */
   function voortgang() {
-    const r = antwoord("voortgang", { open: null, voorstel: "", voorstelId: "", aantal: 0 });
-    voegToeAanActief([maakBericht("kind", "Hoe gaat het met mijn oefenen?"), maakBericht("mees", r.tekst, { kaart: r.kaart })], { titel: "Mijn voortgang" });
+    const r = antwoord("voortgang", { open: null, voorstel: "", voorstelId: "", aantal: 0, voortgang: voortgangSoorten(haalOpslag()) });
+    const mees = maakBericht("mees", r.tekst, { kaart: r.kaart, keuzes: r.keuzes });
+    markeerNieuw([mees]);
+    voegToeAanActief([maakBericht("kind", "Hoe gaat het met mijn oefenen?"), mees], { titel: "Mijn voortgang" });
     naKeuze();
     if (!opStart) router.push(START);
   }

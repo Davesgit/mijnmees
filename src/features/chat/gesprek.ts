@@ -7,7 +7,7 @@ export type Kaart =
   | { soort: "voorstel"; standaard: string }
   | { soort: "tafels"; tafels: number[]; bewerking?: "x" | ":" | "beide" }
   | { soort: "europa"; vorm?: "afwisselend" | "puzzel"; onderwerpen?: string[] }
-  | { soort: "voortgang" }
+  | { soort: "voortgang"; filter?: VoortgangKeuze }
   /** Vervallen (weetjes bestaan niet meer); alleen nog in oude gesprekken, wordt niet getoond. */
   | { soort: "weetjes" }
   | { soort: "weetje"; id: string };
@@ -19,7 +19,11 @@ export type Keuze =
   | { label: string; soort: "hervat" }
   | { label: string; soort: "vervolg"; onderwerp: Onderwerp }
   /** Mees antwoordt met deze tekst en kaart. */
-  | { label: string; soort: "kaart"; tekst: string; kaart: Kaart };
+  | { label: string; soort: "kaart"; tekst: string; kaart: Kaart }
+  /** Voortgang van één onderdeel (of alles) bekijken. */
+  | { label: string; soort: "voortgang"; filter: VoortgangKeuze };
+
+export type VoortgangKeuze = "alles" | "breuken" | "tafels" | "europa";
 
 /** Oud formaat van het oefenvoorstel (bewaarde gesprekken); nieuw is `kaart`. */
 export type Voorstel = { standaard: string };
@@ -60,6 +64,8 @@ export type Context = {
   voorstel: string;
   voorstelId: string;
   aantal: number;
+  /** Onderdelen waarin al geoefend is (voor de voortgang). */
+  voortgang?: ("breuken" | "tafels" | "europa")[];
 };
 
 export const MAX_GESPREKKEN = 20;
@@ -139,8 +145,19 @@ export function antwoord(onderwerp: Onderwerp, ctx: Context, tafels: number[] = 
       return { tekst: "Op de kaart van Europa! Kies welk gebied, wat je wilt oefenen, en of je vragen wilt of een puzzel.", kaart: { soort: "europa" } };
     case "werkblad":
       return { tekst: "Werkbladen maken kan nog niet in de chat. Zullen we samen oefenen?", keuzes: [{ label: "Ja, samen oefenen", soort: "voorstel" }, keuze.tafels] };
-    case "voortgang":
-      return { tekst: "Dit heb je al geoefend. Mees kijkt naar meerdere oefenmomenten.", kaart: { soort: "voortgang" } };
+    case "voortgang": {
+      const soorten = ctx.voortgang ?? [];
+      if (soorten.length === 0)
+        return { tekst: "Je hebt nog niet geoefend, dus er is nog geen voortgang. Zullen we beginnen?", keuzes: [{ label: "Ja, oefenen", soort: "vervolg", onderwerp: "oefenen" }, ...onderwerpKeuzes] };
+      const namen = { breuken: "Breuken", tafels: "Tafels", europa: "Topo Europa" } as const;
+      return {
+        tekst: soorten.length === 1 ? "Wil je je voortgang zien? Kies hieronder." : "Waarvan wil je je voortgang zien?",
+        keuzes: [
+          ...(soorten.length > 1 ? [{ label: "Alles", soort: "voortgang" as const, filter: "alles" as const }] : []),
+          ...soorten.map((s) => ({ label: namen[s], soort: "voortgang" as const, filter: s })),
+        ],
+      };
+    }
     case "groet":
       return { tekst: "Hoi! Fijn dat je er bent. Wat wil je doen: iets leren, oefenen of een vraag stellen?", keuzes: [{ label: "Iets leren", soort: "vervolg", onderwerp: "leren" }, { label: "Oefenen", soort: "vervolg", onderwerp: "oefenen" }] };
     case "onbekend":

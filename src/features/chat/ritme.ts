@@ -6,6 +6,9 @@ import { useSyncExternalStore } from "react";
 // chatbalk even, zodat een kind eerst ziet wat Mees zegt. Ook: was er net een actie van het kind (dan reageert Mees
 // zichtbaar met puntjes en typen; bij herladen staat alles er meteen).
 
+/** Tempo van het typen van Mees: één woord per tik (ongeveer 13 woorden per seconde). */
+export const TIK_MS = 75;
+
 // Twee tellers: typen (tekst verschijnt) en wachten (puntjes of een vervolg dat nog moet komen).
 let typen = 0;
 let wachten = 0;

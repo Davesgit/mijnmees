@@ -31,6 +31,7 @@ import { OefenBlok } from "./OefenBlok";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
 import { leesKlok, markeerActie, useKaartKeuze, useMeesBezig, zetKaartKeuze } from "./ritme";
 import { maakBericht as bericht, useChats, voegToeAanActief } from "./opslag";
+import { voortgangSamenvatting, voortgangSoorten, voortgangVan, voortgangVoorstellen } from "./voortgang-chat";
 const kaartIcoon: Record<(typeof startkaarten)[number]["onderwerp"], AlleIcoonNamen> = { leren: "boek", oefenen: "herhaal", vraag: "chat" };
 
 /** Keuzes onder "Veel plezier!": handig als het kind na het oefenen terugkomt in het gesprek. */
@@ -162,7 +163,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     const data = haalOpslag();
     const open = openSessie(data);
     const v = voorstelOpties(data)[0]!;
-    return { open: open ? sessieNaam(open) : null, voorstel: v.naam, voorstelId: v.id, aantal: STANDAARD_AANTAL };
+    return { open: open ? sessieNaam(open) : null, voorstel: v.naam, voorstelId: v.id, aantal: STANDAARD_AANTAL, voortgang: voortgangSoorten(data) };
   }
 
   /** Berichten toevoegen: nieuwe antwoorden van Mees worden getypt, een bericht van het kind schuift naar boven. */
@@ -240,6 +241,22 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     if (k.soort === "vervolg") {
       const reactie = antwoord(k.onderwerp, context());
       voegToe([bericht("kind", k.label), meesZegt(reactie)]);
+      return;
+    }
+    if (k.soort === "voortgang") {
+      // Eerst een samenvatting in gewone woorden, dan het overzicht; oefenen kies je daarna in de chatbalk.
+      const data = haalOpslag();
+      const items = voortgangVan(data, k.filter);
+      const open = openSessie(data);
+      const keuzes: Keuze[] = items.length
+        ? [
+            ...(open && kanInChat(open) ? [{ label: "Verder waar ik was", soort: "hervat" as const }] : []),
+            ...voortgangVoorstellen(items),
+            { label: "Verder oefenen", soort: "vervolg", onderwerp: "oefenen" },
+            { label: "Iets anders bekijken", soort: "vervolg", onderwerp: "voortgang" },
+          ]
+        : [{ label: "Ja, oefenen", soort: "vervolg", onderwerp: "oefenen" }];
+      voegToe([bericht("kind", k.label), bericht("mees", voortgangSamenvatting(items, k.filter), { kaart: items.length ? { soort: "voortgang", filter: k.filter } : undefined, keuzes })]);
       return;
     }
     if (k.soort === "kaart") {
@@ -528,7 +545,7 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
                   <MeesAfzender />
                   <TypTekst id={b.id} tekst={b.tekst} className="mt-2 whitespace-pre-wrap break-words text-lg leading-relaxed">
                     {(b.kaart ?? (b.voorstel ? { soort: "voorstel", standaard: b.voorstel.standaard } : null)) && (
-                      <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onKies={kies} onStartVoorstel={startVoorstel} onStartTafels={startTafels} onStartEuropa={startEuropa} />
+                      <KaartWeergave kaart={(b.kaart ?? { soort: "voorstel", standaard: b.voorstel!.standaard }) as Kaart} actief={isLaatste} onStartVoorstel={startVoorstel} onStartTafels={startTafels} onStartEuropa={startEuropa} />
                     )}
                     <div className="mt-3">
                       <VoorleesLink id={b.id} tekst={b.tekst} />
@@ -556,14 +573,12 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
 function KaartWeergave({
   kaart,
   actief,
-  onKies,
   onStartVoorstel,
   onStartTafels,
   onStartEuropa,
 }: {
   kaart: Kaart;
   actief: boolean;
-  onKies: (k: Keuze) => void;
   onStartVoorstel: (keuze: string, aantal: number, label: string) => void;
   onStartTafels: (i: TafelInstelling, label: string) => void;
   onStartEuropa: (i: EuropaInstelling, label: string) => void;
@@ -576,7 +591,7 @@ function KaartWeergave({
     case "europa":
       return <EuropaKaart vorm={kaart.vorm} onderwerpen={kaart.onderwerpen} actief={actief} onStart={onStartEuropa} />;
     case "voortgang":
-      return <VoortgangKaart actief={actief} onKies={onKies} />;
+      return <VoortgangKaart filter={kaart.filter} />;
     case "weetjes":
     case "weetje":
       return null;

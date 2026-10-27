@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { createContext, Fragment, use, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { Breuk, TekstMetBreuken } from "@/components/mees/Breuk";
 import { Icoon } from "@/components/mees/Icoon";
 import { sessieStatistiek } from "@/features/oefenen/sessie";
@@ -11,8 +11,9 @@ import { antwoordTekst, goedAntwoordTekst, vindVraag, type BreukVergelijkVraag, 
 import { hintVoorleesTekst, uitlegVoorleesTekst, vraagVoorleesTekst } from "@/features/voorlezen/teksten";
 import { useOpslag, wijzigOpslag } from "@/lib/opslag/lokaal";
 import { MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
-import { Puntjes, TIK_MS } from "./ChatTypen";
-import { isNetGehandeld, markeerActie, meesTypt, meesWacht, rustigeWeergave, useKaartKeuze, useMeesTypt, zetKaartKeuze, zetKlok } from "./ritme";
+import { NieuweReactie, TypOnthul } from "./ChatOnthul";
+import { Puntjes } from "./ChatTypen";
+import { isNetGehandeld, markeerActie, meesWacht, rustigeWeergave, useKaartKeuze, useMeesTypt, zetKaartKeuze, zetKlok } from "./ritme";
 
 // De kaart van Europa is groot (alle landvormen): pas laden als er echt Europa geoefend wordt.
 const kaartRuimte = () => <div className="mt-3 h-[clamp(260px,52dvh,560px)] animate-pulse rounded-[16px] bg-blauw-zacht tablet:h-[clamp(320px,58dvh,640px)]" aria-hidden />;
@@ -22,77 +23,6 @@ const PuzzelBlok = dynamic(() => import("./EuropaInChat").then((m) => m.PuzzelBl
 
 const REACTIE_MS = 900;
 const DAARNA_MS = 500;
-
-/** True als de kaart net als reactie verschijnt: dan typt Mees de inhoud. */
-const NieuweReactie = createContext(false);
-
-/**
- * Bouwt een kaart van Mees op zoals in een AI-chat: blok voor blok, met de tekst woord voor woord.
- * Werkt op de getekende inhoud, zodat ook breuken en opmaak gewoon meelopen. Knoppen komen als laatste.
- */
-function TypOnthul({ className = "", children }: { className?: string; children: ReactNode }) {
-  const typen = use(NieuweReactie);
-  const ref = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    const root = ref.current;
-    if (!typen || !root) return;
-    const blokken = [...root.children] as HTMLElement[];
-    const plan = blokken.map((blok) => {
-      const teksten: { node: Text; volledig: string; delen: string[] }[] = [];
-      const w = document.createTreeWalker(blok, NodeFilter.SHOW_TEXT);
-      while (w.nextNode()) {
-        const node = w.currentNode as Text;
-        teksten.push({ node, volledig: node.data, delen: node.data.split(/(\s+)/) });
-        node.data = "";
-      }
-      blok.style.visibility = "hidden";
-      return { blok, teksten };
-    });
-    const afmelden = meesTypt();
-    const klaar = () => {
-      clearInterval(iv);
-      afmelden();
-    };
-    let b = 0;
-    let t = 0;
-    let d = 0;
-    const iv = setInterval(() => {
-      // Twee delen per tik: een woord en de spatie erna.
-      for (let stap = 0; stap < 2; stap++) {
-        const blok = plan[b];
-        if (!blok) return klaar();
-        blok.blok.style.visibility = "";
-        const tekst = blok.teksten[t];
-        if (!tekst) {
-          b++;
-          t = 0;
-          d = 0;
-          continue;
-        }
-        const deel = tekst.delen[d];
-        if (deel === undefined) {
-          t++;
-          d = 0;
-          continue;
-        }
-        tekst.node.data += deel;
-        d++;
-      }
-    }, TIK_MS);
-    return () => {
-      klaar();
-      for (const p of plan) {
-        p.blok.style.visibility = "";
-        for (const x of p.teksten) x.node.data = x.volledig;
-      }
-    };
-  }, [typen]);
-  return (
-    <div ref={ref} className={className}>
-      {children}
-    </div>
-  );
-}
 
 /** Toont een nieuwe stap pas na een korte pauze; met puntjes van Mees als die stap een reactie van Mees is. */
 function NaActie({ id, ms, puntjes, children }: { id: string; ms: number; puntjes: boolean; children: ReactNode }) {

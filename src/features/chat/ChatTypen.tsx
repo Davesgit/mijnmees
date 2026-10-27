@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
-import { meesTypt, meesWacht } from "./ritme";
+import { NieuweReactie } from "./ChatOnthul";
+import { meesTypt, meesWacht, TIK_MS } from "./ritme";
 
 // Mees "typt" zijn antwoord, zoals in een AI-chat: eerst even nadenken (drie puntjes), dan verschijnt de tekst van
 // boven naar beneden. Alleen voor berichten die net zijn toegevoegd; na herladen staat alles er meteen.
@@ -36,13 +37,14 @@ const rustig = () => document.documentElement.dataset.rustigeOvergangen === "tru
 // Rustig genoeg om te zien dat Mees antwoordt: eerst even nadenken, dan ongeveer 13 woorden per seconde.
 const DENKEN_MS = 900;
 const WOORDEN_PER_TIK = 1;
-export const TIK_MS = 75;
+
 
 /** Tekst van Mees die verschijnt alsof hij typt; `children` (keuzes, kaart, voorlezen) komen daarna. */
 export function TypTekst({ id, tekst, className, children }: { id: string; tekst: string; className?: string; children?: ReactNode }) {
   const delen = useMemo(() => tekst.split(/(\s+)/), [tekst]);
   const [fase, setFase] = useState<"denkt" | "typt" | "klaar">(() => (nieuw.has(id) && !rustig() ? "denkt" : "klaar"));
   const [getoond, setGetoond] = useState(0);
+  const [wasNieuw] = useState(fase !== "klaar");
 
   // Klaar met typen zodra alle woorden staan (afgeleid; geen extra state).
   const klaar = fase === "klaar" || (fase === "typt" && getoond >= delen.length);
@@ -73,7 +75,12 @@ export function TypTekst({ id, tekst, className, children }: { id: string; tekst
       ) : (
         tekst && <p className={className}>{tekst}</p>
       )}
-      {klaar && <div className="mees-verschijn">{children}</div>}
+      {/* Een kaart bij een nieuw antwoord bouwt daarna ook typend op. */}
+      {klaar && (
+        <div className="mees-verschijn">
+          <NieuweReactie value={wasNieuw}>{children}</NieuweReactie>
+        </div>
+      )}
     </>
   );
 }
