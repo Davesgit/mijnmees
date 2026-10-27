@@ -8,6 +8,7 @@ import { isOefenRoute, ProfielMenu } from "@/components/mees/MeesHeader";
 import { Logo } from "@/components/mees/Mees";
 import { useProfiel } from "@/components/mees/Profiel";
 import { ChatMenu, NaamVeld } from "./ChatOpties";
+import { ZoekChats } from "./ChatZoeken";
 import { antwoord } from "./gesprek";
 import { maakBericht, nieuweChat, openChat, useChats, voegToeAanActief } from "./opslag";
 
@@ -52,6 +53,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
   const oefenen = pad !== "" && isOefenRoute(pad);
   const ingeklapt = useSyncExternalStore(abonneerIngeklapt, leesIngeklapt, () => false);
   const [mobielOpen, setMobielOpen] = useState(false);
+  const [zoeken, setZoeken] = useState(false);
   // Muis op het smalle menu: het volledige menu klapt (over de inhoud heen) uit, en weer in als de muis weggaat.
   const [zwevend, setZwevend] = useState(false);
   const zweefTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -122,7 +124,7 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
         <div className="fixed inset-0 z-50">
           <button type="button" aria-label="Menu sluiten" className="absolute inset-0 bg-[#16396e]/30 backdrop-blur-[2px]" onClick={() => setMobielOpen(false)} />
           <div id="kind-menu" role="dialog" aria-modal="true" aria-label="Menu" className="mees-verschijn absolute inset-y-0 left-0 flex w-[min(20rem,85vw)] flex-col bg-[#fbfdff] shadow-zwevend">
-            <MenuInhoud pad={pad} compact={false} onSluit={() => setMobielOpen(false)} />
+            <MenuInhoud onZoeken={() => setZoeken(true)} pad={pad} compact={false} onSluit={() => setMobielOpen(false)} />
           </div>
         </div>
       )}
@@ -132,17 +134,20 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
         aria-label="Navigatie"
         onPointerEnter={muisErop}
         onPointerLeave={muisEraf}
+        // Klik je meteen op een pictogram, dan niet tijdens de klik uitklappen (anders telt de klik niet).
+        onPointerDown={() => clearTimeout(zweefTimer.current)}
         className={`sticky top-0 z-30 hidden h-dvh shrink-0 flex-col border-r border-[#e1f1fe] bg-gradient-to-br from-[#fbfdff] to-[#f5fbff] tablet:flex ${ingeklapt ? "w-[84px]" : "w-[84px] desktop:w-[265px]"}`}
       >
         <div className={`h-full flex-col ${ingeklapt ? "hidden" : "hidden desktop:flex"}`}>
-          <MenuInhoud pad={pad} compact={false} onInklappen={() => zetIngeklapt(true)} />
+          <MenuInhoud onZoeken={() => setZoeken(true)} pad={pad} compact={false} onInklappen={() => zetIngeklapt(true)} />
         </div>
         <div ref={smalMenu} className={`h-full flex-col ${ingeklapt ? "flex" : "flex desktop:hidden"}`}>
-          <MenuInhoud pad={pad} compact onUitklappen={() => zetIngeklapt(false)} onMenu={() => setMobielOpen(true)} />
+          <MenuInhoud onZoeken={() => setZoeken(true)} pad={pad} compact onUitklappen={() => zetIngeklapt(false)} onMenu={() => setMobielOpen(true)} />
         </div>
         {zwevend && (
           <div className="mees-verschijn absolute inset-y-0 left-0 flex w-[265px] flex-col border-r border-[#e1f1fe] bg-[#fbfdff] shadow-zwevend">
             <MenuInhoud
+              onZoeken={() => setZoeken(true)}
               pad={pad}
               compact={false}
               onKlaar={() => setZwevend(false)}
@@ -158,6 +163,14 @@ function Schil({ pad, children }: { pad: string; children: ReactNode }) {
       <main id="inhoud" className="flex min-w-0 flex-1 flex-col">
         {children}
       </main>
+      <ZoekChats
+        open={zoeken}
+        onSluit={() => setZoeken(false)}
+        onGekozen={() => {
+          setMobielOpen(false);
+          setZwevend(false);
+        }}
+      />
     </div>
   );
 }
@@ -171,9 +184,12 @@ function MenuInhoud({
   onMenu,
   onKlaar,
   onVastzetten,
+  onZoeken,
 }: {
   pad: string;
   compact: boolean;
+  /** Het zoekvenster openen (dat staat één keer in de schil). */
+  onZoeken: () => void;
   /** Sluitknop tonen (mobiel menu); wordt ook na een keuze aangeroepen. */
   onSluit?: () => void;
   /** Na een keuze aanroepen, zonder sluitknop (uitgeklapt menu bij aanwijzen met de muis). */
@@ -193,7 +209,8 @@ function MenuInhoud({
   const chats = useChats();
   const { ouderIngelogd } = useProfiel();
   const [hernoemId, setHernoemId] = useState<string | null>(null);
-  const recent = chats?.gesprekken.filter((g) => !g.gearchiveerd).slice(0, 5) ?? [];
+  // Alle chats (behalve gearchiveerde) staan in het menu, nieuwste bovenaan, zoals in AI-chats.
+  const recent = chats?.gesprekken.filter((g) => !g.gearchiveerd) ?? [];
   const opStart = pad === START;
 
   function nieuw() {
@@ -216,7 +233,7 @@ function MenuInhoud({
 
   const items: { label: string; icoon: AlleIcoonNamen; actief: boolean; href?: string; onClick?: () => void }[] = [
     { label: "Nieuwe chat", icoon: "pen", actief: opStart && chats?.actief === null, onClick: nieuw },
-    { label: "Eerdere chats", icoon: "klok", actief: pad.startsWith("/kind/chats"), href: "/kind/chats" },
+    { label: "Chats zoeken", icoon: "zoek", actief: false, onClick: onZoeken },
     { label: "Mijn voortgang", icoon: "voortgang", actief: false, onClick: voortgang },
   ];
 
@@ -294,7 +311,7 @@ function MenuInhoud({
       {recent.length > 0 && (
         <section aria-labelledby="recent-kop" className="mt-5 border-t border-[#e1f1fe] pt-5">
           <h2 id="recent-kop" className="px-3 tekst-klein font-semibold text-[#6574ac]">
-            Recente chats
+            Chats
           </h2>
           <ul className="mt-2 flex flex-col gap-0.5">
             {recent.map((g) => {
