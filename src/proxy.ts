@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { APP_COOKIE, appDoorsturing, isAppVerzoek } from "@/features/app/appmodus";
+import { binnen, fetchMetTijdslimiet } from "@/lib/supabase/tijdslimiet";
 
 // Ververst de Supabase-sessie (cookies) bij elke paginaweergave. Autorisatie zelf gebeurt in de datalaag.
 export async function proxy(request: NextRequest) {
@@ -22,6 +23,7 @@ export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    global: { fetch: fetchMetTijdslimiet() },
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -34,7 +36,8 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getClaims();
+  // Reageert Supabase niet snel, dan de pagina toch tonen; de datalaag controleert zelf opnieuw.
+  await binnen(supabase.auth.getClaims(), 1500, null);
   return response;
 }
 

@@ -3,6 +3,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { binnen } from "@/lib/supabase/tijdslimiet";
 import { OUDERVERKLARING_VERSIE, type Kind } from "@/lib/kinderen";
 import { isOuderOntgrendeld, leesKindCookie } from "./cookies";
 
@@ -13,7 +14,8 @@ export type Ouder = { id: string; email: string; bevestigd: boolean };
 /** De ingelogde ouder, gecontroleerd via de ondertekende JWT; null als niemand is ingelogd. */
 export const haalOuder = cache(async (): Promise<Ouder | null> => {
   const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
+  // Supabase onbereikbaar: na een paar seconden behandelen als niet ingelogd, in plaats van de pagina te laten hangen.
+  const { data } = await binnen(supabase.auth.getClaims(), 2500, { data: null, error: null });
   const claims = data?.claims;
   if (!claims?.sub) return null;
   return {
