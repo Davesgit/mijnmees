@@ -3,6 +3,7 @@ import europaVragen from "../src/content/europa/vragen.json";
 import { kaart as europaKaart } from "../src/features/europa/kaart";
 // Logicatests voor de oefensessies (zonder browser). Draaien: npx tsx scripts/test-logica.ts
 import assert from "node:assert/strict";
+import { herkenSignaal } from "@/features/chat/signalen";
 import { landenVanGebieden, telEuropaOnderdelen } from "@/features/oefenen/europa-sessie";
 import {
   gaVerder,
@@ -11,6 +12,7 @@ import {
   maakSessie,
   maakTafelSessie,
   niveauAdvies,
+  hulpNaFout,
   niveauVoorGroep,
   registreerAntwoord,
   startNiveau,
@@ -356,19 +358,17 @@ test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
   let data = start.data;
   const id = sessie.id;
   const slot = () => data.sessies[id]!.slots[data.sessies[id]!.index]!;
-  const verloop = () => verloopVanSlot(slot(), data.pogingen.filter((p) => p.slotId === slot().id)).map((s) => s.soort + (s.soort === "fout" ? `:${s.hulp?.soort ?? "-"}` : s.soort === "vraag" ? `:${s.status}` : ""));
+  const verloop = () => verloopVanSlot(slot(), data.pogingen.filter((p) => p.slotId === slot().id), vindVraag(slot().vraagId)!).map((s) => s.soort + (s.soort === "fout" ? `:${s.hulp?.soort ?? "-"}` : s.soort === "vraag" ? `:${s.status}` : ""));
   assert.deepEqual(verloop(), ["vraag:open"]);
   const fout = ["<", "=", ">"].find((t) => t !== goedAntwoord(data.sessies[id]!))!;
   data = registreerAntwoord(data, id, fout)!.data;
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:open"]);
+  // Na een fout meteen begeleiding (gedragsplan P04, N-A1): hint 1, niet alleen "probeer opnieuw".
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:hint", "vraag:open"]);
   data = vraagHulp(data, id);
   // Hulp gevraagd: de vraag blijft staan, daaronder het verzoek, de hint en dezelfde vraag opnieuw.
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:hulp", "hulpVraag", "hulp", "vraag:open"]);
-  data = registreerAntwoord(data, id, fout)!.data;
-  // Hint 1 had het kind al gevraagd: na de tweede fout geen dubbele hint.
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:hulp", "hulpVraag", "hulp", "vraag:fout", "fout:-", "vraag:open"]);
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:hint", "vraag:hulp", "hulpVraag", "hulp", "vraag:open"]);
   data = registreerAntwoord(data, id, goedAntwoord(data.sessies[id]!))!.data;
-  assert.deepEqual(verloop(), ["vraag:fout", "fout:-", "vraag:hulp", "hulpVraag", "hulp", "vraag:fout", "fout:-", "vraag:goed", "goed"]);
+  assert.deepEqual(verloop(), ["vraag:fout", "fout:hint", "vraag:hulp", "hulpVraag", "hulp", "vraag:goed", "goed"]);
   // Goed antwoord telt meteen; een fout of hint telt niet als afgeronde vraag.
   assert.equal(oefenTeller(data.sessies[id]!).klaar, 1);
   assert.equal(kanInChat(data.sessies[id]!), true);
@@ -377,17 +377,37 @@ test("chat-oefenen: verloop uit de opslag (fout, hint, goed) en teller", () => {
   assert.equal(kanInChat({ ...data.sessies[id]!, soort: "tafels", instellingen: { metTijd: true } }), true);
 });
 
-test("chat-oefenen: vier fouten geven de uitleg en daarna Verder", () => {
-  const start = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
-  const sessie = start.sessie;
-  let data = start.data;
-  const id = sessie.id;
-  const fout = ["<", "=", ">"].find((t) => t !== goedAntwoord(data.sessies[id]!))!;
-  for (let i = 0; i < 4; i++) data = registreerAntwoord(data, id, fout)!.data;
-  const s = data.sessies[id]!.slots[0]!;
-  const stappen = verloopVanSlot(s, data.pogingen.filter((p) => p.slotId === s.id));
-  assert.deepEqual(stappen.filter((x) => x.soort === "fout").map((x) => (x.soort === "fout" ? x.hulp?.soort ?? "-" : "")), ["-", "hint", "hint", "uitleg"]);
-  assert.equal(stappen.at(-1)?.soort, "verder");
+test("gedragsplan T15/T18/T24: vastlopen bij rekenen parkeert de vraag zonder het antwoord", () => {
+  const hulpReeks = (data: OpslagData, id: string) => {
+    const s = data.sessies[id]!.slots[0]!;
+    const stappen = verloopVanSlot(s, data.pogingen.filter((p) => p.slotId === s.id), vindVraag(s.vraagId)!);
+    return { stappen, fouten: stappen.filter((x) => x.soort === "fout").map((x) => (x.soort === "fout" ? (x.hulp?.soort ?? "-") : "")) };
+  };
+  // Breuken (meerkeuze, 3 opties): hint, daarna parkeren voordat alleen het goede antwoord overblijft.
+  const b = maakSessie(leeg(), { leerdoelId: "breuken-vergelijken", onderdeelId: "breuken-vergelijken", onderwerpId: "breuken", niveau: "past-bij-mij", aantal: 4, bron: "voorstel" });
+  let data = b.data;
+  const goed = goedAntwoord(data.sessies[b.sessie.id]!);
+  const fouteOpties = ["<", "=", ">"].filter((t) => t !== goed);
+  for (const f of fouteOpties) data = registreerAntwoord(data, b.sessie.id, f)!.data;
+  const br = hulpReeks(data, b.sessie.id);
+  assert.deepEqual(br.fouten, ["hint", "uitleg"]);
+  assert.equal(br.stappen.at(-1)?.soort, "verder");
+  assert.equal(faseVan(data.sessies[b.sessie.id]!.slots[0]!), "uitleg");
+  // Geparkeerd telt niet als zelfstandig of met hulp goed (N10).
+  data = gaVerder(data, b.sessie.id);
+  assert.equal(data.sessies[b.sessie.id]!.slots[0]!.uitkomst, "met-uitleg");
+  // Tafels (open antwoord): hint 1, hint 2, dan parkeren.
+  const t = maakTafelSessie(leeg(), { tafels: [7], bewerkingen: ["x"], aantal: 4, metTijd: false, bron: "zelf" });
+  let td = t.data;
+  for (let i = 0; i < 3; i++) td = registreerAntwoord(td, t.sessie.id, "1")!.data;
+  assert.deepEqual(hulpReeks(td, t.sessie.id).fouten, ["hint", "hint", "uitleg"]);
+  // Alle hints al gevraagd en dan fout: meteen parkeren, niet eindeloos raden (H03).
+  const th = maakTafelSessie(leeg(), { tafels: [7], bewerkingen: ["x"], aantal: 4, metTijd: false, bron: "zelf" });
+  let hd = vraagHulp(vraagHulp(th.data, th.sessie.id), th.sessie.id);
+  hd = registreerAntwoord(hd, th.sessie.id, "1")!.data;
+  assert.deepEqual(hulpReeks(hd, th.sessie.id).fouten, ["uitleg"]);
+  // De regel zelf: tafel na de eerste fout meteen hint 1.
+  assert.deepEqual(hulpNaFout(vindVraag("tafel-7-x-8")!, 1, 0), { hints: 1, parkeer: false });
 });
 
 test("chatbalk: getypte antwoorden en opdrachten begrijpen", () => {
@@ -508,6 +528,17 @@ test("groep: beginniveau, aanpassen na een rondje en de groep herkennen", () => 
   assert.deepEqual(groepVraag("hoi").keuzes?.map((k) => k.label), ["Groep 5", "Groep 6", "Groep 7", "Groep 8", "Weet ik niet"]);
   assert.match(antwoord("rekenen", { open: null, voorstel: "", voorstelId: "", aantal: 4, groep: 5 }).tekst, /groep 5, dus ik begin met makkelijkere vragen/);
   assert.match(antwoord("europa", { open: null, voorstel: "", voorstelId: "", aantal: 4, groep: 6 }).tekst, /meestal in groep 7 en 8/);
+});
+
+test("gedragsplan T17/T21/T22: signalen gaan vóór oefenen", () => {
+  // T22 zorgsignaal
+  for (const t of ["Ik word geslagen", "ik wil dood", "Papa slaat me soms", "ik word gepest op school"]) assert.equal(herkenSignaal(t), "zorg", t);
+  // T21 persoonsgegevens
+  for (const t of ["mijn wachtwoord is kip123", "bel me op 06 12345678", "sam@voorbeeld.nl", "ik woon op de Dorpsstraat 4", "1234 AB"]) assert.equal(herkenSignaal(t), "privacy", t);
+  // T17 ontmoedigd
+  for (const t of ["ik ben dom", "Ik kan niks!", "ik snap er niks van"]) assert.equal(herkenSignaal(t), "ontmoedigd", t);
+  // Gewone berichten en antwoorden zijn geen signaal.
+  for (const t of ["56", "7 x 8", "ik wil de tafels oefenen", "hint", "ik snap het niet", "groep 6", "Wat is de hoofdstad van Spanje?", "pauze", "<", "1234"]) assert.equal(herkenSignaal(t), null, t);
 });
 
 console.log(`\n${geslaagd} tests geslaagd`);

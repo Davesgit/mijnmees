@@ -130,7 +130,7 @@ function SlotVerloop({
   pogingen: Parameters<typeof verloopVanSlot>[1];
   interactief: boolean;
 }) {
-  const stappen = verloopVanSlot(slot, pogingen);
+  const stappen = verloopVanSlot(slot, pogingen, vraag);
   const laatsteVraag = stappen.findLastIndex((s) => s.soort === "vraag");
   const sleutel = (s: Stap, i: number) => `${slot.id}-${i}-${s.soort}`;
 
@@ -178,7 +178,7 @@ function SlotVerloop({
               return (
                 <div key={id} data-stap={id} className="ml-auto max-w-[85%] rounded-[20px] bg-[#e0f2ff] px-5 py-3.5 text-lg">
                   <span className="sr-only">Jij: </span>
-                  {stap.hulp.soort === "uitleg" ? "Laat de uitleg zien." : stap.hulp.niveau === 1 ? "Geef me een hint." : "Mag ik nog een hint?"}
+                  {stap.hulp.soort === "uitleg" ? (vraag.soort === "europa" ? "Laat de uitleg zien." : "Ik kom er niet uit.") : stap.hulp.niveau === 1 ? "Geef me een hint." : "Mag ik nog een hint?"}
                 </div>
               );
             case "hulp":
@@ -240,7 +240,18 @@ function Kaart({ toon, voorlees, children }: { toon: "normaal" | "fout" | "hulp"
   );
 }
 
+/** Rekenen: een vraag waar het kind na alle hulp niet uitkomt, laten we liggen, zonder het antwoord (gedragsplan P06, N04). */
+const PARKEER_KOP = "Deze laten we even liggen";
+const PARKEER_TEKST = "Je hoeft deze vraag nu niet af te maken. Je hebt de hints geprobeerd, en dat is goed. Ga gerust verder. Een andere keer probeer je zo'n vraag opnieuw.";
+
 function HulpInhoud({ vraag, hulp }: { vraag: BreukOfTafel; hulp: Hulp }) {
+  if (hulp.soort === "uitleg" && vraag.soort !== "europa")
+    return (
+      <div className="mt-3">
+        <h4 className="font-bold text-actie-blauw">{PARKEER_KOP}</h4>
+        <p className="mt-1 text-lg">{PARKEER_TEKST}</p>
+      </div>
+    );
   if (hulp.soort === "uitleg")
     return (
       <div className="mt-3">
@@ -268,7 +279,8 @@ function HulpInhoud({ vraag, hulp }: { vraag: BreukOfTafel; hulp: Hulp }) {
 
 function hulpTekstVoorlezen(vraag: BreukOfTafel, hulp: Hulp | null) {
   if (!hulp) return "Kijk nog eens rustig naar de vraag.";
-  return hulp.soort === "uitleg" ? uitlegVoorleesTekst(vraag) : hintVoorleesTekst(vraag, hulp.niveau - 1);
+  if (hulp.soort === "uitleg") return vraag.soort === "europa" ? uitlegVoorleesTekst(vraag) : `${PARKEER_KOP}. ${PARKEER_TEKST}`;
+  return hintVoorleesTekst(vraag, hulp.niveau - 1);
 }
 
 function antwoordWoorden(vraag: BreukOfTafel, antwoord: string) {

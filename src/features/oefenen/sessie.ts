@@ -341,8 +341,8 @@ export function registreerAntwoord(
     nieuwSlot = { ...slot, antwoord, uitkomst: zelfstandig ? "zelfstandig" : "met-hulp" };
   } else {
     const fouten = slot.hulp.fouten + 1;
-    const hints = Math.max(slot.hulp.hints, fouten >= 3 ? 2 : fouten >= 2 ? 1 : 0) as 0 | 1 | 2;
-    nieuwSlot = { ...slot, antwoord, hulp: { hints, fouten, uitleg: fouten >= 4 } };
+    const hulp = hulpNaFout(vraag, fouten, slot.hulp.hints);
+    nieuwSlot = { ...slot, antwoord, hulp: { hints: hulp.hints, fouten, uitleg: hulp.parkeer } };
   }
 
   let bijgewerkt = vervangSlot(sessie, index, nieuwSlot);
@@ -353,7 +353,22 @@ export function registreerAntwoord(
   return { data: metSessie(nieuweData, bijgewerkt), beoordeling: goed ? "goed" : "fout" };
 }
 
-/** Handmatig hulp vragen: hint 1 → hint 2 → uitleg. */
+/**
+ * Hulp na een fout antwoord. `uitleg` in de opslag betekent: deze vraagplaats is afgehandeld zonder goed antwoord.
+ * Rekenen (gedragsplan P04, P06, N04, H03): na een fout meteen de volgende hint, geen "probeer opnieuw"; lukt het
+ * na alle hints nog niet, dan wordt de vraag geparkeerd zonder het antwoord te tonen. Bij meerkeuze gebeurt dat
+ * voordat alleen het goede antwoord overblijft. Europa (feitenkennis): hint na de 2e en 3e fout, daarna de uitleg.
+ */
+export function hulpNaFout(vraag: Vraag, fouten: number, hintsVoor: number): { hints: 0 | 1 | 2; parkeer: boolean } {
+  if (vraag.soort === "europa") {
+    return { hints: Math.max(hintsVoor, fouten >= 3 ? 2 : fouten >= 2 ? 1 : 0) as 0 | 1 | 2, parkeer: fouten >= 4 };
+  }
+  const parkeerNa = vraag.soort === "breuk" ? vraag.options.length - 1 : 3;
+  const parkeer = fouten >= parkeerNa || hintsVoor >= 2;
+  return { hints: (parkeer ? hintsVoor : Math.min(2, hintsVoor + 1)) as 0 | 1 | 2, parkeer };
+}
+
+/** Handmatig hulp vragen: hint 1 → hint 2 → uitleg (rekenen: parkeren). */
 export function vraagHulp(data: OpslagData, sessieId: string, slotId?: string): OpslagData {
   const sessie = data.sessies[sessieId];
   if (!sessie || sessie.status !== "bezig") return data;

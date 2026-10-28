@@ -27,6 +27,7 @@ import { EuropaKaart, TafelKaart, VoorstelKaart, voorstelOpties, VoortgangKaart,
 import { ChatMenu, NaamVeld } from "./ChatOpties";
 import { markeerNieuw, NaTypen, TypTekst } from "./ChatTypen";
 import { ChatVoorleesContext, MeesAfzender, VoorleesLink } from "./ChatVoorlezen";
+import { herkenSignaal, SIGNAAL_TEKST, WEGGELATEN, type Signaal } from "./signalen";
 import { antwoord, groepVraag, groepZin, leesGroep, reageer, startkaarten, type Antwoord, type Bericht, type Context, type Kaart, type Keuze, type Onderwerp } from "./gesprek";
 import { OefenBlok } from "./OefenBlok";
 import { antwoordOpties, faseVan, kanInChat, leesAntwoord, leesOpdracht, oefenTeller, STANDAARD_AANTAL } from "./oefen-verloop";
@@ -154,11 +155,28 @@ export function ChatScherm({ meldingen, gesprekOpen = true }: { meldingen?: Reac
     );
   }
 
+  /**
+   * Signalen gaan vóór oefenen (gedragsplan §9, §12). Zorg: het oefenen stopt (hervatten kan later). Persoonsgegevens:
+   * het bericht wordt niet bewaard. Ontmoedigd: druk wegnemen; de oefening blijft staan.
+   */
+  function reageerOpSignaal(tekst: string, signaal: Signaal) {
+    const kindBericht = bericht("kind", signaal === "privacy" ? WEGGELATEN : tekst);
+    const mees = bericht("mees", SIGNAAL_TEKST[signaal]);
+    if (!sessie) return voegToe([kindBericht, mees]);
+    const sluit = { sluitSessie: { id: sessie.id, tot: sessie.index } };
+    if (signaal === "zorg") return voegToe([kindBericht, mees], sluit);
+    voegToe([kindBericht, mees, bericht("mees", "", { oefening: { sessieId: sessie.id, vanaf: sessie.index } })], sluit);
+  }
+
   function stuur(tekst: string, onderwerp?: Onderwerp, titel?: string) {
     const schoon = tekst.trim().slice(0, 500);
     if (!schoon) return;
     stopVoorlezen();
     setInvoer("");
+    if (!onderwerp) {
+      const signaal = herkenSignaal(schoon);
+      if (signaal) return reageerOpSignaal(schoon, signaal);
+    }
     if (sessie && !onderwerp) return stuurTijdensOefenen(schoon);
     // De groep: getypt ("ik zit in groep 7"), of als antwoord op Mees' vraag ook alleen een getal of "weet ik niet".
     const groepGevraagd = laatste?.van === "mees" ? laatste.keuzes?.find((k) => k.soort === "groep") : undefined;

@@ -3,6 +3,7 @@
 // opnieuw worden opgebouwd. De oefenmotor (sessie.ts) blijft de enige die bepaalt wat goed is en wat telt.
 
 import type { Poging, Sessie, Slot } from "@/features/oefenen/types";
+import { hulpNaFout as motorHulp } from "@/features/oefenen/sessie";
 import type { Vraag } from "@/features/oefenen/vragen";
 
 export type Hulp = { soort: "hint"; niveau: 1 | 2 } | { soort: "uitleg" };
@@ -20,15 +21,14 @@ export type Stap =
   /** De uitleg staat er; het kind gaat verder met de knop Verder. */
   | { soort: "verder" };
 
-/** Hulp die de motor geeft na het zoveelste foute antwoord (zie registreerAntwoord). */
-function hulpNaFout(fouten: number): Hulp | null {
-  if (fouten >= 4) return { soort: "uitleg" };
-  if (fouten === 3) return { soort: "hint", niveau: 2 };
-  if (fouten === 2) return { soort: "hint", niveau: 1 };
-  return null;
+/** Hulp die de motor geeft na het zoveelste foute antwoord (zie hulpNaFout in sessie.ts). Null: al gegeven. */
+function hulpNaFout(vraag: Vraag, fouten: number, hints: number): Hulp | null {
+  const h = motorHulp(vraag, fouten, hints);
+  if (h.parkeer) return { soort: "uitleg" };
+  return h.hints > hints ? { soort: "hint", niveau: h.hints as 1 | 2 } : null;
 }
 
-export function verloopVanSlot(slot: Slot, pogingen: Poging[]): Stap[] {
+export function verloopVanSlot(slot: Slot, pogingen: Poging[], vraag: Vraag): Stap[] {
   const stappen: Stap[] = [];
   let hints = 0;
   let uitleg = false;
@@ -56,9 +56,7 @@ export function verloopVanSlot(slot: Slot, pogingen: Poging[]): Stap[] {
       return;
     }
     fouten++;
-    let hulp = hulpNaFout(fouten);
-    // Een hint die het kind al had gevraagd, komt niet nog eens.
-    if (hulp?.soort === "hint" && hulp.niveau <= hints) hulp = null;
+    const hulp = hulpNaFout(vraag, fouten, hints);
     if (hulp?.soort === "hint") hints = hulp.niveau;
     if (hulp?.soort === "uitleg") uitleg = true;
     stappen.push({ soort: "fout", antwoord: p.antwoord, hulp });
