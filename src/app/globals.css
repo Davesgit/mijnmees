@@ -2,19 +2,19 @@
 
 /* Tokens uit mees-overdracht/implementatie/tokens.css (ontwerpregels §2–4). */
 @theme {
-  --color-merk-blauw: #0789f8;
+  --color-merk-blauw: #008cff;
   --color-actie-blauw: #005fcc;
   --color-actie-hover: #0054b5;
   --color-actie-ingedrukt: #00479a;
-  --color-inkt: #111d55;
+  --color-inkt: #071f4c;
   --color-tekst-zacht: #4a5878;
   --color-wit: #ffffff;
   --color-achtergrond-zacht: #f6f9fd;
-  --color-blauw-zacht: #eaf5ff;
+  --color-blauw-zacht: #eaf6ff;
   --color-rand-zacht: #c8ddf0;
   --color-rand-interactief: #66809e;
-  --color-focus: #111d55;
-  --color-geel: #ffbf24;
+  --color-focus: #071f4c;
+  --color-geel: #ffbf00;
   --color-succes: #166534;
   --color-succes-zacht: #ecfdf3;
   --color-probeer-opnieuw: #854d0e;
@@ -228,6 +228,6 @@
     font-size: 12pt;
   }
   .werkblad {
-    color: #111d55;
+    color: #071f4c;
   }
 }

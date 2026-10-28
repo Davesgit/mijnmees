@@ -16,7 +16,7 @@ const kleuren = {
   neutraal: "#d6dde6",
   donker: "#9aa7b8",
   rand: "#ffffff",
-  gekozen: "#0789f8",
+  gekozen: "#008cff",
   goed: "#16a34a",
   doel: "#f59e0b",
   rivier: "#3b82f6",
@@ -337,7 +337,7 @@ export function KaartVlak({
                     cy={l.midden[1]}
                     r={view[2] / 220}
                     fill={kleurLand(l.id, "#ffffff") === kleuren.context ? "#ffffff" : kleurLand(l.id, "#ffffff")}
-                    stroke="#111d55"
+                    stroke="#071f4c"
                     strokeWidth={1.2}
                     vectorEffect="non-scaling-stroke"
                   />
@@ -371,7 +371,7 @@ export function KaartVlak({
                 return (
                   <g key={h.id} data-id={lagen.includes("hoofdsteden") ? h.id : undefined} style={{ pointerEvents: lagen.includes("hoofdsteden") ? "auto" : "none" }}>
                     <circle cx={h.x} cy={h.y} r={view[2] / 60} fill="transparent" />
-                    <circle cx={h.x} cy={h.y} r={(view[2] / 200) * (groot ? 1.6 : 1)} fill={kleur} stroke="#111d55" strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
+                    <circle cx={h.x} cy={h.y} r={(view[2] / 200) * (groot ? 1.6 : 1)} fill={kleur} stroke="#071f4c" strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
                   </g>
                 );
               })}
@@ -383,10 +383,10 @@ export function KaartVlak({
       <svg viewBox="-34 -34 68 68" className="pointer-events-none absolute left-2 top-2 size-16 tablet:size-[72px]" aria-hidden>
         <circle r="31" fill="#ffffff" fillOpacity="0.85" stroke="#c8ddf0" />
         <path d="M0 -21 5 -5 21 0 5 5 0 21 -5 5 -21 0 -5 -5Z" fill="#c8ddf0" />
-        <path d="M0 -21 5 -5 0 0 -5 -5Z" fill="#111d55" />
+        <path d="M0 -21 5 -5 0 0 -5 -5Z" fill="#071f4c" />
         <path d="M0 21 5 5 0 0 -5 5Z" fill="#66809e" />
-        <circle r="2.2" fill="#ffffff" stroke="#111d55" strokeWidth="1" />
-        <g fill="#111d55" fontSize="10" fontWeight="800" textAnchor="middle" dominantBaseline="central" fontFamily="inherit">
+        <circle r="2.2" fill="#ffffff" stroke="#071f4c" strokeWidth="1" />
+        <g fill="#071f4c" fontSize="10" fontWeight="800" textAnchor="middle" dominantBaseline="central" fontFamily="inherit">
           <text y="-26.5">N</text>
           <text x="26" fill="#4a5878">O</text>
           <text y="26.5" fill="#4a5878">Z</text>

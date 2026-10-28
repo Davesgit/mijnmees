@@ -4,8 +4,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Mees – gratis leren en oefenen",
-    short_name: "Mees",
+    name: "Mees AI – jouw digitale leerhulp",
+    short_name: "Mees AI",
     description: "Gratis leren en oefenen voor kinderen van groep 5 tot en met 8.",
     lang: "nl",
     dir: "ltr",

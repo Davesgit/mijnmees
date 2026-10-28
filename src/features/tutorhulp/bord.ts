@@ -4,7 +4,7 @@
 export const BORD = { breedte: 1000, hoogte: 625 } as const;
 
 export const bordKleuren = {
-  inkt: "#111d55",
+  inkt: "#071f4c",
   blauw: "#005fcc",
   oranje: "#c2410c",
   groen: "#166534",

@@ -14,24 +14,25 @@ const meesSans = Nunito_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://mijnmees.nl"),
   title: {
-    default: "Mees – gratis leren en oefenen",
-    template: "%s · Mees",
+    default: "Mees AI – jouw digitale leerhulp",
+    template: "%s · Mees AI",
   },
   description: "Gratis leren en oefenen voor kinderen van groep 5 tot en met 8.",
-  applicationName: "Mees",
+  applicationName: "Mees AI",
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
       { url: "/assets/merk/favicon-32.png", sizes: "32x32", type: "image/png" },
       { url: "/app/icoon-192.png", sizes: "192x192", type: "image/png" },
     ],
     apple: [{ url: "/app/apple-touch-icon.png", sizes: "180x180" }],
   },
-  appleWebApp: { capable: true, title: "Mees", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Mees AI", statusBarStyle: "default" },
   formatDetection: { telephone: false },
   openGraph: {
-    title: "Mees – gratis leren en oefenen",
+    title: "Mees AI – jouw digitale leerhulp",
     description: "Gratis leren en oefenen voor kinderen van groep 5 tot en met 8.",
-    images: [{ url: "/assets/merk/deelafbeelding.png", width: 1200, height: 630 }],
+    images: [{ url: "/assets/merk/deelafbeelding.jpg", width: 1200, height: 630, alt: "Mees AI – jouw digitale leerhulp" }],
     locale: "nl_NL",
     type: "website",
   },

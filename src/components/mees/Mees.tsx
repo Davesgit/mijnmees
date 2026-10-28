@@ -45,9 +45,9 @@ export function Logo({ className = "" }: { className?: string }) {
   return (
     <Image
       src="/assets/merk/logo-liggend.png"
-      alt="Mees"
-      width={627}
-      height={206}
+      alt="Mees AI"
+      width={640}
+      height={170}
       sizes="140px"
       priority
       className={`h-10 w-auto tablet:h-11 ${className}`}
